@@ -6,7 +6,7 @@ MIDI Messages in Ruby
 
 == Features
 
-* All types of MIDI message classes
+* Objectification of the MIDI spec
 * YAML Dictionary of MIDI constants
 	
 == Install
