@@ -1,31 +1,24 @@
-= MIDI Messenger
-
-Author:: Ari Russo
-Copyright:: Copyright (c) 2010-2011 Ari Russo
+= midi-messages
 
 == Summary
 
-High-level realtime MIDI messaging for Ruby
+MIDI Messages in Ruby
 
 == Features
 
-* Platform independent
-* Handle both input and output
-* Supports messaging to and from multiple devices concurrently
-* Intuitive high level messaging API (for both MIDI and SysEx) 
+* All types of MIDI message classes
 * YAML Dictionary of MIDI constants
-
-== Requirements
-
-{unimidi}[http://github.com/arirusso/unimidi] 
 	
 == Install
 
-* gem install midi-messenger
-	
-== Getting started
+* gem install midi-message
 
+== Author
+
+* {Ari Russo}[http://github.com/arirusso] <ari.russo at gmail.com>
 
 == License
 
-Apache 2.0, See the file LICENSE  
+Apache 2.0, See the file LICENSE
+
+Copyright (c) 2011 Ari Russo
