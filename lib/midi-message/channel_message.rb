@@ -53,13 +53,27 @@ module MIDIMessage
         end
 
         def schema(*args)
+          i = 0
+          props = [
+            { :name => :status, :index => 1 }, 
+            { :name => :data, :index => 0 },
+            { :name => :data, :index => 1 }
+          ]
+          args.each_with_index do |prop, i|
+	    send(:define_method, prop) do
+              send(props[i][:name])[props[i][:index]]
+	    end
+	    send(:define_method, "#{prop}=") do |val| 
+              send(props[i][:name])[props[i][:index]] = val
+	    end	 	
+          end
           const_set("NumDataBytes", args.length-1)
         end
 
         alias_method :layout, :schema
 
         # this returns a hash with :remaining_hex_digits and :object
-        def create_from_bytestr(hex_digits)
+        def new_from_bytestr(hex_digits)
           data = []
           self::NumDataBytes.times { |i| data << hex_digits.slice!(2,2).hex }
           hex_digits.slice!(0,1)
