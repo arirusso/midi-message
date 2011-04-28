@@ -17,6 +17,7 @@ module MIDIMessage
         @status[1] = status_nibble_2
         @data[0] = data_byte_1
         @data[1] = data_byte_2 if has_second_data_byte?
+	initialize_shortcuts
       end
 
       def to_a
@@ -53,21 +54,8 @@ module MIDIMessage
         end
 
         def schema(*args)
-          i = 0
-          props = [
-            { :name => :status, :index => 1 }, 
-            { :name => :data, :index => 0 },
-            { :name => :data, :index => 1 }
-          ]
-          args.each_with_index do |prop, i|
-	    send(:define_method, prop) do
-              send(props[i][:name])[props[i][:index]]
-	    end
-	    send(:define_method, "#{prop}=") do |val| 
-              send(props[i][:name])[props[i][:index]] = val
-	    end	 	
-          end
-          const_set("NumDataBytes", args.length-1)
+          self.send(:const_set, :Shortcuts, args)
+          const_set(:NumDataBytes, args.length-1)
         end
 
         alias_method :layout, :schema
@@ -82,6 +70,23 @@ module MIDIMessage
         end
         
         
+
+      end
+
+      def initialize_shortcuts
+         props = [
+           { :name => :status, :index => 1 }, 
+           { :name => :data, :index => 0 },
+           { :name => :data, :index => 1 }
+         ]
+	 shortcuts = self.class.send(:const_get, :Shortcuts)
+	 shortcuts.each_with_index do |prop,i|
+	   self.class.send(:define_method, "#{prop}=") do |val| 
+	     send(:instance_variable_set, "@#{prop.to_s}", val)
+             send(props[i][:name])[props[i][:index]] = val
+	   end	 	
+           instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
+         end
 
       end
 
