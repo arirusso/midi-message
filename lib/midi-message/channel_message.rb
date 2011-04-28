@@ -11,29 +11,24 @@ module MIDIMessage
       attr_accessor :status
                   
       def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
-	@data = []
-	@status = []
-        @status[0] = status_nibble_1
-        @status[1] = status_nibble_2
-        @data[0] = data_byte_1
-        @data[1] = data_byte_2 if has_second_data_byte?
-	initialize_shortcuts
+	      @status = [status_nibble_1, status_nibble_2]
+        @data = [data_byte_1]
+        @data[1] = data_byte_2 if self.class::second_data_byte?
+
+	      initialize_shortcuts
       end
 
       def to_a
-        db2 = has_second_data_byte? ? @data[1] : nil
+        db2 = self.class::second_data_byte? ? @data[1] : nil
         [@status[0] + @status[1], @data[0], db2].compact
       end
-
       alias_method :to_byte_array, :to_a
-
-      def has_second_data_byte?
-	!self.class::NumDataBytes.nil? && self.class::NumDataBytes > 1
-      end
+      alias_method :to_bytes, :to_a
 
       def to_hex_s
         to_a.join
       end
+      alias_method :hex, :to_hex_s
 
       def initialize(*a)
         initialize_channel_message(self.class::TypeId, *a)
@@ -46,30 +41,23 @@ module MIDIMessage
       module ClassMethods
 
         def type_for_status
-          0 + (const_get('TypeId') << 4)
+          0 + (const_get(:TypeId) << 4)
         end
 
         def type_id(id)
-          const_set("TypeId", id)
+          const_set(:TypeId, id)
         end
 
         def schema(*args)
           self.send(:const_set, :Shortcuts, args)
           const_set(:NumDataBytes, args.length-1)
         end
-
         alias_method :layout, :schema
 
-        # this returns a hash with :remaining_hex_digits and :object
-        def new_from_bytestr(hex_digits)
-          data = []
-          self::NumDataBytes.times { |i| data << hex_digits.slice!(2,2).hex }
-          hex_digits.slice!(0,1)
-          object = new(hex_digits.slice!(0,1).hex, *data)
-          { :object => object, :remaining_hex_digits => hex_digits }
+        def second_data_byte?
+          num = const_get(:NumDataBytes)
+          !num.nil? && num > 1
         end
-        
-        
 
       end
 
@@ -79,12 +67,12 @@ module MIDIMessage
            { :name => :data, :index => 0 },
            { :name => :data, :index => 1 }
          ]
-	 shortcuts = self.class.send(:const_get, :Shortcuts)
-	 shortcuts.each_with_index do |prop,i|
-	   self.class.send(:define_method, "#{prop}=") do |val| 
-	     send(:instance_variable_set, "@#{prop.to_s}", val)
+	       shortcuts = self.class.send(:const_get, :Shortcuts)
+	       shortcuts.each_with_index do |prop,i|
+	         self.class.send(:define_method, "#{prop}=") do |val|
+	           send(:instance_variable_set, "@#{prop.to_s}", val)
              send(props[i][:name])[props[i][:index]] = val
-	   end	 	
+	         end
            instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
          end
 
