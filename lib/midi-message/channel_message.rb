@@ -1,32 +1,33 @@
 #!/usr/bin/env ruby
 #
-# this file contains MIDI Channel Messages
+# MIDI Channel Messages
 #
-module MIDIMessenger
+module MIDIMessage
 
     # common behavior amongst Channel Message types
-    module ChannelMessage
+    module ChannelMessageBehavior
 
-      attr_accessor :status_nibble_2,
-                  :data_byte_1,
-                  :data_byte_2
+      attr_accessor :data
+      attr_accessor :status
                   
       def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
-        @status_nibble_1 = status_nibble_1
-        @status_nibble_2 = status_nibble_2
-        @data_byte_1 = data_byte_1
-        @data_byte_2 = data_byte_2 if has_2_data_bytes?
+	@data = []
+	@status = []
+        @status[0] = status_nibble_1
+        @status[1] = status_nibble_2
+        @data[0] = data_byte_1
+        @data[1] = data_byte_2 if has_second_data_byte?
       end
 
       def to_a
-        db2 = has_2_data_bytes? ? @data_byte_2 : nil
-        [@status_nibble_1 + @status_nibble_2, @data_byte_1, db2].compact
+        db2 = has_second_data_byte? ? @data[1] : nil
+        [@status[0] + @status[1], @data[0], db2].compact
       end
 
       alias_method :to_byte_array, :to_a
 
-      def has_2_data_bytes?
-        self.class::NumDataBytes.eql?(2)
+      def has_second_data_byte?
+	!self.class::NumDataBytes.nil? && self.class::NumDataBytes > 1
       end
 
       def to_hex_s
@@ -42,6 +43,7 @@ module MIDIMessenger
       end
 
       module ClassMethods
+
         def type_for_status
           0 + (const_get('TypeId') << 4)
         end
@@ -50,20 +52,8 @@ module MIDIMessenger
           const_set("TypeId", id)
         end
 
-        # this will map friendly property names to :status, :one and :two
-        # for instance, if the class calls "schema :channel, :note, :velocity"
-        # aliases will be created mapping :status->:channel
         def schema(*args)
-          i = 0
-          props = [:status_nibble_2, :data_byte_1, :data_byte_2]
-          props.each do |prop|
-            unless args[i].nil?
-              alias_method(args[i], prop)
-              alias_method("#{args[i]}=", "#{prop.to_s}=")
-            i += 1
-            end
-          end
-          const_set("NumDataBytes", i-1)
+          const_set("NumDataBytes", args.length-1)
         end
 
         alias_method :layout, :schema
@@ -80,22 +70,17 @@ module MIDIMessenger
         
 
       end
-      
-          # use this if you want to instantiate a raw (non sysex) midi message
+    
+    # use this if you want to instantiate a raw channel message
     #
-    # example = Raw.new(0x9, 0x0, 0x40, 0x57) # creates a raw note-on message
+    # example = ChannelMessage.new(0x9, 0x0, 0x40, 0x57) # creates a raw note-on message
     #
-    class Raw
+    class ChannelMessage
 
-      include ChannelMessage
+      include ChannelMessageBehavior
       
       def initialize(*a)
         initialize_channel_message(*a)
-      end
-
-      # converts the raw message object in to a specific message type object
-      def to_type
-        MIDIMessenger::Message.create_from_hex_string(to_hex_s)
       end
 
     end
@@ -108,7 +93,7 @@ module MIDIMessenger
     #
     class ChannelAftertouch
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :value
       type_id 0xD
@@ -120,7 +105,7 @@ module MIDIMessenger
     #
     class ControlChange
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :number, :value
       type_id 0xB
@@ -132,7 +117,7 @@ module MIDIMessenger
     #
     class NoteOff
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :note, :velocity
       type_id 0x8
@@ -144,7 +129,7 @@ module MIDIMessenger
     #
     class NoteOn
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :note, :velocity
       type_id 0x9
@@ -156,7 +141,7 @@ module MIDIMessenger
     #
     class PitchBend
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :low, :high
       type_id 0xE
@@ -168,7 +153,7 @@ module MIDIMessenger
     #
     class PolyphonicAftertouch
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :note, :value
       type_id 0xA
@@ -180,7 +165,7 @@ module MIDIMessenger
     #
     class ProgramChange
 
-      include ChannelMessage
+      include ChannelMessageBehavior
 
       schema :channel, :program
       type_id 0xC
