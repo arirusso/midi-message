@@ -70,7 +70,9 @@ module MIDIMessage
         
 
       end
-    
+
+    end
+
     # use this if you want to instantiate a raw channel message
     #
     # example = ChannelMessage.new(0x9, 0x0, 0x40, 0x57) # creates a raw note-on message
@@ -82,9 +84,6 @@ module MIDIMessage
       def initialize(*a)
         initialize_channel_message(*a)
       end
-
-    end
-
 
     end
 
