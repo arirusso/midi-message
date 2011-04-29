@@ -10,10 +10,11 @@ module MIDIMessage
                   :status
                   
       def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
+        @status = [status_nibble_1, status_nibble_2]
         @data = [data_byte_1]
         @data[1] = data_byte_2 if self.class::second_data_byte?
+        initialize_shortcuts
         initialize_simple_message(status_nibble_1, status_nibble_2)
-	      initialize_shortcuts
       end
 
       def to_a
@@ -67,6 +68,7 @@ module MIDIMessage
          ]
 	       shortcuts = self.class.send(:const_get, :Shortcuts)
 	       shortcuts.each_with_index do |prop,i|
+           self.class.send(:attr_reader, prop)
 	         self.class.send(:define_method, "#{prop}=") do |val|
 	           send(:instance_variable_set, "@#{prop.to_s}", val)
              send(props[i][:name])[props[i][:index]] = val
@@ -87,7 +89,7 @@ module MIDIMessage
       include SimpleMessageBehavior
       include ChannelMessageBehavior
 
-      DisplayName = 'Channel Message'
+      display_name 'Channel Message'
       
       def initialize(*a)
         initialize_channel_message(*a)
@@ -105,7 +107,7 @@ module MIDIMessage
 
       schema :channel, :value
       type_id 0xD
-      DisplayName = 'Channel Aftertouch'
+      display_name 'Channel Aftertouch'
 
     end
 
@@ -119,7 +121,8 @@ module MIDIMessage
 
       schema :channel, :number, :value
       type_id 0xB
-      DisplayName = 'Control Change'
+      display_name 'Control Change'
+      identifier :number
 
     end
 
@@ -133,7 +136,9 @@ module MIDIMessage
 
       schema :channel, :note, :velocity
       type_id 0x8
-      DisplayName = 'Note Off'
+      display_name 'Note Off'
+      use_constants 'Note'
+      identifier :note
 
     end
 
@@ -147,7 +152,9 @@ module MIDIMessage
 
       schema :channel, :note, :velocity
       type_id 0x9
-      DisplayName = 'Note On'
+      display_name 'Note On'
+      use_constants 'Note'
+      identifier :note
 
     end
 

@@ -96,4 +96,8 @@ Manufacturers:
   Emagic: [0x00, 0x20, 0x31]
   Behringer: [0x00, 0x20, 0x32]
 
+Note:
+
+  C3: 64
+
 }

@@ -8,7 +8,7 @@ module MIDIMessage
   class SystemCommon
 
     include SimpleMessageBehavior
-    DisplayName = 'System Common'
+    display_name 'System Common'
 
     attr_reader :status,
                 :data
@@ -26,7 +26,7 @@ module MIDIMessage
   class SystemRealtime
 
     include SimpleMessageBehavior
-    DisplayName = 'System Realtime'
+    display_name 'System Realtime'
 
     attr_reader :status
     
