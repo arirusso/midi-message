@@ -15,7 +15,7 @@ MIDI Messages in Ruby
 
 == Author
 
-  {Ari Russo}[http://github.com/arirusso] <ari.russo at gmail.com>
+* {Ari Russo}[http://github.com/arirusso] <ari.russo at gmail.com>
 
 == License
 
