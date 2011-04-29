@@ -8,14 +8,19 @@ require 'pp'
 
 include MIDIMessage
 
-# start and stop messages for a sequencer
+# some messages for a sequencer
 
-pp NoteOn.find("C3", 0, 100)
-pp SystemRealtime.find("Start")
-pp SystemRealtime.find("Stop")
+pp SystemRealtime["Start"].new
+pp NoteOn["C3"].new(0, 100)
+pp SystemRealtime["Stop"].new
 
 # this should output something like:
 
+#
+# #<MIDIMessage::SystemRealtime:0x89fda3c
+#  @name="Start",
+#  @status=[15, 250],
+#  @verbose_name="System Realtime: Start">
 #
 # #<MIDIMessage::NoteOn:0x9363cac
 #  @channel=0,
@@ -25,11 +30,6 @@ pp SystemRealtime.find("Stop")
 #  @status=[9, 0],
 #  @velocity=100,
 #  @verbose_name="Note On: C3">
-#
-# #<MIDIMessage::SystemRealtime:0x89fda3c
-#  @name="Start",
-#  @status=[15, 250],
-#  @verbose_name="System Realtime: Start">
 #
 # #<MIDIMessage::SystemRealtime:0x89fc600
 #  @name="Stop",

@@ -43,6 +43,12 @@ module MIDIMessage
           end
 	end
 
+	# this returns a builder for the class, preloaded with the selected const
+	def [](const_name)
+          c = const(const_name)
+          MessageBuilder.new(self, c) unless c.nil?
+        end
+
         def display_name(name)
           const_set(:DisplayName, name)
         end
@@ -56,5 +62,18 @@ module MIDIMessage
       end
 
     end
+
+  class MessageBuilder
+  
+    def initialize(klass, const)
+      @const = const
+      @klass = klass
+    end
+
+    def new(*a)
+      @klass.new(*a, :const => @const)
+    end
+
+  end
 
 end

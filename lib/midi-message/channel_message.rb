@@ -30,6 +30,13 @@ module MIDIMessage
       alias_method :hex, :to_hex_s
 
       def initialize(*a)
+	options = a.pop if a.last.kind_of?(Hash)
+	unless options[:const].nil?
+	  key = self.class::ConstProp rescue nil
+	  ind = self.class::Shortcuts.index(key) rescue nil
+	  ind ||= 0
+	  a.insert(ind, options[:const])
+        end
         initialize_channel_message(self.class::TypeId, *a)
       end
 
@@ -66,16 +73,15 @@ module MIDIMessage
            { :name => :data, :index => 0 },
            { :name => :data, :index => 1 }
          ]
-	       shortcuts = self.class.send(:const_get, :Shortcuts)
-	       shortcuts.each_with_index do |prop,i|
+	 shortcuts = self.class.send(:const_get, :Shortcuts)
+	 shortcuts.each_with_index do |prop,i|
            self.class.send(:attr_reader, prop)
-	         self.class.send(:define_method, "#{prop}=") do |val|
-	           send(:instance_variable_set, "@#{prop.to_s}", val)
+	   self.class.send(:define_method, "#{prop}=") do |val|
+	     send(:instance_variable_set, "@#{prop.to_s}", val)
              send(props[i][:name])[props[i][:index]] = val
-	         end
+	   end
            instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
          end
-
       end
 
     end
@@ -124,11 +130,6 @@ module MIDIMessage
       display_name 'Control Change'
       use_constants 'Control Change', :for => 'Number'
 
-      def self.find(name, channel, value)
-        c = const(name)
-        new(channel, c, value) unless c.nil?
-      end
-
     end
 
     #
@@ -144,11 +145,6 @@ module MIDIMessage
       display_name 'Note Off'
       use_constants 'Note', :for => :note
 
-      def self.find(name, channel, velocity)
-	c = const(name)
-        new(channel, c, velocity) unless c.nil?
-      end
-
     end
 
     #
@@ -163,11 +159,6 @@ module MIDIMessage
       type_id 0x9
       display_name 'Note On'
       use_constants 'Note', :for => :note
-
-      def self.find(name, channel, velocity)
-	c = const(name)
-        new(channel, c, velocity) unless c.nil?
-      end
 
     end
 

@@ -13,14 +13,10 @@ module MIDIMessage
     attr_reader :status,
                 :data
     
-    def initialize(status_nibble_2, data_byte_1 = nil, data_byte_2 = nil)
-      @data = [data_byte_1, data_byte_2]
-      initialize_simple_message(0xF, status_nibble_2)
-    end
-
-    def self.find(const_name, data_byte_1 = nil, data_byte_2 = nil)
-      c = const(const_name)
-      new(c, data_byte_1, data_byte_2)
+    def initialize(*a)
+      options = a.pop if a.last.kind_of?(Hash)
+      @data = [a[1], a[2]]
+      initialize_simple_message(0xF, a.first)
     end
     
   end  
@@ -35,13 +31,11 @@ module MIDIMessage
 
     attr_reader :status
     
-    def initialize(id)
+    def initialize(*a)
+      options = a.pop if a.last.kind_of?(Hash)
+      id = options[:const] unless options.nil?
+      id ||= a.first
       initialize_simple_message(0xF, id)
-    end
-
-    def self.find(const_name)
-      c = const(const_name)
-      new(c)
     end
 
     def id
