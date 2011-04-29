@@ -11,7 +11,7 @@ require 'pp'
 
 channel = 0
 notes = [36, 40, 43] # C E G
-octaves = 5
+octaves = 2
 velocity = 100
 
 melody = []
@@ -24,3 +24,6 @@ end
 
 pp melody
 
+# this should output something like:
+
+# (will add when I have the constants yaml more filled out)
