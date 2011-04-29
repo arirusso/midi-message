@@ -13,6 +13,11 @@ MIDI messages, objectified in Ruby
 
 * gem install midi-message
 
+== Examples
+
+* {melody}[http://github.com/arirusso/midi-message/blob/master/examples/melody.rb]
+* {parse}[http://github.com/arirusso/midi-message/blob/master/examples/parse.rb]
+
 == Documentation
 
 * {rdoc}[http://rdoc.info/gems/midi-message]
