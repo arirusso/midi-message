@@ -1,7 +1,7 @@
 # better way to do this?
 @@data = %q{
 
-Controller:
+Control Change:
   Bank Select: 0
   Modulation Wheel: 1
   Breath Controller: 2

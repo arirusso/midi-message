@@ -10,7 +10,11 @@ include MIDIMessage
 
 # start and stop messages for a sequencer
 
-pp SystemRealtime.new(Constant["System Realtime"]["Start"])
-pp SystemRealtime.new(Constant["System Realtime"]["Stop"])
+# this api is still a little odd...
+
+rt_msgs = Constant["System Realtime"]
+
+pp SystemRealtime.new(rt_msgs["Start"])
+pp SystemRealtime.new(rt_msgs["Stop"])
 
 

@@ -8,6 +8,7 @@ module MIDIMessage
  
 end
 
+require 'midi-message/simple_message'
 require 'midi-message/channel_message'
 require 'midi-message/constant'
 require 'midi-message/system_message'
