@@ -1,19 +1,18 @@
 #!/usr/bin/env ruby
 #
-# This file contains the non-exclusive system messages
-#
-module MIDIMessenger
+module MIDIMessage
   
   #
   # MIDI System-Common message
   #
   class SystemCommon
+
+    attr_reader :status,
+                :data
     
-    def initialize(*a)
-      initialize_midi_message(0xF, *a)
-    end
-    
-    def self.from_hex_string(hex_digits)
+    def initialize(status_nibble_2, data_byte_1 = nil, data_byte_2 = nil)
+      @status = [0xF, status_nibble_2]
+      @data = [data_byte_1, data_byte_2]
     end
     
   end  
@@ -23,21 +22,16 @@ module MIDIMessenger
   #
   class SystemRealtime
     
-    attr_reader :status_nibble_1, :status_nibble_2
+    attr_reader :status
     
     def initialize(id)
-      @status_nibble_1 = 0xF
-      @status_nibble_2 = id
+      @status = [0xF, id]
     end
-    
-    alias_method :id, :status_nibble_2
-  
-    def self.from_hex_string(hex_digits)
-      hex_digits.slice!(0,1) # get rid of the 0xF 
-      object = new(hex_digits.slice!(1,1).hex)
-      { :object => object, :remaining_hexits => hex_digits }
+
+    def id
+      @status[1]
     end
-    
+
   end
   
 end
