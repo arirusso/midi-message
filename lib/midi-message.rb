@@ -9,5 +9,6 @@ module MIDIMessage
 end
 
 require 'midi-message/channel_message'
+require 'midi-message/constant'
 require 'midi-message/system_message'
 require 'midi-message/system_exclusive'
