@@ -126,7 +126,7 @@ module MIDIMessage
 
       def self.find(name, channel, value)
         c = const(name)
-        new(channel, c, value)
+        new(channel, c, value) unless c.nil?
       end
 
     end
@@ -146,7 +146,7 @@ module MIDIMessage
 
       def self.find(name, channel, velocity)
 	c = const(name)
-        new(channel, name, velocity)
+        new(channel, c, velocity) unless c.nil?
       end
 
     end
@@ -166,7 +166,7 @@ module MIDIMessage
 
       def self.find(name, channel, velocity)
 	c = const(name)
-        new(channel, name, velocity)
+        new(channel, c, velocity) unless c.nil?
       end
 
     end

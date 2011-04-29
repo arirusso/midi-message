@@ -15,6 +15,7 @@ MIDI messages, objectified in Ruby
 
 == Examples
 
+* {constants}[http://github.com/arirusso/midi-message/blob/master/examples/constants.rb]
 * {melody}[http://github.com/arirusso/midi-message/blob/master/examples/melody.rb]
 * {parse}[http://github.com/arirusso/midi-message/blob/master/examples/parse.rb]
 
