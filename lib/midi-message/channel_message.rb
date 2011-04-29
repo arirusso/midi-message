@@ -122,7 +122,12 @@ module MIDIMessage
       schema :channel, :number, :value
       type_id 0xB
       display_name 'Control Change'
-      identifier :number
+      use_constants 'Control Change', :for => 'Number'
+
+      def self.find(name, channel, value)
+        c = const(name)
+        new(channel, c, value)
+      end
 
     end
 
@@ -137,8 +142,12 @@ module MIDIMessage
       schema :channel, :note, :velocity
       type_id 0x8
       display_name 'Note Off'
-      use_constants 'Note'
-      identifier :note
+      use_constants 'Note', :for => :note
+
+      def self.find(name, channel, velocity)
+	c = const(name)
+        new(channel, name, velocity)
+      end
 
     end
 
@@ -153,8 +162,12 @@ module MIDIMessage
       schema :channel, :note, :velocity
       type_id 0x9
       display_name 'Note On'
-      use_constants 'Note'
-      identifier :note
+      use_constants 'Note', :for => :note
+
+      def self.find(name, channel, velocity)
+	c = const(name)
+        new(channel, name, velocity)
+      end
 
     end
 

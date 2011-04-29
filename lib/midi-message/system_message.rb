@@ -17,6 +17,11 @@ module MIDIMessage
       @data = [data_byte_1, data_byte_2]
       initialize_simple_message(0xF, status_nibble_2)
     end
+
+    def self.find(const_name, data_byte_1 = nil, data_byte_2 = nil)
+      c = const(const_name)
+      new(c, data_byte_1, data_byte_2)
+    end
     
   end  
   
@@ -32,6 +37,11 @@ module MIDIMessage
     
     def initialize(id)
       initialize_simple_message(0xF, id)
+    end
+
+    def self.find(const_name)
+      c = const(const_name)
+      new(c)
     end
 
     def id

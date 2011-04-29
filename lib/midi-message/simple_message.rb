@@ -10,10 +10,10 @@ module MIDIMessage
                   :verbose_name
 
       def initialize_simple_message(status_nibble_1, status_nibble_2)
-	      @status = [status_nibble_1, status_nibble_2]
+	@status = [status_nibble_1, status_nibble_2]
         group_name = self.class.const_get(:DisplayName)
         group_name_alias = self.class.const_get(:UseConstants) rescue nil
-        val = self.send(self.class.const_get(:Identifier)) rescue @status[1]
+        val = self.send(self.class.const_get(:ConstProp)) rescue @status[1]
         group = Constant[group_name] || (group_name_alias.nil? ? nil : Constant[group_name_alias])
         unless group.nil?
           const = group.find { |k,v| k if v.eql?(val) }
@@ -35,16 +35,22 @@ module MIDIMessage
 
       module ClassMethods
 
+	def const(name)
+	  key = const_get(:DisplayName) rescue nil
+          key = const_get(:UseConstants) rescue key
+	  unless key.nil?
+	    Constant.instance[key.to_s][name.to_s] 
+          end
+	end
+
         def display_name(name)
           const_set(:DisplayName, name)
         end
 
-        def use_constants(name)
+        def use_constants(name, options = {})
+          for_prop = options[:for]
+          const_set(:ConstProp, for_prop) unless for_prop.nil?
           const_set(:UseConstants, name)
-        end
-
-        def identifier(name)
-          const_set(:Identifier, name)
         end
 
       end
