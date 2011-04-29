@@ -168,7 +168,7 @@ module MIDIMessage
 
       schema :channel, :low, :high
       type_id 0xE
-      DisplayName = 'Pitch Bend'
+      display_name 'Pitch Bend'
 
     end
 
@@ -182,7 +182,7 @@ module MIDIMessage
 
       schema :channel, :note, :value
       type_id 0xA
-      DisplayName = 'Polyphonic Aftertouch'
+      display_name 'Polyphonic Aftertouch'
 
     end
 
@@ -196,7 +196,7 @@ module MIDIMessage
 
       schema :channel, :program
       type_id 0xC
-      DisplayName = 'Program Change'
+      display_name 'Program Change'
 
     end
     
