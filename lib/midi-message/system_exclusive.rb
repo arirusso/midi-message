@@ -7,22 +7,28 @@ module MIDIMessage
 
     # convert raw MIDI data to SysEx message objects
     def self.new(*bytes)
-      return nil unless bytes.first.eql?(0xF0) && bytes.last.eql?(0xF7)
+      
+      start_status = bytes.shift
+      end_status = bytes.pop
+      
+      return nil unless start_status.eql?(0xF0) && end_status.eql?(0xF7)
       
       fixed_length_message_part = bytes.slice!(0,7)
-    
+
       manufacturer_id = fixed_length_message_part[0]
       device_id = fixed_length_message_part[1]
       model_id = fixed_length_message_part[2]
+      
       msg_class = case fixed_length_message_part[3]
         when 0x11 then Request
-        when 0x12 then Message
+        when 0x12 then Command
       end
+
       address = fixed_length_message_part.slice(4,3)
       checksum = bytes.slice!((bytes.length - 1), 1)
       value = bytes
     
-      node = MIDIMessenger::SysEx::Node.new(manufacturer_id, model_id, :device_id => device_id)
+      node = Node.new(manufacturer_id, model_id, :device_id => device_id)
       msg_class.new(address, value, :checksum => checksum, :node => node)
     end
   
