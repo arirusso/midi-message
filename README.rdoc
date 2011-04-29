@@ -1,17 +1,21 @@
-= midi-messages
+= midi-message
 
 == Summary
 
-MIDI Messages in Ruby
+MIDI messages, objectified in Ruby
 
 == Features
 
-* Objectification of the MIDI spec
+* All message types and components
 * YAML Dictionary of MIDI constants
 	
 == Install
 
 * gem install midi-message
+
+== Documentation
+
+* {rdoc}[http://rdoc.info/gems/midi-message]
 
 == Author
 
