@@ -117,7 +117,7 @@ module MIDIMessage
       attr_accessor :size
       alias_method :value, :size
 
-      StatusByte 0x11
+      StatusByte = 0x11
     
       def initialize(address, size, options = {})
         @size = size
