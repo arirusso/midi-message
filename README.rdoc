@@ -11,7 +11,7 @@ MIDI Messages in Ruby
 	
 == Install
 
-* gem install midi-message (not yet available)
+* gem install midi-message (*not yet available)
 
 == Author
 
