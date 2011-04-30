@@ -82,7 +82,9 @@ No matter which of these methods you use, you will wind up with a set of objects
      @manufacturer=65,
      @model_id=66>>
 
-See these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
+See these, more examples and more explanation {here}[http://github.com/arirusso/midi-message/tree/master/examples]
+
+Have a look at {unimidi}[http://github.com/arirusso/unimidi] (which I also wrote) if you want to send and receive these messages with your synths/sequencers/etc.
 
 == API Documentation
 
