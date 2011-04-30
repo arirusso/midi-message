@@ -44,18 +44,18 @@ You can parse raw data
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
-Or in a more object oriented way:
-  
-A Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node).  Sysex messages can either be a Command or Request
+Or in a more object oriented way
   
   synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
-You can instantiate a message using the node
+A Node represents a device that you're sending a message to (eg. your {Yamaha DX7}[http://homepage.ntlworld.com/steve.sims/lotsofdx7.jpg] is a Node).  Sysex messages can either be a Command or Request
+  
+You can use the node to instantiate a message
   
   synth.command([0x40, 0x7F, 0x00], 0x00)
    
-Or using a prototype message that has no Node
+Or pass it a prototype message
   
   prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
   synth.new_message_from(prototype) 
@@ -72,7 +72,7 @@ All of these will give you objects that look like this:
   #   @manufacturer=65,
   #   @model_id=66>>
 
-see these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
+See these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
 
 == Documentation
 
