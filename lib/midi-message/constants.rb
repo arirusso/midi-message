@@ -98,6 +98,10 @@ Manufacturers:
 
 Note:
 
-  C3: 64
+  C4:  60
+  C#4: 61
+  D4:  62
+  D#4: 63
+  E4:  64
 
 }

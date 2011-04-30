@@ -28,9 +28,9 @@ pp MIDIMessage.parse(0x90, 0x40, 0x40)
 # #<MIDIMessage::NoteOn:0x9c1c240
 # @channel=0,
 # @data=[64, 64],
-# @name="C3",
+# @name="E4",
 # @note=64,
 # @status=[9, 0],
 # @velocity=64,
-# @verbose_name="Note On: C3">
+# @verbose_name="Note On: E4">
 #

@@ -11,7 +11,7 @@ include MIDIMessage
 # some messages for a sequencer
 
 pp SystemRealtime["Start"].new
-pp NoteOn["C3"].new(0, 100)
+pp NoteOn["E4"].new(0, 100)
 pp SystemRealtime["Stop"].new
 
 # this should output something like:
