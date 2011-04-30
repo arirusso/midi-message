@@ -15,7 +15,9 @@ include MIDIMessage
 
 pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 
-# or create a Node (destination) object and then send messages to that
+# or create a Node (destination) object and then send messages to that.
+# a Node represents a device that you're sending a message to 
+# (eg. your {Yamaha DX7}[http://bit.ly/iH4TzL] is a Node).
 
 node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
 
@@ -52,3 +54,5 @@ pp node.command([0x40, 0x7F, 0x00], 0x00)
 #   @manufacturer=65,
 #   @model_id=66>>
 #
+
+# read more about SysEx messages in general {here}[http://www.2writers.com/eddie/TutSysEx.htm]
