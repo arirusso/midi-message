@@ -19,15 +19,15 @@ MIDI messages, objectified in Ruby
 
   require 'midi-message'
   
-Basic Messages
+= Basic Messages
 
-  # there are three ways to create a new message
+There are three ways to create a new message
   
   MIDIMessage.parse(0x90, 0x40, 0x40)
   MIDIMessage::NoteOn.new(0, 64, 64)  
   MIDIMessage::NoteOn["E4"].new(0, 100)
 
-  # any of those three expressions will give you
+Any of those three expressions will give you an object that looks like this
 
   # #<MIDIMessage::NoteOn:0x9c1c240
   # @channel=0,
@@ -38,13 +38,13 @@ Basic Messages
   # @velocity=64,
   # @verbose_name="Note On: E4">
 
-SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/master/examples/sysex.rb])
+= SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/master/examples/sysex.rb])
 
-  # you can parse raw data
+You can parse raw data
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
-  # or in a more object oriented way:
+Or in a more object oriented way:
   
   # a Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node)
   # sysex messages can either be a Command or Request
@@ -52,16 +52,16 @@ SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/ma
   synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
-  # or
+Or
   
   synth.command([0x40, 0x7F, 0x00], 0x00)
    
-  # or using a prototype message that has no Node
+Or using a prototype message that has no Node
   
   prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
   synth.new_message_from(prototype) 
   
-  # all of these will give you
+All of these will give you objects that look like this:
 
   # #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
   # @address=[64, 0, 127],
