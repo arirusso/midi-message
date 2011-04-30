@@ -1,19 +1,19 @@
-= midi-message
+= MIDI Message
 
-{pic}[http://images.treetrouble.net/images/dx7s_small.jpg]
+{pic}[http://images.treetrouble.net/images/mks80_small.jpg]
 
 MIDI messages, objectified in Ruby
 
 == Features
 
 * All message types
-* API flexibility to accommodate different uses
-* System Exclusive devices as objects
+* API flexibility to accommodate many uses
+* Simplified approach to System Exclusive data and devices
 * YAML dictionary of MIDI constants
 	
 == Install
 
-* gem install midi-message
+  gem install midi-message
 
 == Usage
 
@@ -50,7 +50,7 @@ Or in a more object oriented way
     
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
-A Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node).  Sysex messages can either be a Command or Request
+A Node represents a device that you're sending a message to (eg. your {Yamaha DX7}[bit.ly/iH4TzL] is a Node).  Sysex messages can either be a Command or Request
   
 You can use the node to instantiate a message
   
