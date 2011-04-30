@@ -19,7 +19,7 @@ MIDI messages, objectified in Ruby
 
   require 'midi-message'
 
-  # there are three ways to instantiate a message
+  # there are three ways to create a new message
   
   MIDIMessage.parse(0x90, 0x40, 0x40)
   MIDIMessage::NoteOn.new(0, 64, 64)  
@@ -40,19 +40,23 @@ MIDI messages, objectified in Ruby
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
-  # or in a more object oriented way
+  # or in a more object oriented way:
   
-  node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
-  SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => node)
+  # a Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node)
+  # sysex messages can either be a Command or Request
+  # read more about this {here}[https://github.com/arirusso/midi-message/blob/master/examples/sysex.rb]
+  
+  synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
+  SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
   # or
   
-  node.command([0x40, 0x7F, 0x00], 0x00)
+  synth.command([0x40, 0x7F, 0x00], 0x00)
    
-  # or using a prototype message that has no node
+  # or using a prototype message that has no Node
   
   prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
-  node.new_message_from(prototype) 
+  synth.new_message_from(prototype) 
   
   # all of these will give you
 
