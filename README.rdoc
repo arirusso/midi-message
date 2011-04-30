@@ -34,11 +34,25 @@ MIDI messages, objectified in Ruby
   # @velocity=64,
   # @verbose_name="Note On: E4">
 
-  # this works similarly for sysex messages
+  # instantiating sysex messages works basically the same way
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
-
-  # gives you
+  
+  # or in a more object oriented way
+  
+  node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
+  SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => node)
+  
+  # or
+  
+  node.command([0x40, 0x7F, 0x00], 0x00)
+   
+  # or using a prototype message that has no node
+  
+  prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
+  node.new_message_from(prototype) 
+  
+  # all of these will give you
 
   # #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
   # @address=[64, 0, 127],
@@ -50,7 +64,7 @@ MIDI messages, objectified in Ruby
   #   @manufacturer=65,
   #   @model_id=66>>
 
-see these and more examples {here}[https://github.com/arirusso/midi-message/tree/master/examples]
+see these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
 
 == Documentation
 
