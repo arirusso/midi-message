@@ -3,7 +3,9 @@
 # (c)2011 Ari Russo and licensed under the Apache 2.0 License
 # 
 
-# better way to do this?
+# Better way to do this? I'm not sure how to reliably locate a YAML file in a gem vs in a git clone
+# Using require to load this is as a ruby file will do that
+
 @@data = %q{
   
 Status:
@@ -12,8 +14,8 @@ Status:
   Polyphonic Aftertouch: 0xA
   Control Change: 0xB
   Program Change: 0xC
-  ChannelAftertouch: 0xD
-  PitchBend: 0xE
+  Channel Aftertouch: 0xD
+  Pitch Bend: 0xE
   System Exclusive: 0xF0
   System Common: [0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6]
   System Realtime: [0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF]

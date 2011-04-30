@@ -8,8 +8,8 @@ module MIDIMessage
   module ChannelMessageBehavior
 
     attr_reader :data,
-                  :name,
-                  :status
+                :name,
+                :status
                   
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
@@ -39,7 +39,7 @@ module MIDIMessage
       ind ||= 0
       a.insert(ind, options[:const])
       end
-      initialize_channel_message(self.class::TypeId, *a)
+      initialize_channel_message(self.class.type_for_status, *a)
     end
 
     def self.included(base)
@@ -49,11 +49,8 @@ module MIDIMessage
     module ClassMethods
       
       def type_for_status
-        0 + (const_get(:TypeId) << 4)
-      end
-
-      def type_id(id)
-        const_set(:TypeId, id)
+        display_name = get_display_name
+        0 + (Status[display_name] << 4) unless display_name.nil?
       end
 
       def schema(*args)
@@ -119,7 +116,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :value
-    type_id 0xD
     display_name 'Channel Aftertouch'
 
   end
@@ -133,7 +129,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :number, :value
-    type_id 0xB
     display_name 'Control Change'
     use_constants 'Control Change', :for => 'Number'
 
@@ -148,7 +143,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
-    type_id 0x8
     display_name 'Note Off'
     use_constants 'Note', :for => :note
 
@@ -163,7 +157,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
-    type_id 0x9
     display_name 'Note On'
     use_constants 'Note', :for => :note
 
@@ -178,7 +171,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :low, :high
-    type_id 0xE
     display_name 'Pitch Bend'
 
   end
@@ -192,7 +184,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :value
-    type_id 0xA
     display_name 'Polyphonic Aftertouch'
 
   end
@@ -206,7 +197,6 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :program
-    type_id 0xC
     display_name 'Program Change'
 
   end

@@ -39,7 +39,7 @@ module MIDIMessage
     module ClassMethods
       
       def const(name)
-        key = const_get(:DisplayName) rescue nil
+        key = get_display_name
         key = const_get(:UseConstants) rescue key        
         Constant.instance[key.to_s][name.to_s] unless key.nil?
       end
@@ -48,6 +48,10 @@ module MIDIMessage
       def [](const_name)
         c = const(const_name)
         MessageBuilder.new(self, c) unless c.nil?
+      end
+      
+      def get_display_name
+        const_get(:DisplayName) rescue nil
       end
 
       def display_name(name)
