@@ -1,5 +1,7 @@
 = midi-message
 
+{pic}[http://images.treetrouble.net/images/dx7s_small.jpg]
+
 == Summary
 
 MIDI messages, objectified in Ruby
@@ -49,7 +51,7 @@ Or in a more object oriented way
   synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
-A Node represents a device that you're sending a message to (eg. your {Yamaha DX7}[http://bit.ly/iH4TzL] is a Node).  Sysex messages can either be a Command or Request
+A Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node).  Sysex messages can either be a Command or Request
   
 You can use the node to instantiate a message
   
