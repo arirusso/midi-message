@@ -6,8 +6,10 @@ MIDI messages, objectified in Ruby
 
 == Features
 
-* All message types and components
-* YAML Dictionary of MIDI constants
+* All message types
+* API flexibility to accommodate different uses
+* System Exclusive devices as objects
+* YAML dictionary of MIDI constants
 	
 == Install
 
@@ -34,7 +36,7 @@ MIDI messages, objectified in Ruby
   # @velocity=64,
   # @verbose_name="Note On: E4">
 
-  # instantiating sysex messages works basically the same way
+  # instantiating sysex messages works similarly
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
