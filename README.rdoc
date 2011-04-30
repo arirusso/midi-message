@@ -18,6 +18,8 @@ MIDI messages, objectified in Ruby
 == Usage
 
   require 'midi-message'
+  
+Basic Messages
 
   # there are three ways to create a new message
   
@@ -36,7 +38,9 @@ MIDI messages, objectified in Ruby
   # @velocity=64,
   # @verbose_name="Note On: E4">
 
-  # instantiating sysex messages works similarly
+SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/master/examples/sysex.rb])
+
+  # you can parse raw data
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
@@ -44,7 +48,6 @@ MIDI messages, objectified in Ruby
   
   # a Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node)
   # sysex messages can either be a Command or Request
-  # read more about this {here}[https://github.com/arirusso/midi-message/blob/master/examples/sysex.rb]
   
   synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
