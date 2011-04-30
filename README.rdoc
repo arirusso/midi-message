@@ -18,12 +18,11 @@ MIDI messages, objectified in Ruby
 == Usage
 
   require 'midi-message'
+  include MIDIMessage
   
 === Basic Messages
 
 There are a few ways to create a new MIDI message.  Here are examples of each going from low to high-level
-
-  include MIDIMessage
     
   MIDIMessage.parse(0x90, 0x40, 0x40)
   
@@ -60,15 +59,15 @@ Or in a more object oriented way
   
 A Node represents a device that you're sending a message to (eg. your {Yamaha DX7}[bit.ly/iH4TzL] is a Node).  Sysex messages can either be a Command or Request
   
-You can use the node to instantiate a message
+You can use the Node to instantiate a message
   
   synth.command([0x40, 0x7F, 0x00], 0x00)
    
-Or pass it a prototype message
+Or pass it a prototype message object
   
   prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
     
-  synth.new_message_from(prototype) 
+  synth.new_message_from(prototype)  
   
 No matter which of these methods you use, you will wind up with a set of objects like this
 
