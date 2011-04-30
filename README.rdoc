@@ -17,10 +17,10 @@ MIDI messages, objectified in Ruby
 
   require 'midi-message'
 
-  # parse or construct messages
-
-  MIDIMessage::NoteOn.new(0, 64, 64)
+  # there are three ways to instantiate a message
+  
   MIDIMessage.parse(0x90, 0x40, 0x40)
+  MIDIMessage::NoteOn.new(0, 64, 64)  
   MIDIMessage::NoteOn["E4"].new(0, 100)
 
   # any of those three expressions will give you
@@ -34,7 +34,7 @@ MIDI messages, objectified in Ruby
   # @velocity=64,
   # @verbose_name="Note On: E4">
 
-  # you can do the same for sysex messages:
+  # this works similarly for sysex messages
 
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 

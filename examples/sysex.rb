@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Parse raw data
+# Instantiate SysEx messages
 #
 
 dir = File.dirname(File.expand_path(__FILE__))

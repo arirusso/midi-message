@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 #
-#
+# (c)2011 Ari Russo and licensed under the Apache 2.0 License
+# 
+
 module MIDIMessage
 
+  # MIDI System-Exclusive Messages (SysEx)
   module SystemExclusive
 
     # convert raw MIDI data to SysEx message objects
