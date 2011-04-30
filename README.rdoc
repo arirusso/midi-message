@@ -21,22 +21,30 @@ MIDI messages, objectified in Ruby
   
 === Basic Messages
 
-There are three ways to create a new message
-  
+There are a few ways to create a new MIDI message.  Here are examples of each going from low to high-level
+
+  include MIDIMessage
+    
   MIDIMessage.parse(0x90, 0x40, 0x40)
-  MIDIMessage::NoteOn.new(0, 64, 64)  
-  MIDIMessage::NoteOn["E4"].new(0, 100)
+  
+  ChannelMessage.new(0x9, 0x0, 0x40, 0x40).to_type
+  
+  ChannelMessage.new(MIDIMessage::Status["Note On"], 0x0, 0x40, 0x40).to_type
+  
+  NoteOn.new(0, 64, 64) # or NoteOn.new(0x0, 0x64, 0x64)
+  
+  NoteOn["E4"].new(0, 100)
 
-Any of those three expressions will give you an object that looks like this
+Those expressions all evaluate to the same object
 
-  # #<MIDIMessage::NoteOn:0x9c1c240
-  # @channel=0,
-  # @data=[64, 64],
-  # @name="E4",
-  # @note=64,
-  # @status=[9, 0],
-  # @velocity=64,
-  # @verbose_name="Note On: E4">
+  #<MIDIMessage::NoteOn:0x9c1c240
+   @channel=0,
+   @data=[64, 64],
+   @name="E4",
+   @note=64,
+   @status=[9, 0],
+   @velocity=64,
+   @verbose_name="Note On: E4">
 
 === SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/master/examples/sysex.rb])
 
@@ -62,17 +70,17 @@ Or pass it a prototype message
     
   synth.new_message_from(prototype) 
   
-All of these will give you objects that look like this:
+No matter which of these methods you use, you will wind up with a set of objects like this
 
-  # #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
-  # @address=[64, 0, 127],
-  # @checksum=[65],
-  # @data=[0],
-  # @node=
-  #  #<MIDIMessage::SystemExclusive::Node:0x9c1e5a4
-  #   @device_id=16,
-  #   @manufacturer=65,
-  #   @model_id=66>>
+   #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
+   @address=[64, 0, 127],
+   @checksum=[65],
+   @data=[0],
+   @node=
+    #<MIDIMessage::SystemExclusive::Node:0x9c1e5a4
+     @device_id=16,
+     @manufacturer=65,
+     @model_id=66>>
 
 See these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
 

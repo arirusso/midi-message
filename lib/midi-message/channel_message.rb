@@ -10,6 +10,7 @@ module MIDIMessage
     attr_reader :data,
                   :name,
                   :status
+                  
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
       @data = [data_byte_1]
@@ -46,6 +47,7 @@ module MIDIMessage
     end
 
     module ClassMethods
+      
       def type_for_status
         0 + (const_get(:TypeId) << 4)
       end
@@ -61,8 +63,8 @@ module MIDIMessage
       alias_method :layout, :schema
 
       def second_data_byte?
-        num = const_get(:NumDataBytes)
-        !num.nil? && num > 1
+        num = const_get(:NumDataBytes) rescue nil
+        num.nil? || num > 1
       end
 
     end
@@ -73,7 +75,7 @@ module MIDIMessage
         { :name => :data, :index => 0 },
         { :name => :data, :index => 1 }
       ]
-      shortcuts = self.class.send(:const_get, :Shortcuts)
+      shortcuts = self.class.send(:const_get, :Shortcuts) rescue []
       shortcuts.each_with_index do |prop,i|
         self.class.send(:attr_reader, prop)
         self.class.send(:define_method, "#{prop}=") do |val|
@@ -96,8 +98,14 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     display_name 'Channel Message'
+    
     def initialize(*a)
       initialize_channel_message(*a)
+    end
+    
+    def to_type
+      status = (@status[0] << 4) + (@status[1])
+      MIDIMessage.parse(status, *@data)
     end
 
   end
