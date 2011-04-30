@@ -23,7 +23,7 @@ MIDI messages, objectified in Ruby
   MIDIMessage.parse(0x90, 0x40, 0x40)
   MIDIMessage::NoteOn["E4"].new(0, 100)
 
-  # those three expressions will all give you
+  # any of those three expressions will give you
 
   # #<MIDIMessage::NoteOn:0x9c1c240
   # @channel=0,
@@ -33,6 +33,22 @@ MIDI messages, objectified in Ruby
   # @status=[9, 0],
   # @velocity=64,
   # @verbose_name="Note On: E4">
+
+  # you can do the same for sysex messages:
+
+  MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
+
+  # gives you
+
+  # #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
+  # @address=[64, 0, 127],
+  # @checksum=[65],
+  # @data=[0],
+  # @node=
+  #  #<MIDIMessage::SystemExclusive::Node:0x9c1e5a4
+  #   @device_id=16,
+  #   @manufacturer=65,
+  #   @model_id=66>>
 
 == More Examples
 
