@@ -2,8 +2,6 @@
 
 {pic}[http://images.treetrouble.net/images/dx7s_small.jpg]
 
-== Summary
-
 MIDI messages, objectified in Ruby
 
 == Features
@@ -48,7 +46,8 @@ You can parse raw data
   
 Or in a more object oriented way
   
-  synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)  
+  synth = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
+    
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
 A Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node).  Sysex messages can either be a Command or Request
@@ -60,6 +59,7 @@ You can use the node to instantiate a message
 Or pass it a prototype message
   
   prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
+    
   synth.new_message_from(prototype) 
   
 All of these will give you objects that look like this:
