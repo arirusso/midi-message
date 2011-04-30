@@ -18,6 +18,7 @@ MIDI messages, objectified in Ruby
 == Usage
 
   require 'midi-message'
+  
   include MIDIMessage
   
 === Basic Messages
@@ -83,7 +84,7 @@ No matter which of these methods you use, you will wind up with a set of objects
 
 See these, more examples and more explanation {here}[https://github.com/arirusso/midi-message/tree/master/examples]
 
-== Documentation
+== API Documentation
 
 * {rdoc}[http://rdoc.info/gems/midi-message]
 
