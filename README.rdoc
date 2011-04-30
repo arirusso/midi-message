@@ -50,11 +50,7 @@ MIDI messages, objectified in Ruby
   #   @manufacturer=65,
   #   @model_id=66>>
 
-== More Examples
-
-* {constants}[http://github.com/arirusso/midi-message/blob/master/examples/constants.rb]
-* {melody}[http://github.com/arirusso/midi-message/blob/master/examples/melody.rb]
-* {parse}[http://github.com/arirusso/midi-message/blob/master/examples/parse.rb]
+see these and {more examples here}[https://github.com/arirusso/midi-message/tree/master/examples]
 
 == Documentation
 
