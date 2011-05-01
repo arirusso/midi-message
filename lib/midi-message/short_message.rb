@@ -37,7 +37,7 @@ module MIDIMessage
 
     # string representation of the object's bytes eg "904040" for NoteOn(0x40, 0x40)
     def to_hex_s
-      to_a.map { |b| b.to_s(16) }.join.upcase
+      to_a.map { |b| s = b.to_s(16); s.length.eql?(1) ? "0#{s}" : s }.join.upcase
     end
     alias_method :to_bytestr, :to_hex_s
     
