@@ -28,6 +28,10 @@ module MIDIMessage
         array.flatten
       end
 
+      def status_byte
+        StatusByte
+      end
+      
       private
 
       def address_to_i
