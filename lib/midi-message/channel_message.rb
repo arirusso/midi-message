@@ -19,18 +19,6 @@ module MIDIMessage
       initialize_short_message(status_nibble_1, status_nibble_2)
     end
 
-    def to_a
-      db2 = self.class::second_data_byte? ? @data[1] : nil
-      [@status[0] + @status[1], @data[0], db2].compact
-    end
-    alias_method :to_byte_array, :to_a
-    alias_method :to_bytes, :to_a
-
-    def to_hex_s
-      to_a.join
-    end
-    alias_method :hex, :to_hex_s
-
     def initialize(*a)
       options = a.pop if a.last.kind_of?(Hash)
       unless options.nil? || options[:const].nil?

@@ -27,11 +27,20 @@ module MIDIMessage
       end
     end
 
-    def to_hex_s
-      to_a.join
+    # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
+    def to_a
+      db2 = self.class::second_data_byte? ? @data[1] : nil
+      [@status[0] + @status[1], @data[0], db2].compact
     end
-    alias_method :hex, :to_hex_s
+    alias_method :to_byte_array, :to_a
+    alias_method :to_bytes, :to_a
 
+    # string representation of the object's bytes eg "904040" for NoteOn(0x40, 0x40)
+    def to_hex_s
+      to_a.map { |b| b.to_s(16) }.join
+    end
+    alias_method :to_bytestr, :to_hex_s
+    
     def self.included(base)
       base.extend(ClassMethods)
     end
