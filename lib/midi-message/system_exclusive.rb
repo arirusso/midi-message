@@ -82,7 +82,8 @@ module MIDIMessage
       TypeByte = 0x12
       
       def initialize(address, data, options = {})
-        @data = data
+        # store as a byte if it's a single byte
+        @data = (data.kind_of?(Array) && data.length.eql?(1)) ? data[0] : data
         initialize_sysex(address, options)
       end
       
@@ -141,7 +142,8 @@ module MIDIMessage
       TypeByte = 0x11
       
       def initialize(address, size, options = {})
-        @size = size
+        # store as a byte if it's a single byte
+        @size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
         initialize_sysex(address, options)
       end
       
