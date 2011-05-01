@@ -10,7 +10,7 @@ module MIDIMessage
   #
   class SystemCommon
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     display_name 'System Common'
 
     attr_reader :status,
@@ -19,7 +19,7 @@ module MIDIMessage
     def initialize(*a)
       options = a.pop if a.last.kind_of?(Hash)
       @data = [a[1], a[2]]
-      initialize_simple_message(0xF, a.first)
+      initialize_short_message(0xF, a[0])
     end
     
   end  
@@ -29,7 +29,7 @@ module MIDIMessage
   #
   class SystemRealtime
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     display_name 'System Realtime'
 
     attr_reader :status
@@ -38,7 +38,7 @@ module MIDIMessage
       options = a.pop if a.last.kind_of?(Hash)
       id = options[:const] unless options.nil?
       id ||= a.first
-      initialize_simple_message(0xF, id)
+      initialize_short_message(0xF, id)
     end
 
     def id

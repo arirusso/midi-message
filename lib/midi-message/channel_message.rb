@@ -16,7 +16,7 @@ module MIDIMessage
       @data = [data_byte_1]
       @data[1] = data_byte_2 if self.class::second_data_byte?
       initialize_shortcuts
-      initialize_simple_message(status_nibble_1, status_nibble_2)
+      initialize_short_message(status_nibble_1, status_nibble_2)
     end
 
     def to_a
@@ -91,7 +91,7 @@ module MIDIMessage
   #
   class ChannelMessage
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     display_name 'Channel Message'
@@ -112,7 +112,7 @@ module MIDIMessage
   #
   class ChannelAftertouch
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :value
@@ -125,7 +125,7 @@ module MIDIMessage
   #
   class ControlChange
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :number, :value
@@ -139,7 +139,7 @@ module MIDIMessage
   #
   class NoteOff
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
@@ -153,7 +153,7 @@ module MIDIMessage
   #
   class NoteOn
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
@@ -167,7 +167,7 @@ module MIDIMessage
   #
   class PitchBend
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :low, :high
@@ -180,7 +180,7 @@ module MIDIMessage
   #
   class PolyphonicAftertouch
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :note, :value
@@ -193,7 +193,7 @@ module MIDIMessage
   #
   class ProgramChange
 
-    include SimpleMessageBehavior
+    include ShortMessageBehavior
     include ChannelMessageBehavior
 
     schema :channel, :program

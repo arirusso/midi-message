@@ -6,13 +6,13 @@
 module MIDIMessage
 
   # common behavior amongst all Message types
-  module SimpleMessageBehavior
+  module ShortMessageBehavior
 
     attr_reader :name,
                 :status,
                 :verbose_name
                   
-    def initialize_simple_message(status_nibble_1, status_nibble_2)
+    def initialize_short_message(status_nibble_1, status_nibble_2)
       @status = [status_nibble_1, status_nibble_2]
       group_name = self.class.const_get(:DisplayName)
       group_name_alias = self.class.const_get(:UseConstants) rescue nil
