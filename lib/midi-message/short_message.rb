@@ -29,15 +29,15 @@ module MIDIMessage
 
     # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
     def to_a
-      db2 = self.class::second_data_byte? ? @data[1] : nil
-      [@status[0] + @status[1], @data[0], db2].compact
+      data = @data.nil? ? [] : [@data[0], @data[1]] 
+      [(@status[0] << 4) + @status[1], *data].compact
     end
     alias_method :to_byte_array, :to_a
     alias_method :to_bytes, :to_a
 
     # string representation of the object's bytes eg "904040" for NoteOn(0x40, 0x40)
     def to_hex_s
-      to_a.map { |b| b.to_s(16) }.join
+      to_a.map { |b| b.to_s(16) }.join.upcase
     end
     alias_method :to_bytestr, :to_hex_s
     

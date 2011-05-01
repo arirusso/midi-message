@@ -8,8 +8,7 @@ module MIDIMessage
   module ChannelMessageBehavior
 
     attr_reader :data,
-                :name,
-                :status
+                :name
                   
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
@@ -38,7 +37,7 @@ module MIDIMessage
       
       def type_for_status
         display_name = get_display_name
-        0 + (Status[display_name] << 4) unless display_name.nil?
+        Status[display_name] unless display_name.nil?
       end
 
       def schema(*args)
@@ -86,7 +85,7 @@ module MIDIMessage
     
     def initialize(*a)
       initialize_channel_message(*a)
-    end
+    end        
     
     def to_type
       status = (@status[0] << 4) + (@status[1])
