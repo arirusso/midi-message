@@ -21,8 +21,8 @@ module MIDIMessage
       end
       
       def parse
-        first_nibble = @data.first >> 4
-        second_nibble = @data.first >> 8
+        first_nibble = ((@data.first & 0xF0) >> 4)
+        second_nibble = (@data.first & 0x0F)
         case first_nibble
           when 0x8 then NoteOff.new(second_nibble, @data[1], @data[2])
           when 0x9 then NoteOn.new(second_nibble, @data[1], @data[2])
