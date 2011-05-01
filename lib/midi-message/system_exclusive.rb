@@ -20,51 +20,52 @@ module MIDIMessage
       
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a
-        array
+        # this may need to be cached when properties are updated
+        # might be worth benchmarking
+        [
+          StartByte,
+          @node.manufacturer,
+          @node.device_id, # (@device_id || @node.device_id) ?? dunno
+          @node.model_id,
+          type_byte,
+          [address].flatten,
+          [value].flatten,
+          checksum,
+          EndByte
+        ]
       end
 
       # a flat array of message bytes
       def to_byte_array
-        array.flatten
+        to_a.flatten
       end
+      alias_method :to_bytes, :to_byte_array
+      
+      # string representation of the object's bytes
+      def to_hex_s
+        to_bytes.map { |b| s = b.to_s(16); s.length.eql?(1) ? "0#{s}" : s }.join.upcase
+      end
+      alias_method :to_bytestr, :to_hex_s
 
-      def status_byte
-        StatusByte
+      def type_byte
+        self.class::TypeByte
+      end
+      
+      # alternate method from
+      # http://www.2writers.com/eddie/TutSysEx.htm
+      def checksum
+        sum = (address + [value].flatten).inject { |a, b| a + b } 
+        (128 - sum.divmod(128)[1])
       end
       
       private
-
-      def address_to_i
-        address.inject { |a,b| a + b }
-      end
-
-      def value_to_i
-        value.kind_of?(Array) ? value.inject { |a,b| a + b } : value
-      end
 
       def initialize_sysex(address, options = {})
         @node = options[:node]
         @checksum = options[:checksum]
         @address = address
       end
-
-      def array
-        # this may need to be cached when properties are updated
-        # might be worth benchmarking
-        @checksum = (128 - (address_to_i + value_to_i).divmod(128)[1])
-        [
-          StartByte,
-          @node.manufacturer,
-          @node.device_id, # (@device_id || @node.device_id) ?? dunno
-          @node.model_id,
-          status_byte,
-          [address].flatten,
-          [value].flatten,
-          @checksum,
-          EndByte
-        ]
-      end
-
+      
     end
 
     # A SysEx command message
@@ -78,7 +79,7 @@ module MIDIMessage
       alias_method :value, :data
       #alias_method :value=, :data=
 
-      StatusByte = 0x12
+      TypeByte = 0x12
       
       def initialize(address, data, options = {})
         @data = data
@@ -137,11 +138,11 @@ module MIDIMessage
       alias_method :value, :size
       #alias_method :value=, :size=
 
-      StatusByte = 0x11
+      TypeByte = 0x11
       
       def initialize(address, size, options = {})
         @size = size
-        initialize_sysex(address, options = {})
+        initialize_sysex(address, options)
       end
       
     end
