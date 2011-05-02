@@ -50,7 +50,11 @@ Those expressions all evaluate to the same object
 
 You can parse raw data
 
-  MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7) # you could also use SystemExclusive.new here
+  MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
+  
+  # or
+  
+  SystemExclusive.new(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
 Or in a more object oriented way
   
@@ -70,7 +74,7 @@ Or pass it a prototype message object
     
   synth.new_message_from(prototype)  
   
-No matter which of these methods you use, you will wind up with a set of objects like this
+No matter which of these methods you use, you will wind up with a pair of objects like this
 
    #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
    @address=[64, 0, 127],
@@ -82,7 +86,7 @@ No matter which of these methods you use, you will wind up with a set of objects
      @manufacturer=65,
      @model_id=66>>
 
-The {examples}[http://github.com/arirusso/midi-message/tree/master/examples] have a more detailed explanation of all of this stuff
+These examples and more explanation can be found {here}[http://github.com/arirusso/midi-message/tree/master/examples]  
 
 == API Documentation
 
