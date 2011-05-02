@@ -23,7 +23,7 @@ MIDI messages, objectified in Ruby
   
 === Basic Messages
 
-There are a few ways to create a new MIDI message.  Here are examples of each going from low to high-level
+There are a few ways to create a new MIDI message.  Here are examples going from low to high-level
     
   MIDIMessage.parse(0x90, 0x40, 0x40)
   
@@ -46,7 +46,7 @@ Those expressions all evaluate to the same object
    @velocity=64,
    @verbose_name="Note On: E4">
 
-=== SysEx Messages (read more {here}[http://github.com/arirusso/midi-message/blob/master/examples/sysex.rb])
+=== SysEx Messages
 
 You can parse raw data
 
@@ -58,7 +58,7 @@ Or in a more object oriented way
     
   SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => synth)
   
-A Node represents a device that you're sending a message to (eg. your {Yamaha DX7}[bit.ly/iH4TzL] is a Node).  Sysex messages can either be a Command or Request
+A Node represents a device that you're sending a message to (eg. your Yamaha DX7 is a Node).  Sysex messages can either be a Command or Request
   
 You can use the Node to instantiate a message
   
@@ -82,9 +82,7 @@ No matter which of these methods you use, you will wind up with a set of objects
      @manufacturer=65,
      @model_id=66>>
 
-See these, more examples and more explanation {here}[http://github.com/arirusso/midi-message/tree/master/examples]
-
-Have a look at {unimidi}[http://github.com/arirusso/unimidi] (which I also wrote) if you want to send and receive these messages with your synths/sequencers/etc.  I'm working on another library to streamline the two together
+The {examples}[http://github.com/arirusso/midi-message/tree/master/examples] have a more detailed explanation of all of this stuff
 
 == API Documentation
 
