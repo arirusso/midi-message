@@ -23,7 +23,7 @@ module MIDIMessage
         # this may need to be cached when properties are updated
         # might be worth benchmarking
         [
-          StartByte,
+          self.class::StartByte,
           @node.manufacturer,
           @node.device_id, # (@device_id || @node.device_id) ?? dunno
           @node.model_id,
@@ -31,7 +31,7 @@ module MIDIMessage
           [address].flatten,
           [value].flatten,
           checksum,
-          EndByte
+          self.class::EndByte
         ]
       end
 
