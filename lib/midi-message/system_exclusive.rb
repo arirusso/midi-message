@@ -36,10 +36,12 @@ module MIDIMessage
       end
 
       # a flat array of message bytes
-      def to_byte_array
+      def to_numeric_byte_array
         to_a.flatten
       end
-      alias_method :to_bytes, :to_byte_array
+      alias_method :to_numeric_bytes, :to_numeric_byte_array
+      alias_method :to_byte_array, :to_numeric_byte_array
+      alias_method :to_bytes, :to_numericbyte_array
       
       # string representation of the object's bytes
       def to_hex_s
