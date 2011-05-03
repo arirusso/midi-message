@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Walk through of different ways to instantiate basic MIDI Messages
+# Walk through of different ways to instantiate short (non-sysex) MIDI Messages
 #
 
 dir = File.dirname(File.expand_path(__FILE__))

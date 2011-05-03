@@ -24,7 +24,7 @@ module MIDIMessage
         # might be worth benchmarking
         [
           self.class::StartByte,
-          @node.manufacturer,
+          @node.manufacturer_id,
           @node.device_id, # (@device_id || @node.device_id) ?? dunno
           @node.model_id,
           type_byte,
@@ -41,7 +41,7 @@ module MIDIMessage
       end
       alias_method :to_numeric_bytes, :to_numeric_byte_array
       alias_method :to_byte_array, :to_numeric_byte_array
-      alias_method :to_bytes, :to_numericbyte_array
+      alias_method :to_bytes, :to_numeric_byte_array
       
       # string representation of the object's bytes
       def to_hex_s
@@ -90,6 +90,27 @@ module MIDIMessage
       end
       
     end
+    
+    # A SysEx request message
+    # A request message is identified by having a status byte equal to 0x11
+    #
+    class Request
+
+      include Base
+
+      attr_reader :size
+      alias_method :value, :size
+      #alias_method :value=, :size=
+
+      TypeByte = 0x11
+      
+      def initialize(address, size, options = {})
+        # store as a byte if it's a single byte
+        @size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
+        initialize_sysex(address, options)
+      end
+      
+    end
 
     #
     # The SystemExclusive::Node represents a destination for a message.  For example a hardware 
@@ -98,12 +119,12 @@ module MIDIMessage
     class Node
 
       attr_accessor :device_id
-      attr_reader :manufacturer, :model_id
+      attr_reader :manufacturer_id, :model_id
       
-      def initialize(manufacturer, model_id, options = {})
+      def initialize(manufacturer_id, model_id, options = {})
         @device_id = options[:device_id]
         @model_id = model_id
-        @manufacturer = manufacturer
+        @manufacturer_id = manufacturer_id
       end
 
       # this message takes a prototype message, copies it, and returns the copy with its node set
@@ -129,28 +150,7 @@ module MIDIMessage
       end
 
     end
-
-    # A SysEx request message
-    # A request message is identified by having a status byte equal to 0x11
-    #
-    class Request
-
-      include Base
-
-      attr_reader :size
-      alias_method :value, :size
-      #alias_method :value=, :size=
-
-      TypeByte = 0x11
-      
-      def initialize(address, size, options = {})
-        # store as a byte if it's a single byte
-        @size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
-        initialize_sysex(address, options)
-      end
-      
-    end
-
+    
     # convert raw MIDI data to SysEx message objects
     def self.new(*bytes)
 
