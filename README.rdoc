@@ -6,9 +6,8 @@ MIDI messages, objectified in Ruby
 
 == Features
 
-* All message types
-* API flexibility to accommodate many uses
-* Simplified approach to System Exclusive data and devices
+* Flexible API to accommodate any kind of MIDI source
+* Simple OO approach to System Exclusive data and devices
 * YAML dictionary of MIDI constants
 	
 == Install
@@ -31,7 +30,7 @@ There are a few ways to create a new MIDI message.  Here are examples going from
   
   ChannelMessage.new(MIDIMessage::Status["Note On"], 0x0, 0x40, 0x40).to_type
   
-  NoteOn.new(0, 64, 64) # or NoteOn.new(0x0, 0x64, 0x64)
+  NoteOn.new(0, 64, 64)
   
   NoteOn["E4"].new(0, 100)
 
