@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 #
-# (c)2011 Ari Russo and licensed under the Apache 2.0 License
-#
 module MIDIMessage
 
   # common behavior amongst Channel Message types
@@ -106,6 +104,7 @@ module MIDIMessage
     display_name 'Channel Aftertouch'
 
   end
+  ChannelPressure = ChannelAftertouch
 
   #
   # MIDI Control Change message
@@ -115,11 +114,12 @@ module MIDIMessage
     include ShortMessageBehavior
     include ChannelMessageBehavior
 
-    schema :channel, :number, :value
+    schema :channel, :index, :value
     display_name 'Control Change'
-    use_constants 'Control Change', :for => 'Number'
-
-  end
+    use_constants 'Control Change', :for => 'Index'
+   
+  end  
+  Controller = ControlChange #shortcut
 
   #
   # MIDI Note-Off message
@@ -172,8 +172,11 @@ module MIDIMessage
 
     schema :channel, :note, :value
     display_name 'Polyphonic Aftertouch'
+    use_constants 'Note', :for => :note
 
   end
+  PolyAftertouch = PolyphonicAftertouch
+  PolyPressure = PolyphonicAftertouch
 
   #
   # MIDI Program Change message
@@ -187,5 +190,10 @@ module MIDIMessage
     display_name 'Program Change'
 
   end
+  
+  def with_context(options = {}, &block)
+    block.call(Context.new(options))
+  end
+  alias_method :with, :with_context
 
 end

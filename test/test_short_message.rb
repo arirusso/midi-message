@@ -81,7 +81,7 @@ class ShortMessageTest < Test::Unit::TestCase
     assert_equal("D350", msg.to_bytestr)  
   end  
     
-  def test_channel_aftertouch
+  def test_pitch_bend
     msg = MIDIMessage::PitchBend.new(0, 0x50, 0xA0)
     assert_equal(0, msg.channel)
     assert_equal(0x50, msg.low)
