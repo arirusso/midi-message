@@ -83,7 +83,11 @@ The parse method will take any valid message data and return the object represen
 
   MIDIMessage.parse(0x90, 0x40, 0x40)
   
+    #<MIDIMessage::NoteOn:0x9c1c240 ..>
+  
   MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
+  
+    #<MIDIMessage::SystemExclusive::Command:0x9c1e57c ..>
   
 For more advanced MIDI parsing, see {nibbler}[http://github.com/arirusso/nibbler]  
 
