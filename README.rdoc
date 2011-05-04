@@ -79,7 +79,7 @@ No matter which of these methods you use, you will wind up with a pair of object
      
 === Parsing
 
-The parse method will take any valid message data and return the corresponding object
+The parse method will take any valid message data and return the object representation
 
   MIDIMessage.parse(0x90, 0x40, 0x40)
   
