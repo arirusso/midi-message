@@ -89,7 +89,7 @@ The parse method will take any valid message data and return the object represen
   
     #<MIDIMessage::SystemExclusive::Command:0x9c1e57c ..>
   
-For more advanced MIDI parsing, see {nibbler}[http://github.com/arirusso/nibbler]  
+If you are interested in more advanced MIDI parsing, see {nibbler}[http://github.com/arirusso/nibbler] which works with this library  
 
 == API Documentation
 
