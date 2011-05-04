@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 #
-# (c)2011 Ari Russo and licensed under the Apache 2.0 License
-# 
 
 # Better way to do this? I'm not sure how to reliably locate a YAML file in a gem vs in a git clone
 # Using require to load this is as a ruby file will do that
