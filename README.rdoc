@@ -6,7 +6,7 @@ MIDI messages, objectified in Ruby
 
 == Features
 
-* Flexible API to accommodate any kind of MIDI source
+* Flexible API to accommodate various sources of MIDI data
 * Simple OO approach to System Exclusive data and devices
 * YAML dictionary of MIDI constants
 	
@@ -22,17 +22,13 @@ MIDI messages, objectified in Ruby
   
 === Basic Messages
 
-There are a few ways to create a new MIDI message.  Here are examples going from low to high-level
+There are a few ways to create a new MIDI message.  Here are some examples
     
-  MIDIMessage.parse(0x90, 0x40, 0x40)
-  
-  ChannelMessage.new(0x9, 0x0, 0x40, 0x40).to_type
-  
-  ChannelMessage.new(MIDIMessage::Status["Note On"], 0x0, 0x40, 0x40).to_type
-  
   NoteOn.new(0, 64, 64)
   
   NoteOn["E4"].new(0, 100)
+  
+  with(:channel => 0, :velocity => 100) { |context| context.note_on("E4") }
 
 Those expressions all evaluate to the same object
 
@@ -48,10 +44,6 @@ Those expressions all evaluate to the same object
 === SysEx Messages
 
 You can parse raw data
-
-  MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
-  
-  # or
   
   SystemExclusive.new(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
@@ -84,8 +76,16 @@ No matter which of these methods you use, you will wind up with a pair of object
      @device_id=16,
      @manufacturer=65,
      @model_id=66>>
+     
+=== Parsing
 
-These examples and more explanation can be found {here}[http://github.com/arirusso/midi-message/tree/master/examples]  
+You can parse raw data
+
+  MIDIMessage.parse(0x90, 0x40, 0x40)
+  
+  MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
+  
+For more advanced MIDI parsing, see {nibbler}[http://github.com/arirusso/nibbler]  
 
 == API Documentation
 
