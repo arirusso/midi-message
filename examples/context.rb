@@ -13,15 +13,17 @@ include MIDIMessage
 
 with(:channel => 0, :velocity => 100) do |context|
   
-  pp context.note_on("E4")
-  pp context.note_off("E4")
+  context.note_on("E4")
+  context.note_off("E4")
   
-  pp context.note_on("C4")
-  pp context.note_off("C4")
+  context.note_on("C4")
+  context.note_off("C4")
   
-  pp context.control_change("Portamento", 64)
+  context.control_change("Portamento", 64)
     
-  pp context.note_on("E4")
-  pp context.note_off("E4")  
+  context.note_on("E4")
+  context.note_off("E4")
+  
+  context.program_change(20)
   
 end
