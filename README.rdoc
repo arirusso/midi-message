@@ -6,7 +6,7 @@ MIDI messages, objectified in Ruby
 
 == Features
 
-* Flexible API to accommodate various sources of MIDI data
+* Flexible API to accommodate various sources and destinations of MIDI data
 * Simple OO approach to System Exclusive data and devices
 * YAML dictionary of MIDI constants
 	
@@ -43,7 +43,7 @@ Those expressions all evaluate to the same object
 
 === SysEx Messages
 
-You can parse raw data
+As with any message, you can begin with raw data
   
   SystemExclusive.new(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
   
@@ -79,7 +79,7 @@ No matter which of these methods you use, you will wind up with a pair of object
      
 === Parsing
 
-You can parse raw data
+The parse method will take any valid message data and return the corresponding object
 
   MIDIMessage.parse(0x90, 0x40, 0x40)
   
