@@ -58,14 +58,8 @@ A Node represents a device that you're sending a message to (eg. your Yamaha DX7
 You can use the Node to instantiate a message
   
   synth.command([0x40, 0x7F, 0x00], 0x00)
-   
-Or pass it a prototype message object
   
-  prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
-    
-  synth.new_message_from(prototype)  
-  
-No matter which of these methods you use, you will wind up with a pair of objects like this
+One way or another, you will wind up with a pair of objects like this
 
    #<MIDIMessage::SystemExclusive::Command:0x9c1e57c
    @address=[64, 0, 127],
@@ -89,7 +83,7 @@ The parse method will take any valid message data and return the object represen
   
     #<MIDIMessage::SystemExclusive::Command:0x9c1e57c ..>
   
-If you are interested in more advanced MIDI parsing, see {nibbler}[http://github.com/arirusso/nibbler] which works with this library  
+Check out {nibbler}[http://github.com/arirusso/nibbler] for more advanced parsing
 
 == API Documentation
 
