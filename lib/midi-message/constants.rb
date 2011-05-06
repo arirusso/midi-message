@@ -79,12 +79,12 @@ Control Mode:
   Poly: 127
 
 System Realtime:
-  Start: 0xFA
-  Clock: 0xF8
-  Continue: 0xFB
-  Stop: 0xFC
-  Reset: 0xFF
-  ActiveSense: 0xFE
+  Start: 0xA
+  Clock: 0x8
+  Continue: 0xB
+  Stop: 0xC
+  ActiveSense: 0xE
+  Reset: 0xF  
 
 Manufacturers:
 
