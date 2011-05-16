@@ -46,6 +46,11 @@ module MIDIMessage
         to_bytes.map { |b| s = b.to_s(16); s.length.eql?(1) ? "0#{s}" : s }.join.upcase
       end
       alias_method :to_bytestr, :to_hex_s
+      
+      def name
+        "System Exclusive"
+      end
+      alias_method :verbose_name, :name
 
       def type_byte
         self.class::TypeByte
