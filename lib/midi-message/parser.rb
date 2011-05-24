@@ -14,7 +14,7 @@ module MIDIMessage
         @data = case a.first
           when Array then a.first
           when Numeric then a 
-          when String then str_to_bytes(a.first)
+          when String then TypeConversion.hex_string_to_numeric_byte_array(a.first)
         end
       end
       
