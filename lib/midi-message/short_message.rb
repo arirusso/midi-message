@@ -62,7 +62,7 @@ module MIDIMessage
       # this returns a builder for the class, preloaded with the selected const
       def [](const_name)
         const_val = get_constant_value(const_name)
-        MessageBuilder.new(self, const_val, const_name) unless const_val.nil?
+        MessageBuilder.new(self, const_val) unless const_val.nil?
       end
       
       def use_display_name(name)
