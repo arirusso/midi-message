@@ -9,7 +9,7 @@ module MIDIMessage
   class SystemCommon
 
     include ShortMessageBehavior
-    display_name 'System Common'
+    use_display_name 'System Common'
     
     attr_reader :data
     
@@ -27,7 +27,7 @@ module MIDIMessage
   class SystemRealtime
 
     include ShortMessageBehavior
-    display_name 'System Realtime'
+    use_display_name 'System Realtime'
     
     def initialize(*a)
       options = a.pop if a.last.kind_of?(Hash)

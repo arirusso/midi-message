@@ -19,8 +19,8 @@ module MIDIMessage
     def initialize(*a)
       options = a.pop if a.last.kind_of?(Hash)
       unless options.nil? || options[:const].nil?
-        key = self.class::ConstProp rescue nil
-        ind = self.class::Shortcuts.index(key) rescue nil
+        key = self.class.map_constants_to
+        ind = self.class.shortcuts.index(key) rescue nil
       ind ||= 0
       a.insert(ind, options[:const])
       end
@@ -33,20 +33,21 @@ module MIDIMessage
 
     module ClassMethods
       
+      attr_reader :shortcuts #, :num_data_bytes
+            
       def type_for_status
-        display_name = get_display_name
+        display_name = @display_name
         Status[display_name] unless display_name.nil?
       end
 
       def schema(*args)
-        self.send(:const_set, :Shortcuts, args)
-        const_set(:NumDataBytes, args.length-1)
+        @shortcuts = args
+        @num_data_bytes = args.length-1
       end
       alias_method :layout, :schema
 
       def second_data_byte?
-        num = const_get(:NumDataBytes) rescue nil
-        num.nil? || num > 1
+        @num_data_bytes.nil? || @num_data_bytes > 1
       end
 
     end
@@ -57,14 +58,16 @@ module MIDIMessage
         { :name => :data, :index => 0 },
         { :name => :data, :index => 1 }
       ]
-      shortcuts = self.class.send(:const_get, :Shortcuts) rescue []
-      shortcuts.each_with_index do |prop,i|
-        self.class.send(:attr_reader, prop)
-        self.class.send(:define_method, "#{prop}=") do |val|
-          send(:instance_variable_set, "@#{prop.to_s}", val)
-          send(props[i][:name])[props[i][:index]] = val
+      shortcuts = self.class.shortcuts
+      unless shortcuts.nil? 
+        shortcuts.each_with_index do |prop,i|
+          self.class.send(:attr_reader, prop)
+          self.class.send(:define_method, "#{prop}=") do |val|
+            send(:instance_variable_set, "@#{prop.to_s}", val)
+            send(props[i][:name])[props[i][:index]] = val
+          end
+          instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
         end
-        instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
       end
     end
 
@@ -79,7 +82,7 @@ module MIDIMessage
     include ShortMessageBehavior
     include ChannelMessageBehavior
 
-    display_name 'Channel Message'
+    use_display_name 'Channel Message'
     
     def initialize(*a)
       initialize_channel_message(*a)
@@ -101,7 +104,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :value
-    display_name 'Channel Aftertouch'
+    use_display_name 'Channel Aftertouch'
 
   end
   ChannelPressure = ChannelAftertouch
@@ -115,7 +118,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :index, :value
-    display_name 'Control Change'
+    use_display_name 'Control Change'
     use_constants 'Control Change', :for => 'Index'
    
   end  
@@ -130,7 +133,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
-    display_name 'Note Off'
+    use_display_name 'Note Off'
     use_constants 'Note', :for => :note
 
   end
@@ -144,7 +147,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :velocity
-    display_name 'Note On'
+    use_display_name 'Note On'
     use_constants 'Note', :for => :note
 
   end
@@ -158,7 +161,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :low, :high
-    display_name 'Pitch Bend'
+    use_display_name 'Pitch Bend'
 
   end
 
@@ -171,7 +174,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :note, :value
-    display_name 'Polyphonic Aftertouch'
+    use_display_name 'Polyphonic Aftertouch'
     use_constants 'Note', :for => :note
 
   end
@@ -187,7 +190,7 @@ module MIDIMessage
     include ChannelMessageBehavior
 
     schema :channel, :program
-    display_name 'Program Change'
+    use_display_name 'Program Change'
 
   end
   

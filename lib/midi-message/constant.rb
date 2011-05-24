@@ -18,7 +18,7 @@ module MIDIMessage
     end
 
     def [](key)
-      @dict[key]
+      @dict[key] #or @dict.find { |k,v| key.downcase.eql?(k.downcase) }.last
     end
 
     def self.[](key)

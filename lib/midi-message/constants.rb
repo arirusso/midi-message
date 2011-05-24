@@ -73,8 +73,8 @@ Control Mode:
   All Controllers Off: 121
   Local Keyboard Toggle: 122
   All Notes Off: 123
-  Omni Mode Off: 124
-  Omni Mode On: 125
+  Omni Off: 124
+  Omni On: 125
   Mono: 126
   Poly: 127
 
