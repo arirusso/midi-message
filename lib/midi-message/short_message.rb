@@ -49,7 +49,7 @@ module MIDIMessage
       
       attr_reader :display_name, :constants, :map_constants_to 
       
-      def const(name)        
+      def get_constant_value(name)        
         key = @constants
         key ||= @display_name
         unless key.nil?
@@ -61,8 +61,8 @@ module MIDIMessage
 
       # this returns a builder for the class, preloaded with the selected const
       def [](const_name)
-        c = const(const_name)
-        MessageBuilder.new(self, c) unless c.nil?
+        const_val = get_constant_value(const_name)
+        MessageBuilder.new(self, const_val, const_name) unless const_val.nil?
       end
       
       def use_display_name(name)
@@ -97,7 +97,7 @@ module MIDIMessage
     
     # this returns the value of the Status constant with the name status_name
     def self.[](status_name)
-      Constant.instance["Status"][status_name.to_s] #|| Constant.instance["Status"].find { |k,v| k.downcase.eql?(status_name.to_s.downcase) }.last
+      Constant.instance["Status"][status_name.to_s]
     end    
     
   end
