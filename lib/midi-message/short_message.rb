@@ -13,10 +13,10 @@ module MIDIMessage
     def initialize_short_message(status_nibble_1, status_nibble_2)
       @status = [status_nibble_1, status_nibble_2]
       group_name = self.class.display_name
-      group_name_alias = self.class.constants #rescue nil
+      group_name_alias = self.class.constants
       prop = self.class.map_constants_to
       val = self.send(prop) unless prop.nil?
-      val ||= @status[1]
+      val ||= @status[1] # default property to use for constants
       group = Constant[group_name] || (group_name_alias.nil? ? nil : Constant[group_name_alias])
       unless group.nil?
         const = group.find { |k,v| k if v.eql?(val) }
@@ -51,8 +51,12 @@ module MIDIMessage
       
       def const(name)        
         key = @constants
-        key ||= @display_name        
-        Constant.instance[key.to_s][name.to_s] unless key.nil?
+        key ||= @display_name
+        unless key.nil?
+          group = Constant.instance[key.to_s]
+          match = group.find { |k,v| k.to_s.downcase.eql?(name.to_s.downcase) }               
+          match.last unless match.nil?
+        end 
       end
 
       # this returns a builder for the class, preloaded with the selected const
@@ -66,7 +70,7 @@ module MIDIMessage
       end
 
       def use_constants(name, options = {}) 
-        @map_constant_to = options[:for]
+        @map_constants_to = options[:for]
         @constants = name
       end
 
