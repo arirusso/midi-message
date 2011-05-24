@@ -17,10 +17,10 @@ module MIDIMessage
     end
 
     def initialize(*a)
-      options = a.pop if a.last.kind_of?(Hash)
-      unless options.nil? || options[:const].nil?
+      options = a.last.kind_of?(Hash) ? a.pop : {} 
+      unless options[:const].nil?
         key = self.class.map_constants_to
-        ind = self.class.shortcuts.index(key) rescue nil
+        ind = self.class.shortcuts.index(key)
       ind ||= 0
       a.insert(ind, options[:const])
       end
@@ -36,8 +36,7 @@ module MIDIMessage
       attr_reader :shortcuts #, :num_data_bytes
             
       def type_for_status
-        display_name = @display_name
-        Status[display_name] unless display_name.nil?
+        @display_name.nil? ? nil : Status[@display_name] 
       end
 
       def schema(*args)
@@ -119,7 +118,7 @@ module MIDIMessage
 
     schema :channel, :index, :value
     use_display_name 'Control Change'
-    use_constants 'Control Change', :for => 'Index'
+    use_constants 'Control Change', :for => :index
    
   end  
   Controller = ControlChange #shortcut
