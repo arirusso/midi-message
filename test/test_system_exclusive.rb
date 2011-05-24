@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'test_helper'
+require 'helper'
 
 class SystemExclusiveMessageTest < Test::Unit::TestCase
 
