@@ -11,8 +11,8 @@ module MIDIMessage
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
       @data = [data_byte_1]
-      @data[1] = data_byte_2 if self.class::second_data_byte?
-      initialize_shortcuts
+      @data[1] = data_byte_2 if self.class.second_data_byte?
+      initialize_properties
       initialize_short_message(status_nibble_1, status_nibble_2)
     end
 
@@ -20,9 +20,9 @@ module MIDIMessage
       options = a.last.kind_of?(Hash) ? a.pop : {} 
       unless options[:const].nil?
         key = self.class.map_constants_to
-        ind = self.class.shortcuts.index(key)
-      ind ||= 0
-      a.insert(ind, options[:const])
+        ind = self.class.properties.index(key)
+        ind ||= 0
+        a.insert(ind, options[:const])
       end
       initialize_channel_message(self.class.type_for_status, *a)
     end
@@ -33,33 +33,32 @@ module MIDIMessage
 
     module ClassMethods
       
-      attr_reader :shortcuts #, :num_data_bytes
+      attr_reader :properties
             
       def type_for_status
         @display_name.nil? ? nil : Status[@display_name] 
       end
 
       def schema(*args)
-        @shortcuts = args
-        @num_data_bytes = args.length-1
+        @properties = args
       end
       alias_method :layout, :schema
 
       def second_data_byte?
-        @num_data_bytes.nil? || @num_data_bytes > 1
+        @properties.nil? || (@properties.length-1) > 1
       end
 
     end
 
-    def initialize_shortcuts
+    def initialize_properties
       props = [
         { :name => :status, :index => 1 },
         { :name => :data, :index => 0 },
         { :name => :data, :index => 1 }
       ]
-      shortcuts = self.class.shortcuts
-      unless shortcuts.nil? 
-        shortcuts.each_with_index do |prop,i|
+      properties = self.class.properties
+      unless properties.nil? 
+        properties.each_with_index do |prop,i|
           self.class.send(:attr_reader, prop)
           self.class.send(:define_method, "#{prop}=") do |val|
             send(:instance_variable_set, "@#{prop.to_s}", val)
