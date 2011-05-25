@@ -71,7 +71,7 @@ One way or another, you will wind up with a pair of objects like this
      @manufacturer=65,
      @model_id=66>>
      
-=== Parsing
+==== Parsing
 
 The parse method will take any valid message data and return the object representation
 
