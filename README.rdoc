@@ -20,7 +20,7 @@ MIDI messages, objectified in Ruby
   
   include MIDIMessage
   
-=== Basic Messages
+==== Basic Messages
 
 There are a few ways to create a new MIDI message.  Here are some examples
     
@@ -41,7 +41,7 @@ Those expressions all evaluate to the same object
    @velocity=64,
    @verbose_name="Note On: E4">
 
-=== SysEx Messages
+==== SysEx Messages
 
 As with any kind of message, you can begin with raw data
   
