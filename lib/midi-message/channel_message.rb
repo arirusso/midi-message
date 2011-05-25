@@ -17,12 +17,13 @@ module MIDIMessage
     end
 
     def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {} 
-      unless options[:const].nil?
+      options = a.last.kind_of?(Hash) ? a.pop : {}
+      @const = options[:const]        
+      unless @const.nil?
         key = self.class.map_constants_to
         ind = self.class.properties.index(key)
         ind ||= 0
-        a.insert(ind, options[:const])
+        a.insert(ind, @const.values.first)               
       end
       initialize_channel_message(self.class.type_for_status, *a)
     end

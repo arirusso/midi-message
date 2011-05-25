@@ -12,19 +12,26 @@ module MIDIMessage
                   
     def initialize_short_message(status_nibble_1, status_nibble_2)
       @status = [status_nibble_1, status_nibble_2]
-      group_name = self.class.display_name
+      initialize_with_const
+    end
+    
+    def initialize_with_const
+      const_group_name = self.class.display_name
       group_name_alias = self.class.constants
       prop = self.class.map_constants_to
       val = self.send(prop) unless prop.nil?
       val ||= @status[1] # default property to use for constants
-      group = Constant[group_name] || (group_name_alias.nil? ? nil : Constant[group_name_alias])
+      group = Constant[const_group_name] || (group_name_alias.nil? ? nil : Constant[group_name_alias])
       unless group.nil?
         const = group.find { |k,v| k if v.eql?(val) }
         unless const.nil?
-          @name = const.first
-          @verbose_name = "#{self.class.display_name}: #{const.first}"
+          # this is a fix for dealing with enharmonic notes
+          @name = @const.keys.first unless @const.nil?
+          @name ||= const.first
+          @verbose_name = "#{self.class.display_name}: #{@name}"
         end
       end
+      
     end
 
     # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
@@ -62,7 +69,7 @@ module MIDIMessage
       # this returns a builder for the class, preloaded with the selected const
       def [](const_name)
         const_val = get_constant_value(const_name)
-        MessageBuilder.new(self, const_val) unless const_val.nil?
+        MessageBuilder.new(self, { const_name => const_val }) unless const_val.nil?
       end
       
       def use_display_name(name)
@@ -80,13 +87,13 @@ module MIDIMessage
 
   class MessageBuilder
 
-    def initialize(klass, const)
+    def initialize(klass, const)      
+      @klass = klass      
       @const = const
-      @klass = klass
     end
 
-    def new(*a)
-      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)
+    def new(*a)    
+      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)         
       @klass.new(*a)
     end
 

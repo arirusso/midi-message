@@ -14,4 +14,15 @@ class ConstantsTest < Test::Unit::TestCase
     assert_equal([0x90, 0x30, 100], msg.to_a)  
   end 
   
+  def test_system_realtime
+    msg = SystemRealtime["Stop"].new
+    assert_equal(SystemRealtime, msg.class)
+    assert_equal("Stop", msg.name)
+    assert_equal([0xFC], msg.to_a)     
+  end  
+  
+  def test_system_common
+     
+  end  
+  
 end
