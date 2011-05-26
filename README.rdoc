@@ -8,7 +8,7 @@ MIDI messages, objectified in Ruby
 
 * Flexible API to accommodate various sources and destinations of MIDI data
 * Simple OO approach to System Exclusive data and devices
-* YAML dictionary of MIDI constants
+* {YAML dictionary of MIDI constants}[https://github.com/arirusso/midi-message/blob/master/lib/midi.yml]
 	
 == Install
 
