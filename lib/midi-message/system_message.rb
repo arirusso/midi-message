@@ -17,7 +17,8 @@ module MIDIMessage
       options = a.last.kind_of?(Hash) ? a.pop : {}
       @const = options[:const]
       @data = [a[1], a[2]]
-      initialize_short_message(0xF, a[0])
+      second_nibble = @const.nil? ? a[0] : @const.value 
+      initialize_short_message(0xF, second_nibble)
     end
     
   end  
@@ -33,7 +34,7 @@ module MIDIMessage
     def initialize(*a)
       options = a.last.kind_of?(Hash) ? a.pop : {} 
       @const = options[:const]
-      id = @const.values.first unless @const.nil?
+      id = @const.value unless @const.nil?
       id ||= a[0]
       initialize_short_message(0xF, id)
     end

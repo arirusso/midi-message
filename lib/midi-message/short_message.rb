@@ -21,13 +21,13 @@ module MIDIMessage
       prop = self.class.map_constants_to
       val = self.send(prop) unless prop.nil?
       val ||= @status[1] # default property to use for constants
-      group = Constant[const_group_name] || (group_name_alias.nil? ? nil : Constant[group_name_alias])
+      group = ConstantGroup[group_name_alias] || ConstantGroup[const_group_name]
       unless group.nil?
-        const = group.find { |k,v| k if v.eql?(val) }
+        const = group.find_by_value(val)
         unless const.nil?
           # this is a fix for dealing with enharmonic notes
-          @name = @const.keys.first unless @const.nil?
-          @name ||= const.first
+          @name = @const.key unless @const.nil?
+          @name ||= const.key
           @verbose_name = "#{self.class.display_name}: #{@name}"
         end
       end
@@ -56,20 +56,18 @@ module MIDIMessage
       
       attr_reader :display_name, :constants, :map_constants_to 
       
-      def get_constant_value(name)        
-        key = @constants
-        key ||= @display_name
+      def get_constant(name)        
+        key = @constants || @display_name
         unless key.nil?
-          group = Constant.instance[key.to_s]
-          match = group.find { |k,v| k.to_s.downcase.eql?(name.to_s.downcase) }               
-          match.last unless match.nil?
+          group = ConstantGroup[key]
+          group.find(name)
         end 
       end
 
       # this returns a builder for the class, preloaded with the selected const
       def [](const_name)
-        const_val = get_constant_value(const_name)
-        MessageBuilder.new(self, { const_name => const_val }) unless const_val.nil?
+        const = get_constant(const_name)
+        MessageBuilder.new(self, const) unless const.nil?
       end
       
       def use_display_name(name)
@@ -104,7 +102,8 @@ module MIDIMessage
     
     # this returns the value of the Status constant with the name status_name
     def self.[](status_name)
-      Constant.instance["Status"][status_name.to_s]
+      const = Constant.find("Status", status_name)
+      const.value unless const.nil?
     end    
     
   end

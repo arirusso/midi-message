@@ -23,7 +23,7 @@ module MIDIMessage
         key = self.class.map_constants_to
         ind = self.class.properties.index(key)
         ind ||= 0
-        a.insert(ind, @const.values.first)               
+        a.insert(ind, @const.value)               
       end
       initialize_channel_message(self.class.type_for_status, *a)
     end
