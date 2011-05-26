@@ -34,8 +34,7 @@ module MIDIMessage
     def initialize(*a)
       options = a.last.kind_of?(Hash) ? a.pop : {} 
       @const = options[:const]
-      id = @const.value unless @const.nil?
-      id ||= a[0]
+      id = @const.nil? ? a[0] : @const.value
       initialize_short_message(0xF, id)
     end
 

@@ -15,25 +15,6 @@ module MIDIMessage
       initialize_with_const
     end
     
-    def initialize_with_const
-      const_group_name = self.class.display_name
-      group_name_alias = self.class.constants
-      prop = self.class.map_constants_to
-      val = self.send(prop) unless prop.nil?
-      val ||= @status[1] # default property to use for constants
-      group = ConstantGroup[group_name_alias] || ConstantGroup[const_group_name]
-      unless group.nil?
-        const = group.find_by_value(val)
-        unless const.nil?
-          # this is a fix for dealing with enharmonic notes
-          @name = @const.key unless @const.nil?
-          @name ||= const.key
-          @verbose_name = "#{self.class.display_name}: #{@name}"
-        end
-      end
-      
-    end
-
     # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
     def to_a
       data = @data.nil? ? [] : [@data[0], @data[1]] 
@@ -48,8 +29,29 @@ module MIDIMessage
     end
     alias_method :to_bytestr, :to_hex_s
     
+    protected
+    
     def self.included(base)
       base.extend(ClassMethods)
+    end
+    
+    private
+    
+    # this will populate message metadata with information gathered from midi.yml
+    def initialize_with_const
+      const_group_name = self.class.display_name
+      group_name_alias = self.class.constants
+      prop = self.class.map_constants_to
+      val = self.send(prop) unless prop.nil?
+      val ||= @status[1] # default property to use for constants
+      group = ConstantGroup[group_name_alias] || ConstantGroup[const_group_name]
+      unless group.nil?
+        const = group.find_by_value(val)
+        unless const.nil?
+          @name = @const.nil? ? const.key : @const.key 
+          @verbose_name = "#{self.class.display_name}: #{@name}"
+        end
+      end      
     end
 
     module ClassMethods

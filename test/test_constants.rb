@@ -30,7 +30,6 @@ class ConstantsTest < Test::Unit::TestCase
     assert_equal([0xB2, 0x01, 0x20], msg.to_a)    
   end
 
-  
   def test_system_realtime
     msg = SystemRealtime["Stop"].new
     assert_equal(SystemRealtime, msg.class)
