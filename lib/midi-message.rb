@@ -10,6 +10,8 @@ module MIDIMessage
  
 end
 
+require 'yaml'
+
 require 'midi-message/short_message'
 require 'midi-message/channel_message'
 require 'midi-message/constant'
