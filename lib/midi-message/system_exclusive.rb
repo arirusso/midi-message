@@ -40,6 +40,7 @@ module MIDIMessage
       alias_method :to_numeric_bytes, :to_numeric_byte_array
       alias_method :to_byte_array, :to_numeric_byte_array
       alias_method :to_bytes, :to_numeric_byte_array
+      alias_method :to_byte_a, :to_numeric_byte_array
       
       # string representation of the object's bytes
       def to_hex_s

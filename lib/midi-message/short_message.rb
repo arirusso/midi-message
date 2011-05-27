@@ -20,6 +20,7 @@ module MIDIMessage
       data = @data.nil? ? [] : [@data[0], @data[1]] 
       [(@status[0] << 4) + @status[1], *data].compact
     end
+    alias_method :to_byte_a, :to_a
     alias_method :to_byte_array, :to_a
     alias_method :to_bytes, :to_a
 
