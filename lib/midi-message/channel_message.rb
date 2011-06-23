@@ -152,6 +152,11 @@ module MIDIMessage
     schema :channel, :note, :velocity
     use_display_name 'Note On'
     use_constants 'Note', :for => :note
+    
+    # returns the NoteOff equivalent of this object
+    def to_note_off
+      NoteOff.new(channel, note, velocity)
+    end
 
   end
 

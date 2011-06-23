@@ -44,7 +44,21 @@ class ShortMessageTest < Test::Unit::TestCase
     assert_equal(0x40, msg.velocity)
     assert_equal([0x90, 0x40, 0x40], msg.to_a)
     assert_equal("904040", msg.to_bytestr)  
+  end
+  
+  def test_note_on_to_note_off
+    msg = NoteOn.new(0, 0x40, 0x40)
+    assert_equal(0, msg.channel)
+    assert_equal(0x40, msg.note)
+    assert_equal(0x40, msg.velocity)
+    assert_equal([0x90, 0x40, 0x40], msg.to_a)
+    off = msg.to_note_off
+    assert_equal(0, off.channel)
+    assert_equal(0x40, off.note)
+    assert_equal(0x40, off.velocity)
+    assert_equal([0x80, 0x40, 0x40], off.to_a)    
   end  
+  
   
   def test_polyphonic_aftertouch
     msg = PolyphonicAftertouch.new(1, 0x40, 0x40)
