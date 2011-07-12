@@ -188,6 +188,7 @@ module MIDIMessage
   end
   PolyAftertouch = PolyphonicAftertouch
   PolyPressure = PolyphonicAftertouch
+  PolyphonicPressure = PolyphonicAftertouch
 
   #
   # MIDI Program Change message
