@@ -43,7 +43,6 @@ class ParserTest < Test::Unit::TestCase
     msg = MIDIMessage.parse(0xC3, 0x40)
     assert_equal(ProgramChange, msg.class)
     assert_equal("C340", msg.to_bytestr)
-  
   end
   
   def test_channel_aftertouch
