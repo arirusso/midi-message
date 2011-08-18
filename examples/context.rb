@@ -11,19 +11,19 @@ require 'pp'
 
 include MIDIMessage
 
-with(:channel => 0, :velocity => 100) do |context|
+with(:channel => 0, :velocity => 100) do
   
-  context.note_on("E4")
-  context.note_off("E4")
+  note_on("E4")
+  note_off("E4")
   
-  context.note_on("C4")
-  context.note_off("C4")
+  note_on("C4")
+  note_off("C4")
   
-  context.control_change("Portamento", 64)
+  control_change("Portamento", 64)
     
-  context.note_on("E4")
-  context.note_off("E4")
+  note_on("E4")
+  pp note_off("E4")
   
-  context.program_change(20)
+  pp program_change(20)
   
 end

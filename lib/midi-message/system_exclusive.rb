@@ -125,11 +125,10 @@ module MIDIMessage
       attr_accessor :device_id
       attr_reader :manufacturer_id, :model_id
       
-      def initialize(manufacturer_id, model_id, options = {}, &block)
+      def initialize(manufacturer_id, model_id, options = {})
         @device_id = options[:device_id]
         @model_id = model_id
         @manufacturer_id = manufacturer_id
-        block.call(self) unless block.nil?
       end
 
       # this message takes a prototype message, copies it, and returns the copy with its node set

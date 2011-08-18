@@ -95,5 +95,10 @@ module MIDIMessage
     alias_method :PitchBend, :pitch_bend
     
   end
+  
+  def with_context(options = {}, &block)
+    Context.new(options, &block).instance_eval(&block)
+  end
+  alias_method :with, :with_context
 
 end

@@ -203,9 +203,4 @@ module MIDIMessage
 
   end
   
-  def with_context(options = {}, &block)
-    block.call(Context.new(options))
-  end
-  alias_method :with, :with_context
-
 end
