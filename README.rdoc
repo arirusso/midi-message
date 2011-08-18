@@ -28,7 +28,7 @@ There are a few ways to create a new MIDI message.  Here are some examples
   
   NoteOn["E4"].new(0, 100)
   
-  with(:channel => 0, :velocity => 100) { |context| context.note_on("E4") }
+  with(:channel => 0, :velocity => 100) { note_on("E4") }
 
 Those expressions all evaluate to the same object
 
