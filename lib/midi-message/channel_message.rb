@@ -33,6 +33,8 @@ module MIDIMessage
           self.class.send(:define_method, "#{prop}=") do |val|
             send(:instance_variable_set, "@#{prop.to_s}", val)
             send(props[i][:name])[props[i][:index]] = val
+            update
+            return self
           end
           instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
         end

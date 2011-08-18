@@ -12,7 +12,7 @@ module MIDIMessage
                   
     def initialize_short_message(status_nibble_1, status_nibble_2)
       @status = [status_nibble_1, status_nibble_2]
-      initialize_with_const
+      populate_using_const
     end
     
     # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
@@ -36,10 +36,14 @@ module MIDIMessage
       base.extend(ClassMethods)
     end
     
+    def update
+      populate_using_const
+    end
+    
     private
     
     # this will populate message metadata with information gathered from midi.yml
-    def initialize_with_const
+    def populate_using_const
       const_group_name = self.class.display_name
       group_name_alias = self.class.constants
       prop = self.class.map_constants_to
