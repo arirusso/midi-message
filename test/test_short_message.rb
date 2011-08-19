@@ -6,15 +6,6 @@ class ShortMessageTest < Test::Unit::TestCase
 
   include MIDIMessage
   include TestHelper
-  
-  def test_mutability
-    msg = NoteOn["E4"].new(0, 100)
-    assert_equal(0x40, msg.note)
-    assert_equal("E4", msg.name)
-    msg.note += 5
-    assert_equal(0x45, msg.note)
-    assert_equal("A4", msg.name)     
-  end
 
   def test_channel_message
     msg = ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
