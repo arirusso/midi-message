@@ -4,7 +4,7 @@
 module MIDIMessage
 
   # common behavior amongst all Message types
-  module ShortMessageBehavior
+  module ShortMessage
 
     attr_reader :name,
                 :status,
@@ -53,8 +53,9 @@ module MIDIMessage
       unless group.nil?
         const = group.find_by_value(val)
         unless const.nil?
-          @name = @const.nil? ? const.key : @const.key 
-          @verbose_name = "#{self.class.display_name}: #{@name}"
+          @const = const
+          @name = @const.nil? ? const.key : @const.key
+          @verbose_name = "#{self.class.display_name}: #{@name}"          
         end
       end      
     end

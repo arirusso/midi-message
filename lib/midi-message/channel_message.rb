@@ -3,10 +3,14 @@
 module MIDIMessage
 
   # common behavior amongst Channel Message types
-  module ChannelMessageBehavior
+  module ChannelMessage
 
     attr_reader :data,
                 :name
+                
+    def self.new(*a, &block)
+      RawChannelMessage.new(*a, &block)
+    end
                   
     def initialize(*a)
       options = a.last.kind_of?(Hash) ? a.pop : {}
@@ -82,10 +86,10 @@ module MIDIMessage
   #
   # example = ChannelMessage.new(0x9, 0x0, 0x40, 0x57) # creates a raw note-on message
   #
-  class ChannelMessage
+  class RawChannelMessage
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     use_display_name 'Channel Message'
     
@@ -105,8 +109,8 @@ module MIDIMessage
   #
   class ChannelAftertouch
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :value
     use_display_name 'Channel Aftertouch'
@@ -119,8 +123,8 @@ module MIDIMessage
   #
   class ControlChange
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :index, :value
     use_display_name 'Control Change'
@@ -130,12 +134,35 @@ module MIDIMessage
   Controller = ControlChange #shortcut
 
   #
+  # Shared Note Message Behavior
+  #
+  module NoteMessage
+
+    def octave
+      (note / 12) -1
+    end
+    alias_method :oct, :octave
+    
+    def octave=(val)
+      self.note = ((val + 1) * 12) + abs_note
+      self
+    end
+    alias_method :oct=, :octave=
+    
+    def abs_note
+      note - ((note / 12) * 12)
+    end
+    
+  end
+
+  #
   # MIDI Note-Off message
   #
   class NoteOff
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include NoteMessage
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :note, :velocity
     use_display_name 'Note Off'
@@ -147,9 +174,10 @@ module MIDIMessage
   # MIDI Note-On message
   #
   class NoteOn
-
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    
+    include NoteMessage
+    include ShortMessage
+    include ChannelMessage    
 
     schema :channel, :note, :velocity
     use_display_name 'Note On'
@@ -167,8 +195,8 @@ module MIDIMessage
   #
   class PitchBend
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :low, :high
     use_display_name 'Pitch Bend'
@@ -180,8 +208,8 @@ module MIDIMessage
   #
   class PolyphonicAftertouch
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :note, :value
     use_display_name 'Polyphonic Aftertouch'
@@ -197,8 +225,8 @@ module MIDIMessage
   #
   class ProgramChange
 
-    include ShortMessageBehavior
-    include ChannelMessageBehavior
+    include ShortMessage
+    include ChannelMessage
 
     schema :channel, :program
     use_display_name 'Program Change'

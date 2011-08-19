@@ -8,7 +8,7 @@ module MIDIMessage
   #
   class SystemCommon
 
-    include ShortMessageBehavior
+    include ShortMessage
     use_display_name 'System Common'
     
     attr_reader :data
@@ -28,7 +28,7 @@ module MIDIMessage
   #
   class SystemRealtime
 
-    include ShortMessageBehavior
+    include ShortMessage
     use_display_name 'System Realtime'
     
     def initialize(*a)
