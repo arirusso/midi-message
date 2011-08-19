@@ -153,6 +153,10 @@ module MIDIMessage
       note - ((note / 12) * 12)
     end
     
+    def note_name
+      name.gsub(/[1-9]*/, "")
+    end
+    
   end
 
   #

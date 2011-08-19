@@ -11,6 +11,7 @@ class ConstantsTest < Test::Unit::TestCase
     msg = NoteOn["c3"].new(0, 100)
     assert_equal(NoteOn, msg.class)
     assert_equal("C3", msg.name)
+    assert_equal("C", msg.note_name)
     assert_equal([0x90, 0x30, 100], msg.to_a)  
   end 
   
