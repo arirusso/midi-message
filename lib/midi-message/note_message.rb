@@ -27,7 +27,7 @@ module MIDIMessage
     
     # the name of the note without its octave e.g. F#
     def note_name
-      name.gsub(/[1-9]*/, "")
+      name.split(/-?\d\z/).first
     end
         
   end
