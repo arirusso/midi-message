@@ -1,6 +1,6 @@
 .idea
-.idea/*
 .idea/*/**
-.project
 .loadpath
-midi-message.gemspec
+.project
+*.gem
+*.gemspec

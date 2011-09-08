@@ -68,7 +68,7 @@ One way or another, you will wind up with a pair of objects like this
    @node=
     #<MIDIMessage::SystemExclusive::Node:0x9c1e5a4
      @device_id=16,
-     @manufacturer=65,
+     @manufacturer_id=65,
      @model_id=66>>
      
 ==== Parsing
@@ -87,7 +87,7 @@ Check out {nibbler}[http://github.com/arirusso/nibbler] for more advanced parsin
 
 == API Documentation
 
-* {rdoc}[http://rdoc.info/gems/midi-message]
+* {rdoc}[http://rubydoc.info/github/arirusso/midi-message]
 
 == Author
 
