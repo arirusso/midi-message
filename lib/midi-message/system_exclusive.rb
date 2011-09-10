@@ -140,9 +140,9 @@ module MIDIMessage
       attr_accessor :device_id
       attr_reader :manufacturer_id, :model_id
       
-      def initialize(manufacturer, model_id, options = {})
+      def initialize(manufacturer, options = {})
         @device_id = options[:device_id]
-        @model_id = model_id
+        @model_id = options[:model_id]
         @manufacturer_id = manufacturer.kind_of?(Numeric) ? manufacturer : Constant.find("Manufacturer", manufacturer).value
       end
 
@@ -193,7 +193,7 @@ module MIDIMessage
       checksum = bytes.slice!((bytes.length - 1), 1)
       value = bytes
 
-      node = Node.new(manufacturer_id, model_id, :device_id => device_id)
+      node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
       msg_class.new(address, value, :checksum => checksum, :node => node)
     end
 

@@ -19,7 +19,7 @@ pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41,
 # a Node represents a device that you're sending a message to 
 # (eg. your Yamaha DX7 is a Node).
 
-node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
+node = SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_id => 0x10)
 
 # The following will create a command object for address "407F00" with value "00"
 # associated with our node
