@@ -101,17 +101,32 @@ module MIDIMessage
     class Request
 
       include Base
-
+      
       attr_reader :size
+
       alias_method :value, :size
-      #alias_method :value=, :size=
 
       TypeByte = 0x11
       
       def initialize(address, size, options = {})
-        # store as a byte if it's a single byte
-        @size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
+        self.size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
         initialize_sysex(address, options)
+      end
+      
+      def size=(val)
+        # accepts a Numeric or Array but
+        # must always store value as an array of three bytes
+        size = []
+        if val.kind_of?(Array) && val.size <= 3
+          size = val
+        elsif val.kind_of?(Numeric) && (((val + 1) / 247) <= 2)
+          size = []
+          div, mod = *val.divmod(247)
+          size << mod unless mod.zero?
+          div.times { size << 247 }
+        end
+        (3 - size.size).times { size.unshift 0 }
+        @size = size
       end
       
     end

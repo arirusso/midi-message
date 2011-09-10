@@ -31,20 +31,36 @@ class SystemExclusiveMessageTest < Test::Unit::TestCase
     assert_equal(0x10, msg.data)      
   end  
   
-  def test_request
+  def test_request_byte_size
     node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
     msg = SystemExclusive::Request.new([0x40, 0x7F, 0x00], 0x10, :node => node)
     assert_equal(node, msg.node)
     assert_equal([0x40, 0x7F, 0x00], msg.address)
-    assert_equal(0x10, msg.size)
-  end  
+    assert_equal([0x0, 0x0, 0x10], msg.size)
+  end 
   
+  def test_request_array_size
+    node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
+    msg = SystemExclusive::Request.new([0x40, 0x7F, 0x00], [0x0, 0x9, 0x10], :node => node)
+    assert_equal(node, msg.node)
+    assert_equal([0x40, 0x7F, 0x00], msg.address)
+    assert_equal([0x0, 0x9, 0x10], msg.size)    
+  end
+
+  def test_request_numeric_size
+    node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
+    msg = SystemExclusive::Request.new([0x40, 0x7F, 0x00], 300, :node => node)
+    assert_equal(node, msg.node)
+    assert_equal([0x40, 0x7F, 0x00], msg.address)
+    assert_equal([0x0, 0x35, 0xF7], msg.size)    
+  end
+    
   def test_node_oriented
     node = SystemExclusive::Node.new(0x41, 0x42, :device_id => 0x10)
     msg = node.request([0x40, 0x7F, 0x00], 0x10)
     assert_equal(node, msg.node)
     assert_equal([0x40, 0x7F, 0x00], msg.address)
-    assert_equal(0x10, msg.size)    
+    assert_equal([0x0, 0x0, 0x10], msg.size)    
   end
   
   def test_prototype
