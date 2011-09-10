@@ -84,7 +84,7 @@ System Realtime:
   ActiveSense: 0xE
   Reset: 0xF  
 
-Manufacturers:
+Manufacturer:
 
   SequentialCircuits: 1
   BigBriar: 2
