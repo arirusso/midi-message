@@ -17,25 +17,24 @@ module MIDIMessage
       EndByte = 0xF7
       
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
-      def to_a
+      def to_a(options = {})
+        omit = options[:omit] || [] 
         # this may need to be cached when properties are updated
         # might be worth benchmarking
         [
           self.class::StartByte,
-          @node.manufacturer_id,
-          @node.device_id, # (@device_id || @node.device_id) ?? dunno
-          @node.model_id,
-          type_byte,
-          [address].flatten,
-          [value].flatten,
-          checksum,
+          (@node.to_a(options) unless @node.nil? || omit.include?(:node)),
+          (type_byte unless omit.include?(:type)),
+          [address].compact.flatten,
+          [value].compact.flatten,
+          (checksum unless omit.include?(:checksum)),
           self.class::EndByte
-        ]
+        ].compact
       end
 
       # a flat array of message bytes
-      def to_numeric_byte_array
-        to_a.flatten
+      def to_numeric_byte_array(options = {})
+        to_a(options).flatten
       end
       alias_method :to_numeric_bytes, :to_numeric_byte_array
       alias_method :to_byte_array, :to_numeric_byte_array
@@ -81,7 +80,7 @@ module MIDIMessage
 
       include Base
 
-      attr_reader :data
+      attr_accessor :data
       alias_method :value, :data
       #alias_method :value=, :data=
 
@@ -130,6 +129,33 @@ module MIDIMessage
       end
       
     end
+    
+    # A SysEx message with no implied type
+    #
+    class Message
+
+      include Base
+      
+      attr_accessor :data
+      
+      def initialize(data, options = {})
+        @data = (data.kind_of?(Array) && data.length.eql?(1)) ? data[0] : data
+        initialize_sysex(nil, options)
+      end
+      
+      # an array of message parts.  multiple byte parts will be represented as an array of bytes
+      def to_a(options = {})
+        omit = options[:omit] || [] 
+        # this may need to be cached when properties are updated
+        # might be worth benchmarking
+        [
+          self.class::StartByte,
+          @data,
+          self.class::EndByte
+        ].compact
+      end
+      
+    end
 
     #
     # The SystemExclusive::Node represents a destination for a message.  For example a hardware 
@@ -144,6 +170,15 @@ module MIDIMessage
         @device_id = options[:device_id]
         @model_id = options[:model_id]
         @manufacturer_id = manufacturer.kind_of?(Numeric) ? manufacturer : Constant.find("Manufacturer", manufacturer).value
+      end
+      
+      def to_a(options = {})
+        omit = options[:omit] || [] 
+        [
+          (@manufacturer_id unless omit.include?(:manufacturer) || omit.include?(:manufacturer_id)),
+          (@device_id unless omit.include?(:device) || omit.include?(:device_id)),
+          (@model_id unless omit.include?(:model) || omit.include?(:model_id))
+        ].compact
       end
 
       # this message takes a prototype message, copies it, and returns the copy with its node set
@@ -177,17 +212,23 @@ module MIDIMessage
       end_status = bytes.pop
 
       return nil unless start_status.eql?(0xF0) && end_status.eql?(0xF7)
-
+      
+      type_byte = bytes[3]
+      
+      # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
+      if type_byte == 0x11
+        msg_class = Request
+      elsif type_byte == 0x12
+        msg_class = Command
+      else 
+        return Message.new(bytes)
+      end
+      
       fixed_length_message_part = bytes.slice!(0,7)
 
       manufacturer_id = fixed_length_message_part[0]
       device_id = fixed_length_message_part[1]
       model_id = fixed_length_message_part[2]
-
-      msg_class = case fixed_length_message_part[3]
-        when 0x11 then Request
-        when 0x12 then Command
-      end
 
       address = fixed_length_message_part.slice(4,3)
       checksum = bytes.slice!((bytes.length - 1), 1)
