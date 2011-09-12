@@ -150,6 +150,7 @@ module MIDIMessage
         # might be worth benchmarking
         [
           self.class::StartByte,
+          (@node.to_a(options) unless @node.nil? || omit.include?(:node)),
           @data,
           self.class::EndByte
         ].compact
