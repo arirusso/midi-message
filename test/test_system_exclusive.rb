@@ -35,6 +35,7 @@ class SystemExclusiveMessageTest < Test::Unit::TestCase
     assert_equal([0x41, 0x10], node.to_a)
     msg = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x10, :node => node)
     assert_equal(10, msg.to_bytes.size)    
+    assert_equal([0xF0, 0x41, 0x10, 0x12, 0x40, 0x7F, 0x00, 0x10, 0x31, 0xF7], msg.to_bytes)
   end
   
   def test_parse_weird_message
