@@ -8,19 +8,27 @@ module MIDIMessage
       
       def self.included(base)
         base.extend(ClassMethods)
-        base.send(:attr_reader, :message)
+        #base.send(:attr_reader, :message)
+      end
+      
+      def process(messages = nil)
+        messages = @message unless @message.nil?
+        result = [messages].flatten.map { |message| process_single(message) }
+        result.kind_of?(Array) && result.size == 1 ? result.first : result
       end
 
       module ClassMethods
-        def process(*a, &block)
-          new(*a).process(&block)
+        
+        def process(msg, *a, &block)
+          new(*a).process(msg, &block)
         end
+        
       end
 
       private
 
-      def initialize_processor(message)
-        @message = message
+      def initialize_processor(options)
+        @message = options[:message]
       end
 
     end

@@ -10,18 +10,18 @@ module MIDIMessage
 
       attr_reader :property, :range
       
-      def initialize(message, prop, range, options = {})
+      def initialize(prop, range, options = {})
         @range = range
-        @message = message
         @property = prop
-        initialize_processor(message)
+        
+        initialize_processor(options)
       end
 
-      def process
-        val = @message.send(@property)
-        @message.send("#{@property}=", @range.min) if val < @range.min
-        @message.send("#{@property}=", @range.max) if val > @range.max
-        @message
+      def process_single(message)
+        val = message.send(@property)
+        message.send("#{@property}=", @range.min) if val < @range.min
+        message.send("#{@property}=", @range.max) if val > @range.max
+        message
       end
 
     end
