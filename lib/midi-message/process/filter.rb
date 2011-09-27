@@ -21,7 +21,12 @@ module MIDIMessage
 
       def process_single(message)
         val = message.send(@property)
-        result = @bandwidth.map { |bw| val >= bw.min && val <= bw.max ? message : nil }
+        result = @bandwidth.map do |bw| 
+          case bw
+            when Range then val >= bw.min && val <= bw.max ? message : nil
+            when Numeric then val == bw ? message : nil
+          end
+        end
         result.include?(message) ^ @reject ? message : nil
       end
 

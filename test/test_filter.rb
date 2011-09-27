@@ -92,4 +92,24 @@ class FilterTest < Test::Unit::TestCase
     assert_equal(msg, outp)
   end
   
+  def test_numeric_note_accept
+    msg1 = MIDIMessage::NoteOn["C4"].new(0, 100)
+    msg2 = MIDIMessage::NoteOn["C5"].new(0, 100)
+    f = Filter.new(:note, 60)
+    outp = f.process(msg1)
+    assert_equal(msg1, outp)
+    outp = f.process(msg2)
+    assert_equal(nil, outp)
+  end
+  
+  def test_numeric_note_reject
+    msg1 = MIDIMessage::NoteOn["C4"].new(0, 100)
+    msg2 = MIDIMessage::NoteOn["C5"].new(0, 100)
+    f = Filter.new(:note, 60, :reject => true)
+    outp = f.process(msg1)
+    assert_equal(nil, outp)
+    outp = f.process(msg2)
+    assert_equal(msg2, outp)
+  end
+  
 end
