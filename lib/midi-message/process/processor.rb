@@ -8,7 +8,7 @@ module MIDIMessage
       
       def self.included(base)
         base.extend(ClassMethods)
-        #base.send(:attr_reader, :message)
+        base.send(:attr_reader, :name)
       end
       
       def process(messages = nil)
@@ -29,6 +29,7 @@ module MIDIMessage
 
       def initialize_processor(options)
         @message = options[:message]
+        @name = options[:name]
       end
 
     end
