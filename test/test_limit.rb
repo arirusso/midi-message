@@ -7,6 +7,13 @@ class LimitTest < Test::Unit::TestCase
   include MIDIMessage
   include MIDIMessage::Process
   include TestHelper
+  
+  def test_numeric_range
+    msg = MIDIMessage::NoteOn["C0"].new(0, 100)
+    assert_equal(12, msg.note)
+    Limit.new(:note, 30).process(msg)
+    assert_equal(30, msg.note)    
+  end
 
   def test_low_note
     msg = MIDIMessage::NoteOn["C0"].new(0, 100)
