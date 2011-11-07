@@ -1,6 +1,6 @@
 = MIDI Message
 
-{pic}[http://images.treetrouble.net/images/mks80_small.jpg]
+{pic}[http://img208.imageshack.us/img208/5623/mks80small.jpg]
 
 MIDI messages, objectified in Ruby
 
