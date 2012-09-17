@@ -3,19 +3,23 @@
 
 module MIDIMessage
 
-  # common behavior amongst all Message types
+  # Common behavior amongst all Message types
   module ShortMessage
 
     attr_reader :name,
                 :status,
                 :verbose_name
-                  
+          
+    # Initialize the message status
+    # @param [Integer] status_nibble_1 The first nibble of the status
+    # @param [Integer] status_nibble_2 The second nibble of the status
     def initialize_short_message(status_nibble_1, status_nibble_2)
       @status = [status_nibble_1, status_nibble_2]
       populate_using_const
     end
     
-    # byte array representation of the object eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
+    # Byte array representation of the message eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
+    # @return [Array<Integer>] The array of bytes in the MIDI message
     def to_a
       data = @data.nil? ? [] : [@data[0], @data[1]] 
       [(@status[0] << 4) + @status[1], *data].compact
@@ -24,7 +28,8 @@ module MIDIMessage
     alias_method :to_byte_array, :to_a
     alias_method :to_bytes, :to_a
 
-    # string representation of the object's bytes eg "904040" for NoteOn(0x40, 0x40)
+    # String representation of the message's bytes eg "904040" for NoteOn(0x40, 0x40)
+    # @return [String] The bytes of the message as a string of hex bytes
     def to_hex_s
       TypeConversion.numeric_byte_array_to_hex_string(to_a)
     end
@@ -64,6 +69,9 @@ module MIDIMessage
       
       attr_reader :display_name, :constants, :map_constants_to 
       
+      # Find a constant value in this class's group for the passed in key
+      # @param [String] name The constant key
+      # @return [String] The constant value
       def get_constant(name)        
         key = @constants || @display_name
         unless key.nil?
@@ -72,16 +80,27 @@ module MIDIMessage
         end 
       end
 
-      # this returns a builder for the class, preloaded with the selected const
+      # This returns a MessageBuilder for the class, preloaded with the selected const
+      # @param [String, Symbol] const_name The constant key to use to build the message
+      # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
       def [](const_name)
+        const_name = const_name.to_s
         const = get_constant(const_name)
         MessageBuilder.new(self, const) unless const.nil?
       end
       
+      # Set the display name of the message
+      # @param [String] name The display name for the message type
+      # @return [String] The display name
       def use_display_name(name)
         @display_name = name
       end
 
+      # Use constants to control a property of the message
+      # eg. ControlChange["Modulation Wheel"]
+      # @param [String] name The key for the constant
+      # @param [Hash] options Options of how to use the message constant
+      # @option opts [Symbol] :for The destination schema property for the constant value
       def use_constants(name, options = {}) 
         @map_constants_to = options[:for]
         @constants = name
@@ -93,6 +112,8 @@ module MIDIMessage
 
   class MessageBuilder
 
+    # @param [MIDIMessage] klass The message class to build
+    # @param [String] const The constant to build the message with
     def initialize(klass, const)      
       @klass = klass      
       @const = const
@@ -105,10 +126,12 @@ module MIDIMessage
 
   end
   
-  # shortcuts for dealing with message status
+  # Shortcuts for dealing with message status
   module Status
     
-    # this returns the value of the Status constant with the name status_name
+    # The value of the Status constant with the name status_name
+    # @param [String] status_name The key to use to look up a constant value
+    # @return [String] The constant value that was looked up
     def self.[](status_name)
       const = Constant.find("Status", status_name)
       const.value unless const.nil?

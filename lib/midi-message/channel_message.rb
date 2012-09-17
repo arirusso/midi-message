@@ -61,19 +61,29 @@ module MIDIMessage
       initialize_short_message(status_nibble_1, status_nibble_2)
     end
     
+    # For defining Channel Message class types
     module ClassMethods
       
       attr_reader :properties
-            
+          
+      # Get the status nibble for this particular message type
+      # @return [Integer] The status nibble
       def type_for_status
         @display_name.nil? ? nil : Status[@display_name] 
       end
 
+      # Define a schema for the message class
+      # eg. schema :channel, :value
+      # @param [*Array<Symbol>] args The properties of the schema
+      # @return [Array<Symbol] The properties of the schema
       def schema(*args)
         @properties = args
       end
       alias_method :layout, :schema
 
+      # Does the schema of this Channel Message carry a second data byte?
+      # eg. NoteMessage does, and ProgramChange doesn't
+      # @return [Boolean] Is there a second data byte on this message type?
       def second_data_byte?
         @properties.nil? || (@properties.length-1) > 1
       end
