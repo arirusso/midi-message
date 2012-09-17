@@ -2,14 +2,19 @@
 #
 module MIDIMessage
 
-  # common behavior amongst Channel Message types
+  # Common behavior amongst Channel Message types
   module ChannelMessage
 
     attr_reader :data,
                 :name
-                
-    def self.new(*a, &block)
-      RawChannelMessage.new(*a, &block)
+           
+    # Shortcut to RawChannelMessage.new
+    # aka build a ChannelMessage from raw nibbles and bytes
+    # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
+    # @param [*Array<Fixnum>] The status nibbles and data bytes
+    # @return [RawChannelMessage] The resulting RawChannelMessage object
+    def self.new(*args, &block)
+      RawChannelMessage.new(*args, &block)
     end
                   
     def initialize(*a)
@@ -67,7 +72,7 @@ module MIDIMessage
       attr_reader :properties
           
       # Get the status nibble for this particular message type
-      # @return [Integer] The status nibble
+      # @return [Fixnum] The status nibble
       def type_for_status
         @display_name.nil? ? nil : Status[@display_name] 
       end
@@ -102,11 +107,19 @@ module MIDIMessage
     include ChannelMessage
 
     use_display_name 'Channel Message'
-    
+  
+    # Build a Channel Mssage from raw nibbles and bytes
+    # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
+    # @param [*Array<Fixnum>] The status nibbles and data bytes
+    # @return [RawChannelMessage] The resulting RawChannelMessage object
     def initialize(*a)
       initialize_channel_message(*a)
     end        
     
+    # Convert this RawChannelMessage to one of the more specific ChannelMessage types
+    # eg. RawChannelMessage.new(0x9, 0x0, 0x40, 0x40).to_type would result in
+    # NoteMessage.new(0x0, 0x40, 0x40)
+    # @return [ChannelMessage] The resulting specific ChannelMessage object
     def to_type
       status = (@status[0] << 4) + (@status[1])
       MIDIMessage.parse(status, *@data)
