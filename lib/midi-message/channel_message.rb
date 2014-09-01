@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-#
 module MIDIMessage
 
   # Common behavior amongst Channel Message types
@@ -74,7 +72,8 @@ module MIDIMessage
       # Get the status nibble for this particular message type
       # @return [Fixnum] The status nibble
       def type_for_status
-        @display_name.nil? ? nil : Status[@display_name] 
+        name = const_get("DISPLAY_NAME")
+        Status[name] 
       end
 
       # Define a schema for the message class
@@ -87,7 +86,7 @@ module MIDIMessage
       alias_method :layout, :schema
 
       # Does the schema of this Channel Message carry a second data byte?
-      # eg. NoteMessage does, and ProgramChange doesn't
+      # eg. NoteMessage does, and ProgramChange doesn"t
       # @return [Boolean] Is there a second data byte on this message type?
       def second_data_byte?
         @properties.nil? || (@properties.length-1) > 1
@@ -106,7 +105,7 @@ module MIDIMessage
     include ShortMessage
     include ChannelMessage
 
-    use_display_name 'Channel Message'
+    DISPLAY_NAME = "Channel Message"
   
     # Build a Channel Mssage from raw nibbles and bytes
     # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
@@ -135,9 +134,9 @@ module MIDIMessage
     include ShortMessage
     include ChannelMessage
 
+    DISPLAY_NAME = "Channel Aftertouch"
     schema :channel, :value
-    use_display_name 'Channel Aftertouch'
-
+    
   end
   ChannelPressure = ChannelAftertouch
 
@@ -150,8 +149,8 @@ module MIDIMessage
     include ChannelMessage
 
     schema :channel, :index, :value
-    use_display_name 'Control Change'
-    use_constants 'Control Change', :for => :index
+    DISPLAY_NAME = "Control Change"
+    use_constants "Control Change", :for => :index
    
   end  
   Controller = ControlChange #shortcut
@@ -165,7 +164,7 @@ module MIDIMessage
     include ChannelMessage
 
     schema :channel, :low, :high
-    use_display_name 'Pitch Bend'
+    DISPLAY_NAME = "Pitch Bend"
 
   end
 
@@ -178,8 +177,8 @@ module MIDIMessage
     include ChannelMessage
 
     schema :channel, :note, :value
-    use_display_name 'Polyphonic Aftertouch'
-    use_constants 'Note', :for => :note
+    DISPLAY_NAME = "Polyphonic Aftertouch"
+    use_constants "Note", :for => :note
 
   end
   PolyAftertouch = PolyphonicAftertouch
@@ -195,7 +194,7 @@ module MIDIMessage
     include ChannelMessage
 
     schema :channel, :program
-    use_display_name 'Program Change'
+    DISPLAY_NAME = "Program Change"
 
   end
   

@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#
-
 module MIDIMessage
 
   #
@@ -26,7 +23,7 @@ module MIDIMessage
 
     include ShortMessage
     include SystemMessage
-    use_display_name 'System Common'
+    DISPLAY_NAME = "System Common"
     
     attr_reader :data
     
@@ -48,7 +45,7 @@ module MIDIMessage
 
     include ShortMessage
     include SystemMessage
-    use_display_name 'System Realtime'
+    DISPLAY_NAME = "System Realtime"
     
     def initialize(*a)
       options = a.last.kind_of?(Hash) ? a.pop : {} 

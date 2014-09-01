@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#
-
 module MIDIMessage
 
   # Common behavior amongst all Message types
@@ -49,7 +46,7 @@ module MIDIMessage
     
     # This will populate message metadata with information gathered from midi.yml
     def populate_using_const
-      const_group_name = self.class.display_name
+      const_group_name = self.class.const_get("DISPLAY_NAME")
       group_name_alias = self.class.constants
       prop = self.class.map_constants_to
       val = self.send(prop) unless prop.nil?
@@ -73,7 +70,7 @@ module MIDIMessage
       # @param [String] name The constant key
       # @return [String] The constant value
       def get_constant(name)        
-        key = @constants || @display_name
+        key = @constants || const_get("DISPLAY_NAME")
         unless key.nil?
           group = ConstantGroup[key]
           group.find(name)
@@ -89,13 +86,6 @@ module MIDIMessage
         MessageBuilder.new(self, const) unless const.nil?
       end
       
-      # Set the display name of the message
-      # @param [String] name The display name for the message type
-      # @return [String] The display name
-      def use_display_name(name)
-        @display_name = name
-      end
-
       # Use constants to control a property of the message
       # eg. ControlChange["Modulation Wheel"]
       # @param [String] name The key for the constant

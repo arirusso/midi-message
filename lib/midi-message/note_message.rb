@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-#
 module MIDIMessage
 
   #
@@ -42,8 +40,8 @@ module MIDIMessage
     include ChannelMessage
 
     schema :channel, :note, :velocity
-    use_display_name 'Note Off'
-    use_constants 'Note', :for => :note
+    DISPLAY_NAME = "Note Off"
+    use_constants "Note", :for => :note
 
   end
 
@@ -57,8 +55,8 @@ module MIDIMessage
     include ChannelMessage    
 
     schema :channel, :note, :velocity
-    use_display_name 'Note On'
-    use_constants 'Note', :for => :note
+    DISPLAY_NAME = "Note On"
+    use_constants "Note", :for => :note
     
     # returns the NoteOff equivalent of this object
     def to_note_off
