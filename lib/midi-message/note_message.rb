@@ -1,33 +1,36 @@
 module MIDIMessage
 
-  #
   # Common Note Message Behavior
-  #
   module NoteMessage
 
     def self.included(base)
       base.include(ChannelMessage)
     end
 
-    # the octave number of the note
+    # The octave number of the note
+    # @return [Fixnum]
     def octave
-      (note / 12) -1
+      (note / 12) - 1
     end
     alias_method :oct, :octave
     
-    # set the octave number of the note
-    def octave=(val)
-      self.note = ((val + 1) * 12) + abs_note
+    # Set the octave number of the note
+    # @param [Fixnum] value
+    # @return [NoteMessage] self
+    def octave=(value)
+      self.note = ((value + 1) * 12) + abs_note
       self
     end
     alias_method :oct=, :octave=
     
-    # how many half-steps is this note above the closest C
+    # How many half-steps is this note above the closest C
+    # @return [Fixnum]
     def abs_note
       note - ((note / 12) * 12)
     end
     
-    # the name of the note without its octave e.g. F#
+    # The name of the note without its octave e.g. F#
+    # @return [String]
     def note_name
       name.split(/-?\d\z/).first
     end
