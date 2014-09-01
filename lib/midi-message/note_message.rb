@@ -39,7 +39,7 @@ module MIDIMessage
     include ShortMessage
     include ChannelMessage
 
-    schema :channel, :note, :velocity
+    DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note Off"
     use_constants "Note", :for => :note
 
@@ -54,7 +54,7 @@ module MIDIMessage
     include ShortMessage
     include ChannelMessage    
 
-    schema :channel, :note, :velocity
+    DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note On"
     use_constants "Note", :for => :note
     
