@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#
-
 module MIDIMessage
 
   # MIDI Constants

@@ -36,36 +36,5 @@ module MIDIMessage
     end
         
   end
-
-  #
-  # MIDI Note-Off message
-  #
-  class NoteOff
-
-    include NoteMessage
-
-    DATA = [:channel, :note, :velocity]
-    DISPLAY_NAME = "Note Off"
-    CONSTANT = { "Note" => :note }
-
-  end
-
-  #
-  # MIDI Note-On message
-  #
-  class NoteOn
-    
-    include NoteMessage   
-
-    DATA = [:channel, :note, :velocity]
-    DISPLAY_NAME = "Note On"
-    CONSTANT = { "Note" => :note }
-    
-    # returns the NoteOff equivalent of this object
-    def to_note_off
-      NoteOff.new(channel, note, velocity)
-    end
-
-  end
   
 end

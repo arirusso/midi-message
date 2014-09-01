@@ -3,16 +3,15 @@ module MIDIMessage
   # Common behavior amongst Channel Message types
   module ChannelMessage
 
-    attr_reader :data,
-                :name
-           
+    attr_reader :data, :name
+
     # Shortcut to RawChannelMessage.new
     # aka build a ChannelMessage from raw nibbles and bytes
     # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
     # @param [*Array<Fixnum>] data The status nibbles and data bytes
     # @return [RawChannelMessage] The resulting RawChannelMessage object
     def self.new(*data, &block)
-      RawChannelMessage.new(*data, &block)
+      Message.new(*data, &block)
     end
 
     # @param [*Array<Fixnum>] data The status nibbles and data bytes
@@ -22,7 +21,7 @@ module MIDIMessage
       processed_data = options[:const].nil? ? data : data_with_const(data, options[:const])
       initialize_channel_message(self.class.type_for_status, *processed_data)
     end
-    
+
     def initialize_properties
       props = [
         { :name => :status, :index => 1 },
@@ -43,9 +42,9 @@ module MIDIMessage
         end
       end
     end
-    
+
     protected
-    
+
     def self.included(base)
       base.include(ShortMessage)
       base.extend(ClassMethods)
@@ -58,7 +57,7 @@ module MIDIMessage
       ind = self.class.properties.index(key) || 0
       data.insert(ind, const.value)               
     end
-    
+
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
       @data = [data_byte_1]
@@ -66,10 +65,10 @@ module MIDIMessage
       initialize_properties
       initialize_short_message(status_nibble_1, status_nibble_2)
     end
-    
+
     # For defining Channel Message class types
     module ClassMethods
-                
+
       # Get the status nibble for this particular message type
       # @return [Fixnum] The status nibble
       def type_for_status
@@ -88,103 +87,36 @@ module MIDIMessage
       end
 
     end
-        
-  end
 
-  # use this if you want to instantiate a raw channel message
-  #
-  # example = ChannelMessage.new(0x9, 0x0, 0x40, 0x57) # creates a raw note-on message
-  #
-  class RawChannelMessage
+    # Use this if you want to instantiate a raw channel message
+    #
+    # For example ChannelMessage::Message.new(0x9, 0x0, 0x40, 0x57)
+    # creates a raw note-on message
+    class Message
 
-    include ChannelMessage
+      include ChannelMessage
 
-    DISPLAY_NAME = "Channel Message"
-  
-    # Build a Channel Mssage from raw nibbles and bytes
-    # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
-    # @param [*Array<Fixnum>] data The status nibbles and data bytes
-    # @return [RawChannelMessage] The resulting RawChannelMessage object
-    def initialize(*data)
-      initialize_channel_message(*data)
-    end        
-    
-    # Convert this RawChannelMessage to one of the more specific ChannelMessage types
-    # eg. RawChannelMessage.new(0x9, 0x0, 0x40, 0x40).to_type would result in
-    # NoteMessage.new(0x0, 0x40, 0x40)
-    # @return [ChannelMessage] The resulting specific ChannelMessage object
-    def to_type
-      status = (@status[0] << 4) + (@status[1])
-      MIDIMessage.parse(status, *@data)
+      DISPLAY_NAME = "Channel Message"
+
+      # Build a Channel Mssage from raw nibbles and bytes
+      # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
+      # @param [*Array<Fixnum>] data The status nibbles and data bytes
+      # @return [RawChannelMessage] The resulting RawChannelMessage object
+      def initialize(*data)
+        initialize_channel_message(*data)
+      end        
+
+      # Convert this RawChannelMessage to one of the more specific ChannelMessage types
+      # eg. RawChannelMessage.new(0x9, 0x0, 0x40, 0x40).to_type would result in
+      # NoteMessage.new(0x0, 0x40, 0x40)
+      # @return [ChannelMessage] The resulting specific ChannelMessage object
+      def to_type
+        status = (@status[0] << 4) + (@status[1])
+        MIDIMessage.parse(status, *@data)
+      end
+
     end
 
   end
 
-  #
-  # MIDI Channel Aftertouch message
-  #
-  class ChannelAftertouch
-
-    include ChannelMessage
-
-    DATA = [:channel, :value]
-    DISPLAY_NAME = "Channel Aftertouch"
-    
-  end
-  ChannelPressure = ChannelAftertouch
-
-  #
-  # MIDI Control Change message
-  #
-  class ControlChange
-
-    include ChannelMessage
-
-    DATA = [:channel, :index, :value]
-    DISPLAY_NAME = "Control Change"
-    CONSTANT = { "Control Change" => :index }
-   
-  end  
-  Controller = ControlChange #shortcut
-
-  #
-  # MIDI Pitch Bend message
-  #
-  class PitchBend
-
-    include ChannelMessage
-
-    DATA = [:channel, :low, :high]
-    DISPLAY_NAME = "Pitch Bend"
-
-  end
-
-  #
-  # MIDI Polyphonic (note specific) Aftertouch message
-  #
-  class PolyphonicAftertouch
-
-    include ChannelMessage
-
-    DATA = [:channel, :note, :value]
-    DISPLAY_NAME = "Polyphonic Aftertouch"
-    CONSTANT = { "Note" => :note }
-
-  end
-  PolyAftertouch = PolyphonicAftertouch
-  PolyPressure = PolyphonicAftertouch
-  PolyphonicPressure = PolyphonicAftertouch
-
-  #
-  # MIDI Program Change message
-  #
-  class ProgramChange
-
-    include ChannelMessage
-
-    DATA = [:channel, :program]
-    DISPLAY_NAME = "Program Change"
-
-  end
-  
 end

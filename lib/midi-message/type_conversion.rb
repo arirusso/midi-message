@@ -1,11 +1,11 @@
-#!/usr/bin/env ruby
-#
 module MIDIMessage
  
-  # this is a helper for converting nibbles and bytes
+  # Helper for converting nibbles and bytes
   module TypeConversion
     
-    def self.hex_chars_to_numeric_byte_array(nibbles)
+    extend self
+
+    def hex_chars_to_numeric_byte_array(nibbles)
       nibbles = nibbles.dup
       # get rid of last nibble if there's an odd number
       # it will be processed later anyway
@@ -18,8 +18,8 @@ module MIDIMessage
       bytes
     end
     
-    # convert byte str to byte array 
-    def self.hex_string_to_numeric_byte_array(str)
+    # Convert byte str to byte array 
+    def hex_string_to_numeric_byte_array(str)
       str = str.dup
       bytes = []
       until str.eql?("")
@@ -28,16 +28,16 @@ module MIDIMessage
       bytes
     end
     
-    # converts a string of hex digits to bytes
-    def self.hex_str_to_hex_chars(str)
+    # Converts a string of hex digits to bytes
+    def hex_str_to_hex_chars(str)
       str.split(//)    
     end
     
-    def self.numeric_byte_array_to_hex_string(bytes)
+    def numeric_byte_array_to_hex_string(bytes)
       bytes.map { |b| s = b.to_s(16); s.length.eql?(1) ? "0#{s}" : s }.join.upcase
     end
     
-    def self.numeric_byte_to_hex_chars(num)
+    def numeric_byte_to_hex_chars(num)
       [((num & 0xF0) >> 4), (num & 0x0F)].map { |n| n.to_s(16) }      
     end
 
