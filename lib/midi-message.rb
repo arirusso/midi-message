@@ -5,7 +5,7 @@
 # 
 module MIDIMessage
     
-  VERSION = "0.3.2"
+  VERSION = "0.4.1"
  
 end
 
