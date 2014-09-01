@@ -1,7 +1,3 @@
-#!/usr/bin/env ruby
-#
-#
-
 module MIDIMessage
 
   class Context
