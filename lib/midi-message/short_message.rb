@@ -46,14 +46,14 @@ module MIDIMessage
     
     # This will populate message metadata with information gathered from midi.yml
     def populate_using_const
-      const_group_name = self.class.const_get("DISPLAY_NAME")
-      group_name_alias = self.class.constants
-      prop = self.class.map_constants_to
-      val = self.send(prop) unless prop.nil?
-      val ||= @status[1] # default property to use for constants
+      const_group_name = self.class.display_name
+      group_name_alias = self.class.constant_name
+      property = self.class.constant_property
+      value = self.send(property) unless property.nil?
+      value ||= @status[1] # default property to use for constants
       group = ConstantGroup[group_name_alias] || ConstantGroup[const_group_name]
       unless group.nil?
-        const = group.find_by_value(val)
+        const = group.find_by_value(value)
         unless const.nil?
           @const = const
           @name = @const.nil? ? const.key : @const.key
@@ -63,39 +63,42 @@ module MIDIMessage
     end
 
     module ClassMethods
-      
-      attr_reader :display_name, :constants, :map_constants_to 
-      
+            
       # Find a constant value in this class's group for the passed in key
       # @param [String] name The constant key
       # @return [String] The constant value
       def get_constant(name)        
-        key = @constants || const_get("DISPLAY_NAME")
+        key = constant_name || display_name
         unless key.nil?
           group = ConstantGroup[key]
           group.find(name)
         end 
       end
 
+      def display_name
+        const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
+      end
+
+      def constant_map
+        const_get("CONSTANT") if const_defined?("CONSTANT")
+      end
+
+      def constant_name
+        constant_map.keys.first unless constant_map.nil?
+      end
+
+      def constant_property
+        constant_map[constant_name] unless constant_map.nil?
+      end
+
       # This returns a MessageBuilder for the class, preloaded with the selected const
       # @param [String, Symbol] const_name The constant key to use to build the message
       # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
       def [](const_name)
-        const_name = const_name.to_s
-        const = get_constant(const_name)
+        const = get_constant(const_name.to_s)
         MessageBuilder.new(self, const) unless const.nil?
       end
       
-      # Use constants to control a property of the message
-      # eg. ControlChange["Modulation Wheel"]
-      # @param [String] name The key for the constant
-      # @param [Hash] options Options of how to use the message constant
-      # @option opts [Symbol] :for The destination schema property for the constant value
-      def use_constants(name, options = {}) 
-        @map_constants_to = options[:for]
-        @constants = name
-      end
-
     end
 
   end

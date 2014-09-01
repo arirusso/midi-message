@@ -41,7 +41,7 @@ module MIDIMessage
 
     DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note Off"
-    use_constants "Note", :for => :note
+    CONSTANT = { "Note" => :note }
 
   end
 
@@ -56,7 +56,7 @@ module MIDIMessage
 
     DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note On"
-    use_constants "Note", :for => :note
+    CONSTANT = { "Note" => :note }
     
     # returns the NoteOff equivalent of this object
     def to_note_off

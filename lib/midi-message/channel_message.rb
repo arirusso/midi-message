@@ -19,7 +19,8 @@ module MIDIMessage
       options = a.last.kind_of?(Hash) ? a.pop : {}
       @const = options[:const]        
       unless @const.nil?
-        key = self.class.map_constants_to
+        map = self.class.constant_map
+        key = map.values.first
         ind = self.class.properties.index(key)
         ind ||= 0
         a.insert(ind, @const.value)               
@@ -70,8 +71,7 @@ module MIDIMessage
       # Get the status nibble for this particular message type
       # @return [Fixnum] The status nibble
       def type_for_status
-        name = const_get("DISPLAY_NAME")
-        Status[name] 
+        Status[display_name] 
       end
 
       def properties
@@ -143,7 +143,7 @@ module MIDIMessage
 
     DATA = [:channel, :index, :value]
     DISPLAY_NAME = "Control Change"
-    use_constants "Control Change", :for => :index
+    CONSTANT = { "Control Change" => :index }
    
   end  
   Controller = ControlChange #shortcut
@@ -171,7 +171,7 @@ module MIDIMessage
 
     DATA = [:channel, :note, :value]
     DISPLAY_NAME = "Polyphonic Aftertouch"
-    use_constants "Note", :for => :note
+    CONSTANT = { "Note" => :note }
 
   end
   PolyAftertouch = PolyphonicAftertouch
