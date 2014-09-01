@@ -1,7 +1,7 @@
-#!/usr/bin/env ruby
 #
-# MIDI Messages in Ruby
-# (c)2011-2012 Ari Russo and licensed under the Apache 2.0 License
+# Ruby MIDI message objects
+#
+# (c)2011-2014 Ari Russo and licensed under the Apache 2.0 License
 # 
 module MIDIMessage
   
@@ -15,11 +15,11 @@ module MIDIMessage
  
 end
 
-# libs
+# Libs
 require "forwardable"
 require "yaml"
 
-# messages (mixed format)
+# Messages (mixed format)
 require "midi-message/short_message"
 require "midi-message/channel_message"
 require "midi-message/constant"
@@ -30,10 +30,10 @@ require "midi-message/system_message"
 require "midi-message/system_exclusive"
 require "midi-message/type_conversion"
 
-# modules
+# Modules
 require "midi-message/process/processor"
 
-# classes
+# Classes
 require "midi-message/event/note"
 require "midi-message/process/filter"
 require "midi-message/process/limit"
