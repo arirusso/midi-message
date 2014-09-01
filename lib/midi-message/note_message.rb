@@ -5,6 +5,10 @@ module MIDIMessage
   #
   module NoteMessage
 
+    def self.included(base)
+      base.include(ChannelMessage)
+    end
+
     # the octave number of the note
     def octave
       (note / 12) -1
@@ -36,8 +40,6 @@ module MIDIMessage
   class NoteOff
 
     include NoteMessage
-    include ShortMessage
-    include ChannelMessage
 
     DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note Off"
@@ -50,9 +52,7 @@ module MIDIMessage
   #
   class NoteOn
     
-    include NoteMessage
-    include ShortMessage
-    include ChannelMessage    
+    include NoteMessage   
 
     DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note On"

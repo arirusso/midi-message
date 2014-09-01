@@ -52,6 +52,7 @@ module MIDIMessage
     protected
     
     def self.included(base)
+      base.include(ShortMessage)
       base.extend(ClassMethods)
     end
 
@@ -95,7 +96,6 @@ module MIDIMessage
   #
   class RawChannelMessage
 
-    include ShortMessage
     include ChannelMessage
 
     DISPLAY_NAME = "Channel Message"
@@ -124,7 +124,6 @@ module MIDIMessage
   #
   class ChannelAftertouch
 
-    include ShortMessage
     include ChannelMessage
 
     DATA = [:channel, :value]
@@ -138,7 +137,6 @@ module MIDIMessage
   #
   class ControlChange
 
-    include ShortMessage
     include ChannelMessage
 
     DATA = [:channel, :index, :value]
@@ -153,7 +151,6 @@ module MIDIMessage
   #
   class PitchBend
 
-    include ShortMessage
     include ChannelMessage
 
     DATA = [:channel, :low, :high]
@@ -166,7 +163,6 @@ module MIDIMessage
   #
   class PolyphonicAftertouch
 
-    include ShortMessage
     include ChannelMessage
 
     DATA = [:channel, :note, :value]
@@ -183,7 +179,6 @@ module MIDIMessage
   #
   class ProgramChange
 
-    include ShortMessage
     include ChannelMessage
 
     DATA = [:channel, :program]
