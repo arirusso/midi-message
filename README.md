@@ -2,7 +2,7 @@
 
 ![midi](http://img208.imageshack.us/img208/5623/mks80small.jpg)
 
-MIDI messages, objectified in Ruby
+Ruby MIDI message objects
 
 ## Features
 
