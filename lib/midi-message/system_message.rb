@@ -1,9 +1,11 @@
 module MIDIMessage
 
-  #
-  # MIDI System message
-  #
+  # Common MIDI system message behavior
   module SystemMessage
+
+    def self.included(base)
+      base.include(ShortMessage)
+    end
 
     # In the case of something like SystemCommon.new(0xF2, 0x00, 0x08), the first nibble F is redundant because
     # all system messages start with 0xF and it can be assumed.
@@ -15,50 +17,5 @@ module MIDIMessage
     end
 
   end
-  
-  #
-  # MIDI System-Common message
-  #
-  class SystemCommon
-
-    include ShortMessage
-    include SystemMessage
-    DISPLAY_NAME = "System Common"
     
-    attr_reader :data
-    
-    def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {}
-      @const = options[:const]
-      id = @const.nil? ? a.shift : @const.value
-      id = strip_redundant_nibble(id)
-      initialize_short_message(0xF, id)
-      @data = [a[0], a[1]]
-    end
-    
-  end  
-  
-  #
-  # MIDI System-Realtime message
-  #
-  class SystemRealtime
-
-    include ShortMessage
-    include SystemMessage
-    DISPLAY_NAME = "System Realtime"
-    
-    def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {} 
-      @const = options[:const]
-      id = @const.nil? ? a[0] : @const.value
-      id = strip_redundant_nibble(id)
-      initialize_short_message(0xF, id)
-    end
-
-    def id
-      @status[1]
-    end
-
-  end
-  
 end
