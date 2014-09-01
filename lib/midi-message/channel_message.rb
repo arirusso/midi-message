@@ -9,23 +9,18 @@ module MIDIMessage
     # Shortcut to RawChannelMessage.new
     # aka build a ChannelMessage from raw nibbles and bytes
     # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
-    # @param [*Array<Fixnum>] The status nibbles and data bytes
+    # @param [*Array<Fixnum>] data The status nibbles and data bytes
     # @return [RawChannelMessage] The resulting RawChannelMessage object
-    def self.new(*args, &block)
-      RawChannelMessage.new(*args, &block)
+    def self.new(*data, &block)
+      RawChannelMessage.new(*data, &block)
     end
-                  
-    def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {}
-      @const = options[:const]        
-      unless @const.nil?
-        map = self.class.constant_map
-        key = map.values.first
-        ind = self.class.properties.index(key)
-        ind ||= 0
-        a.insert(ind, @const.value)               
-      end
-      initialize_channel_message(self.class.type_for_status, *a)
+
+    # @param [*Array<Fixnum>] data The status nibbles and data bytes
+    def initialize(*data)
+      data = data.dup
+      options = data.last.kind_of?(Hash) ? data.pop : {}      
+      processed_data = options[:const].nil? ? data : data_with_const(data, options[:const])
+      initialize_channel_message(self.class.type_for_status, *processed_data)
     end
     
     def initialize_properties
@@ -57,6 +52,12 @@ module MIDIMessage
     end
 
     private
+
+    def data_with_const(data, const)
+      key = self.class.constant_property
+      ind = self.class.properties.index(key) || 0
+      data.insert(ind, const.value)               
+    end
     
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
@@ -102,10 +103,10 @@ module MIDIMessage
   
     # Build a Channel Mssage from raw nibbles and bytes
     # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
-    # @param [*Array<Fixnum>] The status nibbles and data bytes
+    # @param [*Array<Fixnum>] data The status nibbles and data bytes
     # @return [RawChannelMessage] The resulting RawChannelMessage object
-    def initialize(*a)
-      initialize_channel_message(*a)
+    def initialize(*data)
+      initialize_channel_message(*data)
     end        
     
     # Convert this RawChannelMessage to one of the more specific ChannelMessage types
