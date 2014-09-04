@@ -19,16 +19,17 @@ module MIDIMessage
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
         omit = options[:omit] || [] 
+        node = @node.to_a(options) unless @node.nil? || omit.include?(:node)
         # this may need to be cached when properties are updated
         # might be worth benchmarking
         [
-          self.class::StartByte,
-          (@node.to_a(options) unless @node.nil? || omit.include?(:node)),
+          start_byte,
+          node,
           (type_byte unless omit.include?(:type)),
           [address].compact.flatten,
           [value].compact.flatten,
           (checksum unless omit.include?(:checksum)),
-          self.class::EndByte
+          end_byte
         ].compact
       end
 
@@ -43,7 +44,12 @@ module MIDIMessage
 
       # string representation of the object's bytes
       def to_hex_s
-        to_bytes.map { |b| s = b.to_s(16); s.length.eql?(1) ? "0#{s}" : s }.join.upcase
+        strings = to_bytes.map do |byte| 
+          string = byte.to_s(16)
+          string = "0#{string}" if string.length == 1
+          string
+        end
+        strings.join.upcase
       end
       alias_method :to_bytestr, :to_hex_s
 
@@ -52,6 +58,14 @@ module MIDIMessage
       end
       alias_method :verbose_name, :name
 
+      def start_byte
+        self.class::StartByte
+      end
+
+      def end_byte
+        self.class::EndByte
+      end
+
       def type_byte
         self.class::TypeByte
       end
@@ -59,8 +73,9 @@ module MIDIMessage
       # alternate method from
       # http://www.2writers.com/eddie/TutSysEx.htm
       def checksum
-        sum = (address + [value].flatten).inject { |a, b| a + b } 
-        (128 - sum.divmod(128)[1])
+        sum = (address + [value].flatten).inject(&:+) 
+        mod = sum.divmod(128)[1]
+        128 - mod
       end
 
       private
@@ -82,20 +97,25 @@ module MIDIMessage
       attr_accessor :data
 
       def initialize(data, options = {})
-        @data = (data.kind_of?(Array) && data.length.eql?(1)) ? data[0] : data
+        @data = if data.kind_of?(Array) && data.length.eql?(1)
+          data.first
+        else
+          data
+        end
         initialize_sysex(nil, options)
       end
 
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
         omit = options[:omit] || [] 
+        node = @node.to_a(options) unless @node.nil? || omit.include?(:node)
         # this may need to be cached when properties are updated
         # might be worth benchmarking
         [
-          self.class::StartByte,
-          (@node.to_a(options) unless @node.nil? || omit.include?(:node)),
+          start_byte,
+          node,
           @data,
-          self.class::EndByte
+          end_byte
         ].compact
       end
 
@@ -113,16 +133,17 @@ module MIDIMessage
       def initialize(manufacturer, options = {})
         @device_id = options[:device_id]
         @model_id = options[:model_id]
-        @manufacturer_id = manufacturer.kind_of?(Numeric) ? manufacturer : Constant.find("Manufacturer", manufacturer).value
+        @manufacturer_id = get_manufacturer_id(manufacturer)
       end
 
       def to_a(options = {})
-        omit = options[:omit] || [] 
-        [
-          (@manufacturer_id unless omit.include?(:manufacturer) || omit.include?(:manufacturer_id)),
-          (@device_id unless omit.include?(:device) || omit.include?(:device_id)),
-          (@model_id unless omit.include?(:model) || omit.include?(:model_id))
-        ].compact
+        omit = options[:omit] || []
+        properties = [:manufacturer, :device, :model].map do |property|
+          unless omit.include?(property) || omit.include?("#{property.to_s}_id")
+            instance_variable_get("@#{property.to_s}_id")
+          end
+        end
+        properties.compact
       end
 
       # this message takes a prototype message, copies it, and returns the copy with its node set
@@ -145,6 +166,17 @@ module MIDIMessage
         request = Request.new(*a)
         request.node = self
         request
+      end
+
+      private
+
+      def get_manufacturer_id(manufacturer)
+        if manufacturer.kind_of?(Numeric)
+          manufacturer
+        else
+          const = Constant.find("Manufacturer", manufacturer)
+          const.value
+        end
       end
 
     end
