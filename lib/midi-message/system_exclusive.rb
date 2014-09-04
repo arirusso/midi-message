@@ -3,6 +3,10 @@ module MIDIMessage
   # MIDI System-Exclusive Messages (SysEx)
   module SystemExclusive
 
+    def self.included(base)
+      base.include(InstanceMethods)
+    end
+
     # Common SysEx data that a message class will contain
     module InstanceMethods
 

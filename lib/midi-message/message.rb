@@ -149,7 +149,7 @@ module MIDIMessage
     # A command message is identified by having a status byte equal to 0x12
     class Command
 
-      include SystemExclusive::InstanceMethods
+      include SystemExclusive
 
       attr_accessor :data
       alias_method :value, :data
@@ -168,7 +168,7 @@ module MIDIMessage
     # A request message is identified by having a status byte equal to 0x11
     class Request
 
-      include SystemExclusive::InstanceMethods
+      include SystemExclusive
       
       attr_reader :size
       alias_method :value, :size
