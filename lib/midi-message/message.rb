@@ -186,7 +186,7 @@ module MIDIMessage
         size = []
         if val.kind_of?(Array) && val.size <= 3
           size = val
-        elsif val.kind_of?(Numeric) && (((val + 1) / 247) <= 2)
+        elsif val.kind_of?(Numeric) && (val + 1) / 247 <= 2
           size = []
           div, mod = *val.divmod(247)
           size << mod unless mod.zero?
