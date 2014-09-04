@@ -30,7 +30,7 @@ module MIDIMessage
     def hex_string_to_numeric_byte_array(string)
       string = string.dup
       bytes = []
-      until string.eql?("")
+      until string.length == 0
         bytes << string.slice!(0, 2).hex
       end
       bytes
@@ -51,7 +51,7 @@ module MIDIMessage
     def numeric_byte_array_to_hex_string(bytes)
       string_bytes = bytes.map do |byte| 
         string = byte.to_s(16)
-        string = "0#{string}" if string.length.eql?(1)
+        string = "0#{string}" if string.length == 1
         string
       end
       string_bytes.join.upcase

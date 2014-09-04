@@ -97,7 +97,7 @@ module MIDIMessage
       attr_accessor :data
 
       def initialize(data, options = {})
-        @data = if data.kind_of?(Array) && data.length.eql?(1)
+        @data = if data.kind_of?(Array) && data.length == 1
           data.first
         else
           data
@@ -187,7 +187,7 @@ module MIDIMessage
       start_status = bytes.shift
       end_status = bytes.pop
 
-      if start_status.eql?(0xF0) && end_status.eql?(0xF7)
+      if start_status == 0xF0 && end_status == 0xF7
 
         type_byte = bytes[3]
 

@@ -11,12 +11,12 @@ module MIDIMessage
     end
     
     def find(name)
-      @constants.find { |const| const.key.to_s.downcase.eql?(name.to_s.downcase) }       
+      @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }       
     end
     alias_method :[], :find
     
     def find_by_value(value)
-      @constants.find { |const| const.value.to_s.downcase.eql?(value.to_s.downcase) }
+      @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
     end
     
     def self.all
@@ -26,7 +26,7 @@ module MIDIMessage
 
     def self.[](key)      
       ensure_initialized
-      @groups.find { |g| g.key.to_s.downcase.eql?(key.to_s.downcase) }
+      @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
     end
     
     private
