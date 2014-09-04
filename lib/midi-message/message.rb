@@ -109,13 +109,13 @@ module MIDIMessage
     
     attr_reader :data
     
-    def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {}
+    def initialize(*args)
+      options = args.last.kind_of?(Hash) ? args.pop : {}
       @const = options[:const]
-      id = @const.nil? ? a.shift : @const.value
+      id = @const.nil? ? args.shift : @const.value
       id = strip_redundant_nibble(id)
       initialize_short_message(0xF, id)
-      @data = [a[0], a[1]]
+      @data = args.slice(0..1)
     end
     
   end  
@@ -129,10 +129,10 @@ module MIDIMessage
 
     DISPLAY_NAME = "System Realtime"
     
-    def initialize(*a)
-      options = a.last.kind_of?(Hash) ? a.pop : {} 
+    def initialize(*args)
+      options = args.last.kind_of?(Hash) ? args.pop : {} 
       @const = options[:const]
-      id = @const.nil? ? a[0] : @const.value
+      id = @const.nil? ? args.first : @const.value
       id = strip_redundant_nibble(id)
       initialize_short_message(0xF, id)
     end
@@ -158,7 +158,11 @@ module MIDIMessage
       
       def initialize(address, data, options = {})
         # store as a byte if it's a single byte
-        @data = (data.kind_of?(Array) && data.length.eql?(1)) ? data[0] : data
+        @data = if data.kind_of?(Array) && data.length == 1
+          data.first
+        else
+          data
+        end
         initialize_sysex(address, options)
       end
       
@@ -176,19 +180,23 @@ module MIDIMessage
       TypeByte = 0x11
       
       def initialize(address, size, options = {})
-        self.size = (size.kind_of?(Array) && size.length.eql?(1)) ? size[0] : size
+        self.size = if size.kind_of?(Array) && size.count == 1
+          size.first
+        else
+          size
+        end
         initialize_sysex(address, options)
       end
       
-      def size=(val)
+      def size=(value)
         # accepts a Numeric or Array but
         # must always store value as an array of three bytes
         size = []
-        if val.kind_of?(Array) && val.size <= 3
-          size = val
-        elsif val.kind_of?(Numeric) && (val + 1) / 247 <= 2
+        if value.kind_of?(Array) && value.size <= 3
+          size = value
+        elsif value.kind_of?(Numeric) && (value + 1) / 247 <= 2
           size = []
-          div, mod = *val.divmod(247)
+          div, mod = *value.divmod(247)
           size << mod unless mod.zero?
           div.times { size << 247 }
         end
