@@ -46,8 +46,8 @@ module MIDIMessage
     protected
 
     def self.included(base)
-      base.include(ShortMessage)
-      base.extend(ClassMethods)
+      base.send(:include, ShortMessage)
+      base.send(:extend, ClassMethods)
     end
 
     private

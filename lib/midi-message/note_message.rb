@@ -4,7 +4,7 @@ module MIDIMessage
   module NoteMessage
 
     def self.included(base)
-      base.include(ChannelMessage)
+      base.send(:include, ChannelMessage)
     end
 
     # The octave number of the note

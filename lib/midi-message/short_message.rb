@@ -35,7 +35,7 @@ module MIDIMessage
     protected
     
     def self.included(base)
-      base.extend(ClassMethods)
+      base.send(:extend, ClassMethods)
     end
     
     def update

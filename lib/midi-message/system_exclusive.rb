@@ -4,7 +4,7 @@ module MIDIMessage
   module SystemExclusive
 
     def self.included(base)
-      base.include(InstanceMethods)
+      base.send(:include, InstanceMethods)
     end
 
     # Common SysEx data that a message class will contain

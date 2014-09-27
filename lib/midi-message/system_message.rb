@@ -4,7 +4,7 @@ module MIDIMessage
   module SystemMessage
 
     def self.included(base)
-      base.include(ShortMessage)
+      base.send(:include, ShortMessage)
     end
 
     # In the case of something like SystemCommon.new(0xF2, 0x00, 0x08), the first nibble F is redundant because
