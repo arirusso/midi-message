@@ -4,10 +4,10 @@
 #
 
 dir = File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH.unshift dir + '/../lib'
+$LOAD_PATH.unshift dir + "/../lib"
 
-require 'midi-message'
-require 'pp'
+require "midi-message"
+require "pp"
 
 pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 

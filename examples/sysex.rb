@@ -4,10 +4,10 @@
 #
 
 dir = File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH.unshift dir + '/../lib'
+$LOAD_PATH.unshift dir + "/../lib"
 
-require 'midi-message'
-require 'pp'
+require "midi-message"
+require "pp"
 
 include MIDIMessage
 
@@ -16,7 +16,7 @@ include MIDIMessage
 pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 
 # or create a Node (destination) object and then send messages to that.
-# a Node represents a device that you're sending a message to 
+# a Node represents a device that you"re sending a message to 
 # (eg. your Yamaha DX7 is a Node).
 
 node = SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_id => 0x10)
@@ -26,18 +26,18 @@ node = SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_id => 0x10)
 #
 # A command is a sysex message where the status (byte index 4) is 0x12
 #
-# A Request type message (SystemExclusive::Request) has a status byte 
-# equal to 0x11 
- 
+# A Request type message (SystemExclusive::Request) has a status byte
+# equal to 0x11
+
 pp SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => node)
 
 # it is actually optional to pass a node to your message-- one case where not
-# doing so is useful is when want to have a generic message prototype used with 
+# doing so is useful is when want to have a generic message prototype used with
 # multiple nodes
 
 prototype = SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00)
 
-pp node.new_message_from(prototype) # this will create a new message using the prototype's data and the node's information
+pp node.new_message_from(prototype) # this will create a new message using the prototype"s data and the node"s information
 
 # you can also generate a totally new message from the Node
 
