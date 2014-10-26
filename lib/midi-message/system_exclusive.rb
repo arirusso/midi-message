@@ -3,6 +3,8 @@ module MIDIMessage
   # MIDI System-Exclusive Messages (SysEx)
   module SystemExclusive
 
+    include MIDIMessage # this enables ..kind_of?(MIDIMessage)
+    
     def self.included(base)
       base.send(:include, InstanceMethods)
     end
@@ -18,7 +20,7 @@ module MIDIMessage
 
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
-        omit = options[:omit] || [] 
+        omit = options[:omit] || []
         node = @node.to_a(options) unless @node.nil? || omit.include?(:node)
         # this may need to be cached when properties are updated
         # might be worth benchmarking
@@ -44,7 +46,7 @@ module MIDIMessage
 
       # string representation of the object's bytes
       def to_hex_s
-        strings = to_bytes.map do |byte| 
+        strings = to_bytes.map do |byte|
           string = byte.to_s(16)
           string = "0#{string}" if string.length == 1
           string
@@ -73,7 +75,7 @@ module MIDIMessage
       # alternate method from
       # http://www.2writers.com/eddie/TutSysEx.htm
       def checksum
-        sum = (address + [value].flatten).inject(&:+) 
+        sum = (address + [value].flatten).inject(&:+)
         mod = sum.divmod(128)[1]
         128 - mod
       end
@@ -107,7 +109,7 @@ module MIDIMessage
 
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
-        omit = options[:omit] || [] 
+        omit = options[:omit] || []
         node = @node.to_a(options) unless @node.nil? || omit.include?(:node)
         # this may need to be cached when properties are updated
         # might be worth benchmarking
@@ -122,7 +124,7 @@ module MIDIMessage
     end
 
     #
-    # The SystemExclusive::Node represents a destination for a message.  For example a hardware 
+    # The SystemExclusive::Node represents a destination for a message.  For example a hardware
     # synthesizer or sampler
     #
     class Node
@@ -196,7 +198,7 @@ module MIDIMessage
           msg_class = Request
         elsif type_byte == 0x12
           msg_class = Command
-        else 
+        else
           return Message.new(bytes)
         end
 

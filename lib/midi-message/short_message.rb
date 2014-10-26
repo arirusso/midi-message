@@ -3,10 +3,12 @@ module MIDIMessage
   # Common behavior amongst all Message types
   module ShortMessage
 
+    include MIDIMessage # this enables ..kind_of?(MIDIMessage)
+    
     attr_reader :name,
                 :status,
                 :verbose_name
-          
+
     # Initialize the message status
     # @param [Fixnum] status_nibble_1 The first nibble of the status
     # @param [Fixnum] status_nibble_2 The second nibble of the status
@@ -14,11 +16,11 @@ module MIDIMessage
       @status = [status_nibble_1, status_nibble_2]
       populate_using_const
     end
-    
+
     # Byte array representation of the message eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
     # @return [Array<Fixnum>] The array of bytes in the MIDI message
     def to_a
-      data = @data.nil? ? [] : [@data[0], @data[1]] 
+      data = @data.nil? ? [] : [@data[0], @data[1]]
       [(@status[0] << 4) + @status[1], *data].compact
     end
     alias_method :to_byte_a, :to_a
@@ -31,19 +33,19 @@ module MIDIMessage
       TypeConversion.numeric_byte_array_to_hex_string(to_a)
     end
     alias_method :to_bytestr, :to_hex_s
-    
+
     protected
-    
+
     def self.included(base)
       base.send(:extend, ClassMethods)
     end
-    
+
     def update
       populate_using_const
     end
-    
+
     private
-    
+
     # This will populate message metadata with information gathered from midi.yml
     def populate_using_const
       const_group_name = self.class.display_name
@@ -57,22 +59,22 @@ module MIDIMessage
         unless const.nil?
           @const = const
           @name = @const.nil? ? const.key : @const.key
-          @verbose_name = "#{self.class.display_name}: #{@name}"          
+          @verbose_name = "#{self.class.display_name}: #{@name}"
         end
-      end      
+      end
     end
 
     module ClassMethods
-            
+
       # Find a constant value in this class's group for the passed in key
       # @param [String] name The constant key
       # @return [String] The constant value
-      def get_constant(name)        
+      def get_constant(name)
         key = constant_name || display_name
         unless key.nil?
           group = ConstantGroup[key]
           group.find(name)
-        end 
+        end
       end
 
       def display_name
@@ -98,7 +100,7 @@ module MIDIMessage
         const = get_constant(const_name.to_s)
         MessageBuilder.new(self, const) unless const.nil?
       end
-      
+
     end
 
   end
@@ -107,29 +109,29 @@ module MIDIMessage
 
     # @param [MIDIMessage] klass The message class to build
     # @param [String] const The constant to build the message with
-    def initialize(klass, const)      
-      @klass = klass      
+    def initialize(klass, const)
+      @klass = klass
       @const = const
     end
 
-    def new(*a)    
-      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)         
+    def new(*a)
+      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)
       @klass.new(*a)
     end
 
   end
-  
+
   # Shortcuts for dealing with message status
   module Status
-    
+
     # The value of the Status constant with the name status_name
     # @param [String] status_name The key to use to look up a constant value
     # @return [String] The constant value that was looked up
     def self.[](status_name)
       const = Constant.find("Status", status_name)
       const.value unless const.nil?
-    end    
-    
+    end
+
   end
 
 end
