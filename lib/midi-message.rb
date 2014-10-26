@@ -1,12 +1,13 @@
 #
 # Ruby MIDI message objects
 #
-# (c)2011-2014 Ari Russo and licensed under the Apache 2.0 License
-# 
+# (c)2011-2014 Ari Russo
+# Apache 2.0 License
+#
 module MIDIMessage
-    
+
   VERSION = "0.4.2"
- 
+
 end
 
 # Libs
@@ -26,4 +27,3 @@ require "midi-message/constant"
 require "midi-message/context"
 require "midi-message/message"
 require "midi-message/parser"
-
