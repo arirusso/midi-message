@@ -9,9 +9,7 @@ $LOAD_PATH.unshift dir + "/../lib"
 require "midi-message"
 require "pp"
 
-include MIDIMessage
-
-with(:channel => 0, :velocity => 100) do
+MIDIMessage.with(:channel => 0, :velocity => 100) do
 
   note_on("E4")
   note_off("E4")

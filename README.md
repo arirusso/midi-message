@@ -22,8 +22,6 @@ Or if you're using Bundler, add this to your Gemfile
 
 ```ruby
 require "midi-message"
-  
-include MIDIMessage
 ```
   
 #### Basic Messages
@@ -31,11 +29,11 @@ include MIDIMessage
 There are a few ways to create a new MIDI message.  Here are some examples
  
 ```ruby   
-NoteOn.new(0, 64, 64)
+MIDIMessage::NoteOn.new(0, 64, 64)
   
-NoteOn["E4"].new(0, 100)
+MIDIMessage::NoteOn["E4"].new(0, 100)
   
-with(:channel => 0, :velocity => 100) { note_on("E4") }
+MIDIMessage.with(:channel => 0, :velocity => 100) { note_on("E4") }
 ```
 
 Those expressions all evaluate to the same object
@@ -56,7 +54,7 @@ Those expressions all evaluate to the same object
 As with any kind of message, you can begin with raw data
   
 ```ruby
-SystemExclusive.new(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
+MIDIMessage::SystemExclusive.new(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 ```
   
 Or in a more object oriented way

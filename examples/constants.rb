@@ -9,13 +9,11 @@ $LOAD_PATH.unshift dir + "/../lib"
 require "midi-message"
 require "pp"
 
-include MIDIMessage
-
 # some messages for a sequencer
 
-pp SystemRealtime["Start"].new
-pp NoteOn["E4"].new(0, 100)
-pp SystemRealtime["Stop"].new
+pp MIDIMessage::SystemRealtime["Start"].new
+pp MIDIMessage::NoteOn["E4"].new(0, 100)
+pp MIDIMessage::SystemRealtime["Stop"].new
 
 # this should output something like:
 
