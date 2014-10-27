@@ -4,10 +4,10 @@ require 'helper'
 
 class ContextTest < Test::Unit::TestCase
 
-  include MIDIMessage
   include TestHelper
+
   def test_note_off
-    msg = with(:channel => 0, :velocity => 64) do
+    msg = MIDIMessage.with(:channel => 0, :velocity => 64) do
       note_off(55)
     end
     assert_equal(0, msg.channel)
@@ -18,7 +18,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_note_on
-    msg = with(:channel => 0, :velocity => 64) do
+    msg = MIDIMessage.with(:channel => 0, :velocity => 64) do
       note_on(55)
     end
     assert_equal(0, msg.channel)
@@ -29,7 +29,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_control_change
-    msg = with(:channel => 2) do
+    msg = MIDIMessage.with(:channel => 2) do
       control_change(0x20, 0x30)
     end
     assert_equal(msg.channel, 2)
@@ -41,7 +41,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_polyphonic_aftertouch
-    msg = with(:channel => 1) do
+    msg = MIDIMessage.with(:channel => 1) do
       polyphonic_aftertouch(0x40, 0x40)
     end
     assert_equal(1, msg.channel)
@@ -52,7 +52,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_program_change
-    msg = with(:channel => 3) do
+    msg = MIDIMessage.with(:channel => 3) do
       program_change(0x40)
     end
     assert_equal(3, msg.channel)
@@ -63,7 +63,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_channel_aftertouch
-    msg = with(:channel => 3) do
+    msg = MIDIMessage.with(:channel => 3) do
       channel_aftertouch(0x50)
     end
     assert_equal(3, msg.channel)
@@ -73,7 +73,7 @@ class ContextTest < Test::Unit::TestCase
   end
 
   def test_pitch_bend
-    msg = with(:channel => 0) do
+    msg = MIDIMessage.with(:channel => 0) do
       pitch_bend(0x50, 0xA0)
     end
     assert_equal(0, msg.channel)
