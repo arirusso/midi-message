@@ -2,10 +2,8 @@ require "helper"
 
 class MutabilityTest < Test::Unit::TestCase
 
-  include MIDIMessage
-
   def test_note
-    msg = NoteOn["E4"].new(0, 100)
+    msg = MIDIMessage::NoteOn["E4"].new(0, 100)
     assert_equal(0x40, msg.note)
     assert_equal("E4", msg.name)
     msg.note += 5
@@ -14,7 +12,7 @@ class MutabilityTest < Test::Unit::TestCase
   end
 
   def test_octave
-    msg = NoteOn["E4"].new(0, 100)
+    msg = MIDIMessage::NoteOn["E4"].new(0, 100)
     assert_equal(0x40, msg.note)
     assert_equal("E4", msg.name)
     msg.octave += 1
