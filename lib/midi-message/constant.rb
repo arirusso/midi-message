@@ -64,13 +64,14 @@ module MIDIMessage
       @const = const
     end
 
-    def new(*a)
-      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)
-      @klass.new(*a)
+    def new(*args)
+      args = args.dup
+      args.last.kind_of?(Hash) ? args.last[:const] = @const : args.push(:const => @const)
+      @klass.new(*args)
     end
 
   end
-  
+
   # Shortcuts for dealing with message status
   module Status
 
