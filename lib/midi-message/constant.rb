@@ -89,6 +89,38 @@ module MIDIMessage
 
     module Loader
 
+      module InstanceMethods
+
+        extend self
+
+        def update
+          populate_using_const
+        end
+
+        private
+
+        # This will populate message metadata with information gathered from midi.yml
+        def populate_using_const
+          const_group_name = self.class.display_name
+          group_name_alias = self.class.constant_name
+          property = self.class.constant_property
+          value = self.send(property) unless property.nil?
+          value ||= @status[1] # default property to use for constants
+          group = Constant::Group[group_name_alias] || Constant::Group[const_group_name]
+          unless group.nil?
+            const = group.find_by_value(value)
+            unless const.nil?
+              @const = const
+              @name = @const.nil? ? const.key : @const.key
+              @verbose_name = "#{self.class.display_name}: #{@name}"
+            end
+          end
+        end
+
+      end
+
+      module ClassMethods
+
       # Find a constant value in this class's group for the passed in key
       # @param [String] name The constant key
       # @return [String] The constant value
@@ -123,6 +155,8 @@ module MIDIMessage
         const = get_constant(const_name.to_s)
         MessageBuilder.new(self, const) unless const.nil?
       end
+
+    end
 
     end
 

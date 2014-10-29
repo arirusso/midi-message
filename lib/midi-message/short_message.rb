@@ -37,31 +37,8 @@ module MIDIMessage
     protected
 
     def self.included(base)
-      base.send(:extend, Constant::Loader)
-    end
-
-    def update
-      populate_using_const
-    end
-
-    private
-
-    # This will populate message metadata with information gathered from midi.yml
-    def populate_using_const
-      const_group_name = self.class.display_name
-      group_name_alias = self.class.constant_name
-      property = self.class.constant_property
-      value = self.send(property) unless property.nil?
-      value ||= @status[1] # default property to use for constants
-      group = Constant::Group[group_name_alias] || Constant::Group[const_group_name]
-      unless group.nil?
-        const = group.find_by_value(value)
-        unless const.nil?
-          @const = const
-          @name = @const.nil? ? const.key : @const.key
-          @verbose_name = "#{self.class.display_name}: #{@name}"
-        end
-      end
+      base.send(:include, Constant::Loader::InstanceMethods)
+      base.send(:extend, Constant::Loader::ClassMethods)
     end
 
   end

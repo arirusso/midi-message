@@ -4,6 +4,7 @@ module MIDIMessage
   module ChannelMessage
 
     include MIDIMessage # this enables ..kind_of?(MIDIMessage)
+    
     attr_reader :data, :name
 
     # Shortcut to RawChannelMessage.new
