@@ -1,10 +1,6 @@
-#!/usr/bin/env ruby
-
-require 'helper'
+require "helper"
 
 class ContextTest < Test::Unit::TestCase
-
-  include TestHelper
 
   def test_note_off
     msg = MIDIMessage.with(:channel => 0, :velocity => 64) do
