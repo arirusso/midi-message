@@ -137,6 +137,12 @@ module MIDIMessage
           constant_map[constant_name] unless constant_map.nil?
         end
 
+        # Get the status nibble for this particular message type
+        # @return [Fixnum] The status nibble
+        def type_for_status
+          Constant::Status[display_name]
+        end
+
         # This returns a MessageBuilder for the class, preloaded with the selected const
         # @param [String, Symbol] const_name The constant key to use to build the message
         # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant

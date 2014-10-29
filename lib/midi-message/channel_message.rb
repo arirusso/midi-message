@@ -71,12 +71,6 @@ module MIDIMessage
     # For defining Channel Message class types
     module ClassMethods
 
-      # Get the status nibble for this particular message type
-      # @return [Fixnum] The status nibble
-      def type_for_status
-        Constant::Status[display_name]
-      end
-
       def properties
         const_get("DATA") if const_defined?("DATA")
       end
