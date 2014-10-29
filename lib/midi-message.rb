@@ -20,7 +20,7 @@ require "midi-message/type_conversion"
 
 # Classes
 require "midi-message/context"
-require "midi-message/message"
+require "midi-message/messages"
 require "midi-message/parser"
 
 module MIDIMessage
