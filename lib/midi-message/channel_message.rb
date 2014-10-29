@@ -48,7 +48,7 @@ module MIDIMessage
     protected
 
     def self.included(base)
-      base.send(:include, ShortMessage)
+      base.send(:include, ::MIDIMessage::Message)
       base.send(:extend, ClassMethods)
     end
 
@@ -65,7 +65,7 @@ module MIDIMessage
       @data = [data_byte_1]
       @data[1] = data_byte_2 if self.class.second_data_byte?
       initialize_properties
-      initialize_short_message(status_nibble_1, status_nibble_2)
+      initialize_message(status_nibble_1, status_nibble_2)
     end
 
     # For defining Channel Message class types

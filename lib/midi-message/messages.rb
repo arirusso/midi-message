@@ -9,7 +9,7 @@ module MIDIMessage
 
     DATA = [:channel, :value]
     DISPLAY_NAME = "Channel Aftertouch"
-    
+
   end
   ChannelPressure = ChannelAftertouch
 
@@ -23,8 +23,8 @@ module MIDIMessage
     DATA = [:channel, :index, :value]
     DISPLAY_NAME = "Control Change"
     CONSTANT = { "Control Change" => :index }
-   
-  end  
+
+  end
   Controller = ControlChange #shortcut
 
   #
@@ -84,13 +84,13 @@ module MIDIMessage
   # MIDI Note-On message
   #
   class NoteOn
-    
-    include NoteMessage   
+
+    include NoteMessage
 
     DATA = [:channel, :note, :velocity]
     DISPLAY_NAME = "Note On"
     CONSTANT = { "Note" => :note }
-    
+
     # returns the NoteOff equivalent of this object
     def to_note_off
       NoteOff.new(channel, note, velocity)
@@ -106,20 +106,20 @@ module MIDIMessage
     include SystemMessage
 
     DISPLAY_NAME = "System Common"
-    
+
     attr_reader :data
-    
+
     def initialize(*args)
       options = args.last.kind_of?(Hash) ? args.pop : {}
       @const = options[:const]
       id = @const.nil? ? args.shift : @const.value
       id = strip_redundant_nibble(id)
-      initialize_short_message(0xF, id)
+      initialize_message(0xF, id)
       @data = args.slice(0..1)
     end
-    
-  end  
-  
+
+  end
+
   #
   # MIDI System-Realtime message
   #
@@ -128,13 +128,13 @@ module MIDIMessage
     include SystemMessage
 
     DISPLAY_NAME = "System Realtime"
-    
+
     def initialize(*args)
-      options = args.last.kind_of?(Hash) ? args.pop : {} 
+      options = args.last.kind_of?(Hash) ? args.pop : {}
       @const = options[:const]
       id = @const.nil? ? args.first : @const.value
       id = strip_redundant_nibble(id)
-      initialize_short_message(0xF, id)
+      initialize_message(0xF, id)
     end
 
     def id
@@ -155,7 +155,7 @@ module MIDIMessage
       alias_method :value, :data
 
       TypeByte = 0x12
-      
+
       def initialize(address, data, options = {})
         # store as a byte if it's a single byte
         @data = if data.kind_of?(Array) && data.length == 1
@@ -165,20 +165,20 @@ module MIDIMessage
         end
         initialize_sysex(address, options)
       end
-      
+
     end
-    
+
     # A SysEx request message
     # A request message is identified by having a status byte equal to 0x11
     class Request
 
       include SystemExclusive
-      
+
       attr_reader :size
       alias_method :value, :size
 
       TypeByte = 0x11
-      
+
       def initialize(address, size, options = {})
         self.size = if size.kind_of?(Array) && size.count == 1
           size.first
@@ -187,7 +187,7 @@ module MIDIMessage
         end
         initialize_sysex(address, options)
       end
-      
+
       def size=(value)
         # accepts a Numeric or Array but
         # must always store value as an array of three bytes
@@ -203,10 +203,9 @@ module MIDIMessage
         (3 - size.size).times { size.unshift 0 }
         @size = size
       end
-      
+
     end
 
   end
-  
-end
 
+end

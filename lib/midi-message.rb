@@ -11,7 +11,7 @@ require "yaml"
 
 # Modules
 require "midi-message/constant"
-require "midi-message/short_message"
+require "midi-message/message"
 require "midi-message/channel_message"
 require "midi-message/note_message"
 require "midi-message/system_exclusive"
