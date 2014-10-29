@@ -73,7 +73,7 @@ module MIDIMessage
       # Get the status nibble for this particular message type
       # @return [Fixnum] The status nibble
       def type_for_status
-        Status[display_name]
+        Constant::Status[display_name]
       end
 
       def properties

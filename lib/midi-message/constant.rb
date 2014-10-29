@@ -1,86 +1,129 @@
 module MIDIMessage
 
-  # MIDI Constants
-  class ConstantGroup
-
-    attr_reader :key, :value
-
-    def initialize(key, constants)
-      @key = key
-      @constants = constants.map { |k, v| Constant.new(k, v) }
-    end
-
-    def find(name)
-      @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }
-    end
-    alias_method :[], :find
-
-    def find_by_value(value)
-      @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
-    end
-
-    def self.all
-      ensure_initialized
-      @groups
-    end
-
-    def self.[](key)
-      ensure_initialized
-      @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
-    end
-
-    private
-
-    # lazy initialize
-    def self.ensure_initialized
-      @dict ||= YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
-      @groups ||= @dict.map { |k, v| new(k, v) }
-    end
-
-  end
-
-  class Constant
-
-    attr_reader :key, :value
-
-    def initialize(key, value)
-      @key = key
-      @value = value
-    end
+  module Constant
 
     def self.find(group_name, const_name)
-      group = ConstantGroup[group_name]
+      group = Group[group_name]
       group.find(const_name)
     end
 
-  end
+    # MIDI Constants
+    class Group
 
-  class MessageBuilder
+      attr_reader :key, :value
 
-    # @param [MIDIMessage] klass The message class to build
-    # @param [String] const The constant to build the message with
-    def initialize(klass, const)
-      @klass = klass
-      @const = const
+      def initialize(key, constants)
+        @key = key
+        @constants = constants.map { |k, v| Constant::Map.new(k, v) }
+      end
+
+      def find(name)
+        @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }
+      end
+      alias_method :[], :find
+
+      def find_by_value(value)
+        @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
+      end
+
+      def self.all
+        ensure_initialized
+        @groups
+      end
+
+      def self.[](key)
+        ensure_initialized
+        @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
+      end
+
+      private
+
+      # lazy initialize
+      def self.ensure_initialized
+        @dict ||= YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
+        @groups ||= @dict.map { |k, v| new(k, v) }
+      end
+
     end
 
-    def new(*args)
-      args = args.dup
-      args.last.kind_of?(Hash) ? args.last[:const] = @const : args.push(:const => @const)
-      @klass.new(*args)
+    class Map
+
+      attr_reader :key, :value
+
+      def initialize(key, value)
+        @key = key
+        @value = value
+      end
+
     end
 
-  end
+    class MessageBuilder
 
-  # Shortcuts for dealing with message status
-  module Status
+      # @param [MIDIMessage] klass The message class to build
+      # @param [String] const The constant to build the message with
+      def initialize(klass, const)
+        @klass = klass
+        @const = const
+      end
 
-    # The value of the Status constant with the name status_name
-    # @param [String] status_name The key to use to look up a constant value
-    # @return [String] The constant value that was looked up
-    def self.[](status_name)
-      const = Constant.find("Status", status_name)
-      const.value unless const.nil?
+      def new(*args)
+        args = args.dup
+        args.last.kind_of?(Hash) ? args.last[:const] = @const : args.push(:const => @const)
+        @klass.new(*args)
+      end
+
+    end
+
+    # Shortcuts for dealing with message status
+    module Status
+
+      # The value of the Status constant with the name status_name
+      # @param [String] status_name The key to use to look up a constant value
+      # @return [String] The constant value that was looked up
+      def self.[](status_name)
+        const = Constant.find("Status", status_name)
+        const.value unless const.nil?
+      end
+
+    end
+
+    module Loader
+
+      # Find a constant value in this class's group for the passed in key
+      # @param [String] name The constant key
+      # @return [String] The constant value
+      def get_constant(name)
+        key = constant_name || display_name
+        unless key.nil?
+          group = Group[key]
+          group.find(name)
+        end
+      end
+
+      def display_name
+        const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
+      end
+
+      def constant_map
+        const_get("CONSTANT") if const_defined?("CONSTANT")
+      end
+
+      def constant_name
+        constant_map.keys.first unless constant_map.nil?
+      end
+
+      def constant_property
+        constant_map[constant_name] unless constant_map.nil?
+      end
+
+      # This returns a MessageBuilder for the class, preloaded with the selected const
+      # @param [String, Symbol] const_name The constant key to use to build the message
+      # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
+      def [](const_name)
+        const = get_constant(const_name.to_s)
+        MessageBuilder.new(self, const) unless const.nil?
+      end
+
     end
 
   end

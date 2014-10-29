@@ -37,7 +37,7 @@ module MIDIMessage
     protected
 
     def self.included(base)
-      base.send(:extend, ClassMethods)
+      base.send(:extend, Constant::Loader)
     end
 
     def update
@@ -53,7 +53,7 @@ module MIDIMessage
       property = self.class.constant_property
       value = self.send(property) unless property.nil?
       value ||= @status[1] # default property to use for constants
-      group = ConstantGroup[group_name_alias] || ConstantGroup[const_group_name]
+      group = Constant::Group[group_name_alias] || Constant::Group[const_group_name]
       unless group.nil?
         const = group.find_by_value(value)
         unless const.nil?
@@ -62,45 +62,6 @@ module MIDIMessage
           @verbose_name = "#{self.class.display_name}: #{@name}"
         end
       end
-    end
-
-    module ClassMethods
-
-      # Find a constant value in this class's group for the passed in key
-      # @param [String] name The constant key
-      # @return [String] The constant value
-      def get_constant(name)
-        key = constant_name || display_name
-        unless key.nil?
-          group = ConstantGroup[key]
-          group.find(name)
-        end
-      end
-
-      def display_name
-        const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
-      end
-
-      def constant_map
-        const_get("CONSTANT") if const_defined?("CONSTANT")
-      end
-
-      def constant_name
-        constant_map.keys.first unless constant_map.nil?
-      end
-
-      def constant_property
-        constant_map[constant_name] unless constant_map.nil?
-      end
-
-      # This returns a MessageBuilder for the class, preloaded with the selected const
-      # @param [String, Symbol] const_name The constant key to use to build the message
-      # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
-      def [](const_name)
-        const = get_constant(const_name.to_s)
-        MessageBuilder.new(self, const) unless const.nil?
-      end
-
     end
 
   end
