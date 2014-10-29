@@ -89,74 +89,63 @@ module MIDIMessage
 
     module Loader
 
-      module InstanceMethods
-
-        extend self
-
-        def update
-          populate_using_const
+      # Used to populate message metadata with information gathered from midi.yml
+      def self.get_info(message)
+        const_group_name = message.class.display_name
+        group_name_alias = message.class.constant_name
+        property = message.class.constant_property
+        value = message.send(property) unless property.nil?
+        value ||= message.status[1] # default property to use for constants
+        group = Constant::Group[group_name_alias] || Constant::Group[const_group_name]
+        unless group.nil?
+          unless (const = group.find_by_value(value)).nil?
+            {
+              :const => const,
+              :name => const.key,
+              :verbose_name => "#{message.class.display_name}: #{@name}"
+            }
+          end
         end
+      end
 
-        private
+      module DSL
 
-        # This will populate message metadata with information gathered from midi.yml
-        def populate_using_const
-          const_group_name = self.class.display_name
-          group_name_alias = self.class.constant_name
-          property = self.class.constant_property
-          value = self.send(property) unless property.nil?
-          value ||= @status[1] # default property to use for constants
-          group = Constant::Group[group_name_alias] || Constant::Group[const_group_name]
-          unless group.nil?
-            const = group.find_by_value(value)
-            unless const.nil?
-              @const = const
-              @name = @const.nil? ? const.key : @const.key
-              @verbose_name = "#{self.class.display_name}: #{@name}"
-            end
+        # Find a constant value in this class's group for the passed in key
+        # @param [String] name The constant key
+        # @return [String] The constant value
+        def get_constant(name)
+          key = constant_name || display_name
+          unless key.nil?
+            group = Group[key]
+            group.find(name)
           end
         end
 
-      end
-
-      module ClassMethods
-
-      # Find a constant value in this class's group for the passed in key
-      # @param [String] name The constant key
-      # @return [String] The constant value
-      def get_constant(name)
-        key = constant_name || display_name
-        unless key.nil?
-          group = Group[key]
-          group.find(name)
+        def display_name
+          const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
         end
-      end
 
-      def display_name
-        const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
-      end
+        def constant_map
+          const_get("CONSTANT") if const_defined?("CONSTANT")
+        end
 
-      def constant_map
-        const_get("CONSTANT") if const_defined?("CONSTANT")
-      end
+        def constant_name
+          constant_map.keys.first unless constant_map.nil?
+        end
 
-      def constant_name
-        constant_map.keys.first unless constant_map.nil?
-      end
+        def constant_property
+          constant_map[constant_name] unless constant_map.nil?
+        end
 
-      def constant_property
-        constant_map[constant_name] unless constant_map.nil?
-      end
+        # This returns a MessageBuilder for the class, preloaded with the selected const
+        # @param [String, Symbol] const_name The constant key to use to build the message
+        # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
+        def [](const_name)
+          const = get_constant(const_name.to_s)
+          MessageBuilder.new(self, const) unless const.nil?
+        end
 
-      # This returns a MessageBuilder for the class, preloaded with the selected const
-      # @param [String, Symbol] const_name The constant key to use to build the message
-      # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
-      def [](const_name)
-        const = get_constant(const_name.to_s)
-        MessageBuilder.new(self, const) unless const.nil?
       end
-
-    end
 
     end
 

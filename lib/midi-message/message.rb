@@ -28,11 +28,22 @@ module MIDIMessage
     end
     alias_method :to_bytestr, :to_hex_s
 
+    def update
+      populate_using_const
+    end
+
     protected
 
+    def populate_using_const
+      unless (info = Constant::Loader.get_info(self)).nil?
+        @const = info[:const]
+        @name = info[:name]
+        @verbose_name = info[:verbose_name]
+      end
+    end
+
     def self.included(base)
-      base.send(:include, Constant::Loader::InstanceMethods)
-      base.send(:extend, Constant::Loader::ClassMethods)
+      base.send(:extend, Constant::Loader::DSL)
       base.send(:include, MIDIMessage) # this enables ..kind_of?(MIDIMessage)
       base.send(:attr_reader, :name, :status, :verbose_name)
     end
