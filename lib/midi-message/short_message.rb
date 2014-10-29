@@ -4,7 +4,7 @@ module MIDIMessage
   module ShortMessage
 
     include MIDIMessage # this enables ..kind_of?(MIDIMessage)
-    
+
     attr_reader :name,
                 :status,
                 :verbose_name
@@ -101,35 +101,6 @@ module MIDIMessage
         MessageBuilder.new(self, const) unless const.nil?
       end
 
-    end
-
-  end
-
-  class MessageBuilder
-
-    # @param [MIDIMessage] klass The message class to build
-    # @param [String] const The constant to build the message with
-    def initialize(klass, const)
-      @klass = klass
-      @const = const
-    end
-
-    def new(*a)
-      a.last.kind_of?(Hash) ? a.last[:const] = @const : a.push(:const => @const)
-      @klass.new(*a)
-    end
-
-  end
-
-  # Shortcuts for dealing with message status
-  module Status
-
-    # The value of the Status constant with the name status_name
-    # @param [String] status_name The key to use to look up a constant value
-    # @return [String] The constant value that was looked up
-    def self.[](status_name)
-      const = Constant.find("Status", status_name)
-      const.value unless const.nil?
     end
 
   end
