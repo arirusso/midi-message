@@ -89,8 +89,16 @@ module MIDIMessage
 
     module Loader
 
+      extend self
+
+      # Get the index of the constant from the given message's type
+      def get_index(message)
+        key = message.class.constant_property
+        message.class.properties.index(key) || 0
+      end
+
       # Used to populate message metadata with information gathered from midi.yml
-      def self.get_info(message)
+      def get_info(message)
         const_group_name = message.class.display_name
         group_name_alias = message.class.constant_name
         property = message.class.constant_property

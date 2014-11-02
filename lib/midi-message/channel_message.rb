@@ -20,8 +20,8 @@ module MIDIMessage
     def initialize(*data)
       data = data.dup
       options = data.last.kind_of?(Hash) ? data.pop : {}
-      processed_data = options[:const].nil? ? data : data_with_const(data, options[:const])
-      initialize_channel_message(self.class.type_for_status, *processed_data)
+      add_constant_value(options[:const], data) unless options[:const].nil?
+      initialize_channel_message(self.class.type_for_status, *data)
     end
 
     # Decorates the object with the particular properties for its type
@@ -36,6 +36,11 @@ module MIDIMessage
     def self.included(base)
       base.send(:include, ::MIDIMessage::Message)
       base.send(:extend, ClassMethods)
+    end
+
+    def add_constant_value(constant, data)
+      index = Constant::Loader.get_index(self)
+      data.insert(index, constant.value)
     end
 
     # @param [Array<Symbol>] properties
@@ -80,12 +85,6 @@ module MIDIMessage
         return self
       end
       true
-    end
-
-    def data_with_const(data, const)
-      key = self.class.constant_property
-      ind = self.class.properties.index(key) || 0
-      data.insert(ind, const.value)
     end
 
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
