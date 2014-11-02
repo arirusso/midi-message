@@ -24,6 +24,8 @@ module MIDIMessage
       initialize_channel_message(self.class.type_for_status, *processed_data)
     end
 
+    # Decorates the object with the particular properties for its type
+    # @return [Boolean]
     def initialize_properties
       schema = [
         { :name => :status, :index => 1 }, # second status nibble
@@ -34,17 +36,15 @@ module MIDIMessage
       unless properties.nil?
         properties.each_with_index do |property, i|
           property_schema = schema[i]
-          object_property = send(property_schema[:name])
+          container = send(property_schema[:name])
           index = property_schema[:index]
           self.class.send(:attr_reader, property)
-          self.class.send(:define_method, "#{property.to_s}=") do |value|
-            send(:instance_variable_set, "@#{property.to_s}", value)
-            object_property[index] = value
-            update
-            return self
-          end
-          instance_variable_set("@#{property.to_s}", object_property[index])
+          instance_variable_set("@#{property.to_s}", container[index])
+          define_setter(property, container, index)
         end
+        true
+      else
+        false
       end
     end
 
@@ -56,6 +56,20 @@ module MIDIMessage
     end
 
     private
+
+    # @param [Symbol, String] property
+    # @param [Hash] container
+    # @param [Fixnum] index
+    # @return [Boolean]
+    def define_setter(property, container, index)
+      self.class.send(:define_method, "#{property.to_s}=") do |value|
+        send(:instance_variable_set, "@#{property.to_s}", value)
+        container[index] = value
+        update
+        return self
+      end
+      true
+    end
 
     def data_with_const(data, const)
       key = self.class.constant_property
