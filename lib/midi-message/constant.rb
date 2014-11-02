@@ -49,10 +49,28 @@ module MIDIMessage
 
       private
 
-      # lazy initialize
+      # Lazy initialize
+      # @return [Boolean]
       def self.ensure_initialized
-        @dict ||= YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
-        @groups ||= @dict.map { |k, v| new(k, v) }
+        populate_dictionary | populate_groups
+      end
+
+      # Populate the dictionary of constants
+      # @return [Boolean]
+      def self.populate_dictionary
+        if @dict.nil?
+          @dict = YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
+          true
+        end
+      end
+
+      # Populate the constant groups using the dictionary
+      # @return [Boolean]
+      def self.populate_groups
+        if @groups.nil? && !@dict.nil?
+          @groups = @dict.map { |k, v| new(k, v) }
+          true
+        end
       end
 
     end
