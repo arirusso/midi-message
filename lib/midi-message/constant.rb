@@ -7,7 +7,7 @@ module MIDIMessage
       group.find(const_name)
     end
 
-    # MIDI Constants
+    # MIDI Constant container
     class Group
 
       attr_reader :key, :value
@@ -75,10 +75,13 @@ module MIDIMessage
 
     end
 
+    # The mapping of a constant key to its value eg "Note On" => 0x9
     class Map
 
       attr_reader :key, :value
 
+      # @param [String] key
+      # @param [Object] value
       def initialize(key, value)
         @key = key
         @value = value
@@ -118,6 +121,7 @@ module MIDIMessage
 
     end
 
+    # Loading constants from the spec file into messages
     module Loader
 
       extend self
@@ -151,6 +155,7 @@ module MIDIMessage
         end
       end
 
+      # DSL type class methods for loading constants into messages
       module DSL
 
         # Find a constant value in this class's group for the passed in key
