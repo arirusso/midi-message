@@ -26,9 +26,9 @@ module MIDIMessage
 
     def initialize_properties
       schema = [
-        { :name => :status, :index => 1 },
-        { :name => :data, :index => 0 },
-        { :name => :data, :index => 1 }
+        { :name => :status, :index => 1 }, # second status nibble
+        { :name => :data, :index => 0 }, # first data byte
+        { :name => :data, :index => 1 } # second data byte
       ]
       properties = self.class.properties
       unless properties.nil?
