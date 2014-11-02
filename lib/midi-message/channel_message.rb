@@ -27,35 +27,46 @@ module MIDIMessage
     # Decorates the object with the particular properties for its type
     # @return [Boolean]
     def initialize_properties
-      schema = [
-        { :name => :status, :index => 1 }, # second status nibble
-        { :name => :data, :index => 0 }, # first data byte
-        { :name => :data, :index => 1 } # second data byte
-      ]
       properties = self.class.properties
-      unless properties.nil?
-        properties.each_with_index do |property, i|
-          property_schema = schema[i]
-          container = send(property_schema[:name])
-          index = property_schema[:index]
-          self.class.send(:attr_reader, property)
-          instance_variable_set("@#{property.to_s}", container[index])
-          define_setter(property, container, index)
-        end
-        true
-      else
-        false
-      end
+      add_properties(properties) unless properties.nil?
     end
 
-    protected
+    private
 
     def self.included(base)
       base.send(:include, ::MIDIMessage::Message)
       base.send(:extend, ClassMethods)
     end
 
-    private
+    # @param [Array<Symbol>] properties
+    # @return [Boolean]
+    def add_properties(properties)
+      has_properties = false
+      schema = [
+        { :name => :status, :index => 1 }, # second status nibble
+        { :name => :data, :index => 0 }, # first data byte
+        { :name => :data, :index => 1 } # second data byte
+      ]
+      properties.each_with_index do |property, i|
+        property_schema = schema[i]
+        container = send(property_schema[:name])
+        index = property_schema[:index]
+        define_getter(property, container, index)
+        define_setter(property, container, index)
+        has_properties = true
+      end
+      has_properties
+    end
+
+    # @param [Symbol, String] property
+    # @param [Hash] container
+    # @param [Fixnum] index
+    # @return [Boolean]
+    def define_getter(property, container, index)
+      self.class.send(:attr_reader, property)
+      instance_variable_set("@#{property.to_s}", container[index])
+      true
+    end
 
     # @param [Symbol, String] property
     # @param [Hash] container
