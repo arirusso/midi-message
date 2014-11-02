@@ -25,22 +25,25 @@ module MIDIMessage
     end
 
     def initialize_properties
-      props = [
+      schema = [
         { :name => :status, :index => 1 },
         { :name => :data, :index => 0 },
         { :name => :data, :index => 1 }
       ]
       properties = self.class.properties
       unless properties.nil?
-        properties.each_with_index do |prop,i|
-          self.class.send(:attr_reader, prop)
-          self.class.send(:define_method, "#{prop}=") do |val|
-            send(:instance_variable_set, "@#{prop.to_s}", val)
-            send(props[i][:name])[props[i][:index]] = val
+        properties.each_with_index do |property, i|
+          property_schema = schema[i]
+          object_property = send(property_schema[:name])
+          index = property_schema[:index]
+          self.class.send(:attr_reader, property)
+          self.class.send(:define_method, "#{property.to_s}=") do |value|
+            send(:instance_variable_set, "@#{property.to_s}", value)
+            object_property[index] = value
             update
             return self
           end
-          instance_variable_set("@#{prop}", send(props[i][:name])[props[i][:index]])
+          instance_variable_set("@#{property.to_s}", object_property[index])
         end
       end
     end
