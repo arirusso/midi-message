@@ -17,20 +17,31 @@ module MIDIMessage
         @constants = constants.map { |k, v| Constant::Map.new(k, v) }
       end
 
+      # Find a constant by its name
+      # @param [String, Symbol] name
+      # @return [Constant::Map]
       def find(name)
         @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }
       end
       alias_method :[], :find
 
+      # Find a constant by its value
+      # @param [Object] value
+      # @return [Constant::Map]
       def find_by_value(value)
         @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
       end
 
+      # All constant groups
+      # @return [Array<ConstantGroup>]
       def self.all
         ensure_initialized
         @groups
       end
 
+      # Find a constant group by its key
+      # @param [String, Symbol] key
+      # @return [ConstantGroup]
       def self.[](key)
         ensure_initialized
         @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
@@ -66,6 +77,8 @@ module MIDIMessage
         @const = const
       end
 
+      # @param [*Object] args
+      # @return [Message]
       def new(*args)
         args = args.dup
         args.last.kind_of?(Hash) ? args.last[:const] = @const : args.push(:const => @const)
@@ -92,12 +105,16 @@ module MIDIMessage
       extend self
 
       # Get the index of the constant from the given message's type
+      # @param [Message] message
+      # @return [Fixnum]
       def get_index(message)
         key = message.class.constant_property
         message.class.properties.index(key) || 0
       end
 
       # Used to populate message metadata with information gathered from midi.yml
+      # @param [Message] message
+      # @return [Hash, nil]
       def get_info(message)
         const_group_name = message.class.display_name
         group_name_alias = message.class.constant_name
@@ -129,18 +146,22 @@ module MIDIMessage
           end
         end
 
+        # @return [String]
         def display_name
           const_get("DISPLAY_NAME") if const_defined?("DISPLAY_NAME")
         end
 
+        # @return [Hash]
         def constant_map
           const_get("CONSTANT") if const_defined?("CONSTANT")
         end
 
+        # @return [String]
         def constant_name
           constant_map.keys.first unless constant_map.nil?
         end
 
+        # @return [Symbol]
         def constant_property
           constant_map[constant_name] unless constant_map.nil?
         end
