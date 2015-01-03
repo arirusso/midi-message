@@ -1,6 +1,6 @@
 require "helper"
 
-class SystemExclusiveMessageTest < Test::Unit::TestCase
+class SystemExclusiveMessageTest < Minitest::Test
 
   def test_node
     node = MIDIMessage::SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_id => 0x10)

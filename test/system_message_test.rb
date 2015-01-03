@@ -1,6 +1,6 @@
 require "helper"
 
-class SystemMessageTest < Test::Unit::TestCase
+class SystemMessageTest < Minitest::Test
 
   def test_system_common
     msg = MIDIMessage::SystemCommon.new(0x2, 0x00, 0x08)

@@ -1,6 +1,6 @@
 require "helper"
 
-class ConstantsTest < Test::Unit::TestCase
+class ConstantsTest < Minitest::Test
 
   def test_note_on
     msg = MIDIMessage::NoteOn["c3"].new(0, 100)

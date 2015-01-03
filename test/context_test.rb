@@ -1,6 +1,6 @@
 require "helper"
 
-class ContextTest < Test::Unit::TestCase
+class ContextTest < Minitest::Test
 
   def test_note_off
     msg = MIDIMessage.with(:channel => 0, :velocity => 64) do

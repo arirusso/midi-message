@@ -1,6 +1,6 @@
 require "helper"
 
-class MutabilityTest < Test::Unit::TestCase
+class MutabilityTest < Minitest::Test
 
   def test_note
     msg = MIDIMessage::NoteOn["E4"].new(0, 100)

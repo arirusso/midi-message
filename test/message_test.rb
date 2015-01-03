@@ -1,6 +1,6 @@
 require "helper"
 
-class ShortMessageTest < Test::Unit::TestCase
+class ShortMessageTest < Minitest::Test
 
   def test_channel_message
     msg = MIDIMessage::ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
