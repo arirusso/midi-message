@@ -1,5 +1,7 @@
 module MIDIMessage
 
+  # Refer to a MIDI message by its usage
+  # eg *C4* for MIDI note *60* or *Bank Select* for MIDI control change *0*
   module Constant
 
     def self.find(group_name, const_name)
