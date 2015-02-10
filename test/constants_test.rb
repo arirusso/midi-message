@@ -7,6 +7,7 @@ class ConstantsTest < Minitest::Test
     assert_equal(MIDIMessage::NoteOn, msg.class)
     assert_equal("C3", msg.name)
     assert_equal("C", msg.note_name)
+    assert_equal("Note On: C3", msg.verbose_name)
     assert_equal([0x90, 0x30, 100], msg.to_a)
   end
 
