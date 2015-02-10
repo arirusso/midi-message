@@ -32,7 +32,7 @@ module MIDIMessage
     # The name of the note without its octave e.g. F#
     # @return [String]
     def note_name
-      name.split(/-?\d\z/).first
+      name.split(/-?\d\z/).first unless name.nil?
     end
 
   end

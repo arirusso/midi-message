@@ -151,7 +151,7 @@ module MIDIMessage
             {
               :const => const,
               :name => const.key,
-              :verbose_name => "#{message.class.display_name}: #{@name}"
+              :verbose_name => "#{message.class.display_name}: #{const.key}"
             }
           end
         end
