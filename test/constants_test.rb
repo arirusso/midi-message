@@ -11,11 +11,12 @@ class ConstantsTest < Minitest::Test
     assert_equal([0x90, 0x30, 100], msg.to_a)
   end
 
-  def test_control_change
-    msg = MIDIMessage::NoteOn["C3"].new(0, 100)
-    assert_equal(MIDIMessage::NoteOn, msg.class)
-    assert_equal("C3", msg.name)
-    assert_equal([0x90, 0x30, 100], msg.to_a)
+  def test_note_off
+    msg = MIDIMessage::NoteOff["C2"].new(0, 100)
+    assert_equal(MIDIMessage::NoteOff, msg.class)
+    assert_equal("C2", msg.name)
+    assert_equal("Note Off: C2", msg.verbose_name)
+    assert_equal([0x80, 0x24, 100], msg.to_a)
   end
 
   def test_control_change
