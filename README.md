@@ -115,4 +115,4 @@ Check out [nibbler](http://github.com/arirusso/nibbler) for more advanced parsin
 
 Apache 2.0, See the file LICENSE
 
-Copyright (c) 2011-2015 Ari Russo
+Copyright (c) 2011-2015 [Ari Russo](http://arirusso.com)
