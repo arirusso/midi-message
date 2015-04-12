@@ -33,12 +33,13 @@ class ShortMessageTest < Minitest::Test
   end
 
   def test_note_on
-    msg = MIDIMessage::NoteOn.new(0, 0x40, 0x40)
-    assert_equal(0, msg.channel)
+    msg = MIDIMessage::NoteOn.new(1, 0x40, 0x40)
+    assert_equal(1, msg.channel)
     assert_equal(0x40, msg.note)
     assert_equal(0x40, msg.velocity)
-    assert_equal([0x90, 0x40, 0x40], msg.to_a)
-    assert_equal("904040", msg.to_bytestr)
+    assert_equal([0x91, 0x40, 0x40], msg.to_a)
+    assert_equal("914040", msg.to_bytestr)
+    assert_equal([0x91, 0x40, 0x40], msg.to_bytes)
   end
 
   def test_note_on_to_note_off
