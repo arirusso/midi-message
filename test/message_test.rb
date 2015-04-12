@@ -42,6 +42,24 @@ class ShortMessageTest < Minitest::Test
     assert_equal([0x91, 0x40, 0x40], message.to_bytes)
   end
 
+  def test_change_channel
+    message = MIDIMessage::NoteOn.new(1, 0x40, 0x40)
+    assert_equal(1, message.channel)
+    assert_equal(0x40, message.note)
+    assert_equal(0x40, message.velocity)
+    assert_equal([0x91, 0x40, 0x40], message.to_a)
+    assert_equal("914040", message.to_bytestr)
+    assert_equal([0x91, 0x40, 0x40], message.to_bytes)
+
+    message.channel = 3
+    assert_equal(3, message.channel)
+    assert_equal(0x40, message.note)
+    assert_equal(0x40, message.velocity)
+    assert_equal([0x93, 0x40, 0x40], message.to_a)
+    assert_equal("934040", message.to_bytestr)
+    assert_equal([0x93, 0x40, 0x40], message.to_bytes)
+  end
+
   def test_note_on_to_note_off
     message = MIDIMessage::NoteOn.new(0, 0x40, 0x40)
     assert_equal(0, message.channel)
