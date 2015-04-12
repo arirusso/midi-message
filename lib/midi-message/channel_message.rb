@@ -54,10 +54,8 @@ module MIDIMessage
       ]
       properties.each_with_index do |property, i|
         property_schema = schema[i]
-        container = send(property_schema[:name])
-        index = property_schema[:index]
-        define_getter(property, container, index)
-        define_setter(property, container, index)
+        define_getter(property, property_schema)
+        define_setter(property, property_schema)
         has_properties = true
       end
       has_properties
@@ -67,7 +65,9 @@ module MIDIMessage
     # @param [Hash] container
     # @param [Fixnum] index
     # @return [Boolean]
-    def define_getter(property, container, index)
+    def define_getter(property, property_schema)
+      container = send(property_schema[:name])
+      index = property_schema[:index]
       self.class.send(:attr_reader, property)
       instance_variable_set("@#{property.to_s}", container[index])
       true
@@ -77,10 +77,11 @@ module MIDIMessage
     # @param [Hash] container
     # @param [Fixnum] index
     # @return [Boolean]
-    def define_setter(property, container, index)
+    def define_setter(property, property_schema)
+      index = property_schema[:index]
       self.class.send(:define_method, "#{property.to_s}=") do |value|
         send(:instance_variable_set, "@#{property.to_s}", value)
-        container[index] = value
+        send(property_schema[:name])[index] = value
         update
         return self
       end
