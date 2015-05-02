@@ -25,7 +25,7 @@ module MIDIMessage
     # MIDI Constant container
     class Group
 
-      attr_reader :key, :value
+      attr_reader :constants, :key
 
       # @param [String] key
       # @param [Hash] constants
