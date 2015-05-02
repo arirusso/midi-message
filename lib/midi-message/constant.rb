@@ -60,10 +60,11 @@ module MIDIMessage
         # Find a constant group by its key
         # @param [String, Symbol] key
         # @return [ConstantGroup]
-        def [](key)
+        def find(key)
           ensure_initialized
           @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
         end
+        alias_method :[], :find
 
         private
 
