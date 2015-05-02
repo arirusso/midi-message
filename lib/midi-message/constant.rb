@@ -40,7 +40,6 @@ module MIDIMessage
       def find(name)
         @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }
       end
-      alias_method :[], :find
 
       # Find a constant by its value
       # @param [Object] value
@@ -49,45 +48,49 @@ module MIDIMessage
         @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
       end
 
-      # All constant groups
-      # @return [Array<ConstantGroup>]
-      def self.all
-        ensure_initialized
-        @groups
-      end
+      class << self
 
-      # Find a constant group by its key
-      # @param [String, Symbol] key
-      # @return [ConstantGroup]
-      def self.[](key)
-        ensure_initialized
-        @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
-      end
-
-      private
-
-      # Lazy initialize
-      # @return [Boolean]
-      def self.ensure_initialized
-        populate_dictionary | populate_groups
-      end
-
-      # Populate the dictionary of constants
-      # @return [Boolean]
-      def self.populate_dictionary
-        if @dict.nil?
-          @dict = YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
-          true
+        # All constant groups
+        # @return [Array<ConstantGroup>]
+        def all
+          ensure_initialized
+          @groups
         end
-      end
 
-      # Populate the constant groups using the dictionary
-      # @return [Boolean]
-      def self.populate_groups
-        if @groups.nil? && !@dict.nil?
-          @groups = @dict.map { |k, v| new(k, v) }
-          true
+        # Find a constant group by its key
+        # @param [String, Symbol] key
+        # @return [ConstantGroup]
+        def [](key)
+          ensure_initialized
+          @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
         end
+
+        private
+
+        # Lazy initialize
+        # @return [Boolean]
+        def ensure_initialized
+          populate_dictionary | populate_groups
+        end
+
+        # Populate the dictionary of constants
+        # @return [Boolean]
+        def populate_dictionary
+          if @dict.nil?
+            @dict = YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
+            true
+          end
+        end
+
+        # Populate the constant groups using the dictionary
+        # @return [Boolean]
+        def populate_groups
+          if @groups.nil? && !@dict.nil?
+            @groups = @dict.map { |k, v| new(k, v) }
+            true
+          end
+        end
+
       end
 
     end
