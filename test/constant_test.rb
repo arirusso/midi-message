@@ -35,6 +35,21 @@ class ConstantTest < Minitest::Test
 
     context "Group" do
 
+      context "#find" do
+
+        setup do
+          @group = MIDIMessage::Constant::Group.find(:note)
+          @map = @group.find("C3")
+        end
+
+        should "return correct mapping" do
+          refute_nil @map
+          assert_equal MIDIMessage::Constant::Map, @map.class
+          assert_equal 48, @map.value
+        end
+
+      end
+
       context ".find" do
 
         setup do
