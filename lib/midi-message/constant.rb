@@ -4,6 +4,10 @@ module MIDIMessage
   # eg *C4* for MIDI note *60* or *Bank Select* for MIDI control change *0*
   module Constant
 
+    # Get a Mapping object for the specified constant
+    # @param [Symbol, String] group_name
+    # @param [String] const_name
+    # @return [MIDIMessage::Constant::Map, nil]
     def self.find(group_name, const_name)
       group = Group[group_name]
       group.find(const_name)
