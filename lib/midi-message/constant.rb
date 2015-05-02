@@ -18,8 +18,8 @@ module MIDIMessage
     # @param [String] const_name
     # @return [Object]
     def self.value(group_name, const_name)
-      const = find(group_name, const_name)
-      const.value
+      map = find(group_name, const_name)
+      map.value
     end
 
     # MIDI Constant container
