@@ -1,8 +1,8 @@
 require "helper"
 
-class ConstantsTest < Minitest::Test
+class ConstantTest < Minitest::Test
 
-  context "Constants" do
+  context "Constant" do
 
     context "note on" do
 
