@@ -27,6 +27,8 @@ module MIDIMessage
 
       attr_reader :key, :value
 
+      # @param [String] key
+      # @param [Hash] constants
       def initialize(key, constants)
         @key = key
         @constants = constants.map { |k, v| Constant::Map.new(k, v) }
