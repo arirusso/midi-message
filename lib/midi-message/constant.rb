@@ -9,6 +9,15 @@ module MIDIMessage
       group.find(const_name)
     end
 
+    # Get the value of the specified constant
+    # @param [Symbol, String] group_name
+    # @param [String] const_name
+    # @return [Object]
+    def self.value(group_name, const_name)
+      const = find(group_name, const_name)
+      const.value
+    end
+
     # MIDI Constant container
     class Group
 
