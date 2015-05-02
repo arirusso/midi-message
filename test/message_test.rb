@@ -4,6 +4,8 @@ class ShortMessageTest < Minitest::Test
 
   def test_channel_message
     message = MIDIMessage::ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
+    refute_nil message
+    assert message.kind_of?(MIDIMessage)
     assert_equal(0x9, message.status[0])
     assert_equal(0x0, message.status[1])
     assert_equal(0x40, message.data[0])
