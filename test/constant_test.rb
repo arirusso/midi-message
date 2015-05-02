@@ -4,6 +4,20 @@ class ConstantTest < Minitest::Test
 
   context "Constant" do
 
+    context ".find" do
+
+      setup do
+        @map = MIDIMessage::Constant.find(:note, "C2")
+      end
+
+      should "return constant mapping" do
+        refute_nil @map
+        assert_equal MIDIMessage::Constant::Map, @map.class
+        assert_equal 36, @map.value
+      end
+
+    end
+
     context ".value" do
 
       setup do
