@@ -4,6 +4,21 @@ class ConstantTest < Minitest::Test
 
   context "Constant" do
 
+    context ".value" do
+
+      setup do
+        @value = MIDIMessage::Constant.value(:note, "C3")
+      end
+
+      should "return constant value" do
+        refute_nil @value
+        assert_equal 48, @value
+        assert_equal MIDIMessage::NoteOn.new(0, @value, 100).note, @value
+        assert_equal MIDIMessage::NoteOn["C3"].new(0, 100).note, @value
+      end
+
+    end
+
     context "Loader" do
 
       context "DSL" do
