@@ -33,6 +33,26 @@ class ConstantTest < Minitest::Test
 
     end
 
+    context "Group" do
+
+      context ".find" do
+
+        setup do
+          @group = MIDIMessage::Constant::Group.find(:note)
+        end
+
+        should "return group object" do
+          refute_nil @group
+          assert_equal MIDIMessage::Constant::Group, @group.class
+          assert_equal "Note", @group.key
+          refute_empty @group.constants
+          assert @group.constants.all? { |c| c.kind_of?(MIDIMessage::Constant::Map) }
+        end
+
+      end
+
+    end
+
     context "Loader" do
 
       context "DSL" do
