@@ -7,10 +7,18 @@ module MIDIMessage
     # Can take either a hex string eg Parser.new("904040")
     # or bytes eg Parser.new(0x90, 0x40, 0x40)
     # or an array of bytes eg Parser.new([0x90, 0x40, 0x40])
+    def self.parse(*args)
+      parser = new(*args)
+      parser.parse
+    end
+
+    # Can take either a hex string eg Parser.new("904040")
+    # or bytes eg Parser.new(0x90, 0x40, 0x40)
+    # or an array of bytes eg Parser.new([0x90, 0x40, 0x40])
     def initialize(*args)
       @data = case args.first
               when Array then args.first
-              when Numeric then args 
+              when Numeric then args
               when String then TypeConversion.hex_string_to_numeric_byte_array(args.first)
               end
     end
@@ -35,12 +43,13 @@ module MIDIMessage
         end
       else nil
       end
-    end   
+    end
 
   end
 
+  # Shortcut to Parser.parse
   def self.parse(*args)
-    Parser.new(*args).parse
+    Parser.parse(*args)
   end
 
 end
