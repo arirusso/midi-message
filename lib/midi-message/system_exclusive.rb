@@ -4,7 +4,7 @@ module MIDIMessage
   module SystemExclusive
 
     include MIDIMessage # this enables ..kind_of?(MIDIMessage)
-    
+
     def self.included(base)
       base.send(:include, InstanceMethods)
     end
@@ -183,6 +183,22 @@ module MIDIMessage
 
     end
 
+    # Build a given SysEx message type using the given bytes
+    def self.build(message_class, bytes)
+      fixed_length_message_part = bytes.slice!(0,7)
+
+      manufacturer_id = fixed_length_message_part[0]
+      device_id = fixed_length_message_part[1]
+      model_id = fixed_length_message_part[2]
+
+      address = fixed_length_message_part.slice(4,3)
+      checksum = bytes.slice!((bytes.length - 1), 1)
+      value = bytes
+
+      node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
+      message_class.new(address, value, :checksum => checksum, :node => node)
+    end
+
     # Convert raw MIDI data to SysEx message objects
     def self.new(*bytes)
 
@@ -194,26 +210,16 @@ module MIDIMessage
         type_byte = bytes[3]
 
         # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
-        if type_byte == 0x11
-          msg_class = Request
-        elsif type_byte == 0x12
-          msg_class = Command
-        else
-          return Message.new(bytes)
+        message_class = case type_byte
+        when 0x11 then Request
+        when 0x12 then Command
         end
 
-        fixed_length_message_part = bytes.slice!(0,7)
-
-        manufacturer_id = fixed_length_message_part[0]
-        device_id = fixed_length_message_part[1]
-        model_id = fixed_length_message_part[2]
-
-        address = fixed_length_message_part.slice(4,3)
-        checksum = bytes.slice!((bytes.length - 1), 1)
-        value = bytes
-
-        node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
-        msg_class.new(address, value, :checksum => checksum, :node => node)
+        if message_class.nil?
+          Message.new(bytes)
+        else
+          build(message_class, bytes)
+        end
       end
     end
 
