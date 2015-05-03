@@ -5,6 +5,7 @@ module MIDIMessage
 
     attr_accessor :channel, :velocity
 
+    # Open a context with the given options
     # @param [Hash] options
     # @param [Proc] block
     # @option options [Fixnum] :channel
