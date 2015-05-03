@@ -1,6 +1,6 @@
 require "helper"
 
-class ContextTest < Minitest::Test
+class MIDIMessage::ContextTest < Minitest::Test
 
   context "Context" do
 

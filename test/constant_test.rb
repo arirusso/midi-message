@@ -1,6 +1,6 @@
 require "helper"
 
-class ConstantTest < Minitest::Test
+class MIDIMessage::ConstantTest < Minitest::Test
 
   context "Constant" do
 

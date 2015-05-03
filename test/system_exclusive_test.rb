@@ -1,6 +1,6 @@
 require "helper"
 
-class SystemExclusiveMessageTest < Minitest::Test
+class MIDIMessage::SystemExclusiveTest < Minitest::Test
 
   context "SystemExclusive" do
 
