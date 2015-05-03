@@ -14,8 +14,9 @@ module MIDIMessage
     # Byte array representation of the message eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
     # @return [Array<Fixnum>] The array of bytes in the MIDI message
     def to_a
-      data = @data.nil? ? [] : [@data[0], @data[1]]
-      [(@status[0] << 4) + @status[1], *data].compact
+      data = [@data[0], @data[1]] unless @data.nil?
+      data ||= []
+      [status_as_byte, *data].compact
     end
     alias_method :to_byte_a, :to_a
     alias_method :to_byte_array, :to_a
@@ -32,7 +33,14 @@ module MIDIMessage
       populate_using_const
     end
 
-    protected
+    private
+
+    # Convert the status nibbles to a single byte
+    # Eg [0x9, 0xF] -> 0x9F
+    # @return [Fixnum]
+    def status_as_byte
+      (@status[0] << 4) + @status[1]
+    end
 
     def populate_using_const
       unless (info = Constant::Loader.get_info(self)).nil?
