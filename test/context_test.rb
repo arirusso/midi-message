@@ -45,7 +45,7 @@ class ContextTest < Minitest::Test
       context "cc" do
 
         setup do
-          @message = MIDIMessage.with(:channel => 2) do
+          @message = MIDIMessage::Context.with(:channel => 2) do
             control_change(0x20, 0x30)
           end
         end
@@ -63,7 +63,7 @@ class ContextTest < Minitest::Test
       context "polyphonic aftertouch" do
 
         setup do
-          @message = MIDIMessage.with(:channel => 1) do
+          @message = MIDIMessage::Context.with(:channel => 1) do
             polyphonic_aftertouch(0x40, 0x40)
           end
         end
