@@ -101,6 +101,7 @@ module MIDIMessage
           if @dict.nil?
             file = File.expand_path('../../midi.yml', __FILE__)
             @dict = YAML.load_file(file)
+            @dict.freeze
             true
           end
         end
