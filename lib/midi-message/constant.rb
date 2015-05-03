@@ -99,7 +99,8 @@ module MIDIMessage
         # @return [Boolean]
         def populate_dictionary
           if @dict.nil?
-            @dict = YAML.load_file(File.expand_path('../../midi.yml', __FILE__))
+            file = File.expand_path('../../midi.yml', __FILE__)
+            @dict = YAML.load_file(file)
             true
           end
         end
