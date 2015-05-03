@@ -22,6 +22,27 @@ module MIDIMessage
       map.value
     end
 
+    module Name
+
+      extend self
+
+      # eg "Control Change" -> "control_change"
+      # @param [Symbol, String] string
+      # @return [String]
+      def underscore(string)
+        string.to_s.downcase.gsub(/(\ )+/, "_")
+      end
+
+      # @param [Symbol, String] key
+      # @param [Symbol, String] other
+      # @return [Boolean]
+      def match?(key, other)
+        match_key = key.to_s.downcase
+        [match_key, Name.underscore(match_key)].include?(other.to_s.downcase)
+      end
+
+    end
+
     # MIDI Constant container
     class Group
 
@@ -38,14 +59,14 @@ module MIDIMessage
       # @param [String, Symbol] name
       # @return [Constant::Map]
       def find(name)
-        @constants.find { |const| const.key.to_s.downcase == name.to_s.downcase }
+        @constants.find { |const| Name.match?(const.key, name) }
       end
 
       # Find a constant by its value
       # @param [Object] value
       # @return [Constant::Map]
       def find_by_value(value)
-        @constants.find { |const| const.value.to_s.downcase == value.to_s.downcase }
+        @constants.find { |const| Name.match?(const.value, value) }
       end
 
       class << self
@@ -62,7 +83,7 @@ module MIDIMessage
         # @return [ConstantGroup]
         def find(key)
           ensure_initialized
-          @groups.find { |g| g.key.to_s.downcase == key.to_s.downcase }
+          @groups.find { |group| Name.match?(group.key, key) }
         end
         alias_method :[], :find
 
@@ -113,7 +134,7 @@ module MIDIMessage
     class MessageBuilder
 
       # @param [MIDIMessage] klass The message class to build
-      # @param [String] const The constant to build the message with
+      # @param [MIDIMessage::Constant::Map] const The constant to build the message with
       def initialize(klass, const)
         @klass = klass
         @const = const
