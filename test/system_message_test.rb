@@ -2,64 +2,104 @@ require "helper"
 
 class SystemMessageTest < Minitest::Test
 
-  def test_system_common
-    msg = MIDIMessage::SystemCommon.new(0x2, 0x00, 0x08)
-    assert_equal("Song Position Pointer", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x2, msg.status[1])
-    assert_equal(0x00, msg.data[0])
-    assert_equal(0x08, msg.data[1])
-    assert_equal([0xF2, 0x00, 0x08], msg.to_a)
-    assert_equal("F20008", msg.to_bytestr)
-  end
+  context "SystemMessage" do
 
-  def test_system_common_redundant
-    msg = MIDIMessage::SystemCommon.new(0xF2, 0x00, 0x08)
-    assert_equal("Song Position Pointer", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x2, msg.status[1])
-    assert_equal(0x00, msg.data[0])
-    assert_equal(0x08, msg.data[1])
-    assert_equal([0xF2, 0x00, 0x08], msg.to_a)
-    assert_equal("F20008", msg.to_bytestr)
-  end
+    context "#initialize" do
 
-  def test_system_common_constant
-    msg = MIDIMessage::SystemCommon["Song Position Pointer"].new(0x00, 0x08)
-    assert_equal("Song Position Pointer", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x2, msg.status[1])
-    assert_equal(0x00, msg.data[0])
-    assert_equal(0x08, msg.data[1])
-    assert_equal([0xF2, 0x00, 0x08], msg.to_a)
-    assert_equal("F20008", msg.to_bytestr)
-  end
+      context "common" do
 
-  def test_system_realtime
-    msg = MIDIMessage::SystemRealtime.new(0x8)
-    assert_equal("Clock", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x8, msg.status[1])
-    assert_equal([0xF8], msg.to_a)
-    assert_equal("F8", msg.to_bytestr)
-  end
+        context "normal" do
 
-  def test_system_realtime_redundant
-    msg = MIDIMessage::SystemRealtime.new(0xF8)
-    assert_equal("Clock", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x8, msg.status[1])
-    assert_equal([0xF8], msg.to_a)
-    assert_equal("F8", msg.to_bytestr)
-  end
+          should "construct message" do
+            @message = MIDIMessage::SystemCommon.new(0x2, 0x00, 0x08)
+            assert_equal("Song Position Pointer", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x2, @message.status[1])
+            assert_equal(0x00, @message.data[0])
+            assert_equal(0x08, @message.data[1])
+            assert_equal([0xF2, 0x00, 0x08], @message.to_a)
+            assert_equal("F20008", @message.to_bytestr)
+          end
 
-  def test_system_realtime_constant
-    msg = MIDIMessage::SystemRealtime["Clock"].new
-    assert_equal("Clock", msg.name)
-    assert_equal(0xF, msg.status[0])
-    assert_equal(0x8, msg.status[1])
-    assert_equal([0xF8], msg.to_a)
-    assert_equal("F8", msg.to_bytestr)
+        end
+
+        context "redundant" do
+
+          should "construct message" do
+            @message = MIDIMessage::SystemCommon.new(0xF2, 0x00, 0x08)
+            assert_equal("Song Position Pointer", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x2, @message.status[1])
+            assert_equal(0x00, @message.data[0])
+            assert_equal(0x08, @message.data[1])
+            assert_equal([0xF2, 0x00, 0x08], @message.to_a)
+            assert_equal("F20008", @message.to_bytestr)
+          end
+
+        end
+
+        context "with constant" do
+
+          should "construct message" do
+            @message = MIDIMessage::SystemCommon["Song Position Pointer"].new(0x00, 0x08)
+            assert_equal("Song Position Pointer", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x2, @message.status[1])
+            assert_equal(0x00, @message.data[0])
+            assert_equal(0x08, @message.data[1])
+            assert_equal([0xF2, 0x00, 0x08], @message.to_a)
+            assert_equal("F20008", @message.to_bytestr)
+          end
+
+        end
+
+      end
+
+      context "realtime" do
+
+        context "normal" do
+
+          should "construct message" do
+            @message = MIDIMessage::SystemRealtime.new(0x8)
+            assert_equal("Clock", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x8, @message.status[1])
+            assert_equal([0xF8], @message.to_a)
+            assert_equal("F8", @message.to_bytestr)
+          end
+
+        end
+
+        context "redundant" do
+
+          should "construct message" do
+            @message = MIDIMessage::SystemRealtime.new(0xF8)
+            assert_equal("Clock", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x8, @message.status[1])
+            assert_equal([0xF8], @message.to_a)
+            assert_equal("F8", @message.to_bytestr)
+          end
+
+        end
+
+        context "with constant" do
+
+          should "construct message" do
+            @message = MIDIMessage::SystemRealtime["Clock"].new
+            assert_equal("Clock", @message.name)
+            assert_equal(0xF, @message.status[0])
+            assert_equal(0x8, @message.status[1])
+            assert_equal([0xF8], @message.to_a)
+            assert_equal("F8", @message.to_bytestr)
+          end
+
+        end
+
+      end
+
+    end
+
   end
 
 end
