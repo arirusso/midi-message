@@ -33,6 +33,30 @@ class ConstantTest < Minitest::Test
 
     end
 
+    context "Name" do
+
+      context ".underscore" do
+
+        should "convert string" do
+          @result = MIDIMessage::Constant::Name.underscore("Control Change")
+          refute_nil @result
+          assert_equal "control_change", @result
+        end
+
+      end
+
+      context ".match?" do
+
+        should "match string" do
+          assert MIDIMessage::Constant::Name.match?("Control Change", :control_change)
+          assert MIDIMessage::Constant::Name.match?("Note", :note)
+          assert MIDIMessage::Constant::Name.match?("System Common", :system_common)
+        end
+
+      end
+
+    end
+
     context "Group" do
 
       context "#find" do
@@ -62,6 +86,46 @@ class ConstantTest < Minitest::Test
           assert_equal "Note", @group.key
           refute_empty @group.constants
           assert @group.constants.all? { |c| c.kind_of?(MIDIMessage::Constant::Map) }
+        end
+
+      end
+
+    end
+
+    context "MessageBuilder" do
+
+      context "#new" do
+
+        context "note on" do
+
+          setup do
+            @group = MIDIMessage::Constant::Group.find(:note)
+            @map = @group.find("C3")
+            @builder = MIDIMessage::Constant::MessageBuilder.new(MIDIMessage::NoteOn, @map)
+          end
+
+          should "build correct note" do
+            @note = @builder.new
+            refute_nil @note
+            assert_equal "C3", @note.name
+          end
+
+        end
+
+        context "cc" do
+
+          setup do
+            @group = MIDIMessage::Constant::Group.find(:control_change)
+            @map = @group.find("Modulation Wheel")
+            @builder = MIDIMessage::Constant::MessageBuilder.new(MIDIMessage::ControlChange, @map)
+          end
+
+          should "build correct cc" do
+            @cc = @builder.new
+            refute_nil @cc
+            assert_equal "Modulation Wheel", @cc.name
+          end
+
         end
 
       end
