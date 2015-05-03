@@ -10,13 +10,13 @@ module MIDIMessage
     # Shortcut to RawChannelMessage.new
     # aka build a ChannelMessage from raw nibbles and bytes
     # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
-    # @param [*Array<Fixnum>] data The status nibbles and data bytes
+    # @param [*Fixnum] data The status nibbles and data bytes
     # @return [RawChannelMessage] The resulting RawChannelMessage object
     def self.new(*data, &block)
       Message.new(*data, &block)
     end
 
-    # @param [*Array<Fixnum>] data The status nibbles and data bytes
+    # @param [*Fixnum] data The status nibbles and data bytes
     def initialize(*data)
       data = data.dup
       options = data.last.kind_of?(Hash) ? data.pop : {}
@@ -124,7 +124,7 @@ module MIDIMessage
 
       # Build a Channel Mssage from raw nibbles and bytes
       # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
-      # @param [*Array<Fixnum>] data The status nibbles and data bytes
+      # @param [*Fixnum] data The status nibbles and data bytes
       # @return [RawChannelMessage] The resulting RawChannelMessage object
       def initialize(*data)
         initialize_channel_message(*data)
