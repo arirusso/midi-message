@@ -1,12 +1,14 @@
 module MIDIMessage
 
-  # Very simple parsing
-  # for more advanced parsing check out {nibbler}[http://github.com/arirusso/nibbler]
+  # Simple message parsing
+  # For more advanced parsing check out {nibbler}[http://github.com/arirusso/nibbler]
   class Parser
 
     # Can take either a hex string eg Parser.new("904040")
     # or bytes eg Parser.new(0x90, 0x40, 0x40)
     # or an array of bytes eg Parser.new([0x90, 0x40, 0x40])
+    # @param [Array<Fixnum>, *Fixnum, String] args
+    # @return [MIDIMessage]
     def self.parse(*args)
       parser = new(*args)
       parser.parse
@@ -15,6 +17,8 @@ module MIDIMessage
     # Can take either a hex string eg Parser.new("904040")
     # or bytes eg Parser.new(0x90, 0x40, 0x40)
     # or an array of bytes eg Parser.new([0x90, 0x40, 0x40])
+    # @param [Array<Fixnum>, *Fixnum, String] args
+    # @return [MIDIMessage]
     def initialize(*args)
       @data = case args.first
               when Array then args.first
@@ -24,6 +28,7 @@ module MIDIMessage
     end
 
     # Parse the data and return a message
+    # @return [MIDIMessage]
     def parse
       first_nibble = ((@data.first & 0xF0) >> 4)
       second_nibble = (@data.first & 0x0F)
@@ -48,6 +53,8 @@ module MIDIMessage
   end
 
   # Shortcut to Parser.parse
+  # @param [Array<Fixnum>, *Fixnum, String] args
+  # @return [MIDIMessage]
   def self.parse(*args)
     Parser.parse(*args)
   end
