@@ -183,44 +183,59 @@ module MIDIMessage
 
     end
 
-    # Build a given SysEx message type using the given bytes
-    def self.build(message_class, bytes)
-      fixed_length_message_part = bytes.slice!(0,7)
+    module Builder
 
-      manufacturer_id = fixed_length_message_part[0]
-      device_id = fixed_length_message_part[1]
-      model_id = fixed_length_message_part[2]
+      extend self
 
-      address = fixed_length_message_part.slice(4,3)
-      checksum = bytes.slice!((bytes.length - 1), 1)
-      value = bytes
+      # Convert raw MIDI data to a SysEx message object
+      def build(*bytes)
 
-      node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
-      message_class.new(address, value, :checksum => checksum, :node => node)
+        start_status = bytes.shift
+        end_status = bytes.pop
+
+        if start_status == 0xF0 && end_status == 0xF7
+
+          type_byte = bytes[3]
+
+          # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
+          message_class = case type_byte
+          when 0x11 then Request
+          when 0x12 then Command
+          end
+
+          if message_class.nil?
+            Message.new(bytes)
+          else
+            build_typed_message(message_class, bytes)
+          end
+        end
+
+      end
+
+      private
+
+      # Build a SysEx message object of the given type using the given bytes
+      def build_typed_message(message_class, bytes)
+        fixed_length_message_part = bytes.slice!(0,7)
+
+        manufacturer_id = fixed_length_message_part[0]
+        device_id = fixed_length_message_part[1]
+        model_id = fixed_length_message_part[2]
+
+        address = fixed_length_message_part.slice(4,3)
+        checksum = bytes.slice!((bytes.length - 1), 1)
+        value = bytes
+
+        node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
+        message_class.new(address, value, :checksum => checksum, :node => node)
+      end
+
     end
 
-    # Convert raw MIDI data to SysEx message objects
+    # Convert raw MIDI data to a SysEx message object
+    # Shortcut to Builder.build
     def self.new(*bytes)
-
-      start_status = bytes.shift
-      end_status = bytes.pop
-
-      if start_status == 0xF0 && end_status == 0xF7
-
-        type_byte = bytes[3]
-
-        # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
-        message_class = case type_byte
-        when 0x11 then Request
-        when 0x12 then Command
-        end
-
-        if message_class.nil?
-          Message.new(bytes)
-        else
-          build(message_class, bytes)
-        end
-      end
+      Builder.build(*bytes)
     end
 
   end
