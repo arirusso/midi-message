@@ -6,6 +6,14 @@ module MIDIMessage
     attr_accessor :channel, :velocity
 
     # @param [Hash] options
+    # @param [Proc] block
+    # @option options [Fixnum] :channel
+    # @option options [Fixnum] :velocity
+    def self.with(options = {}, &block)
+      new(options, &block).instance_eval(&block)
+    end
+
+    # @param [Hash] options
     # @option options [Fixnum] :channel
     # @option options [Fixnum] :velocity
     def initialize(options = {})
@@ -129,12 +137,13 @@ module MIDIMessage
 
   end
 
+  # Shortcut to MIDIMessage::Context.with
   # @param [Hash] options
   # @param [Proc] block
   # @option options [Fixnum] :channel
   # @option options [Fixnum] :velocity
   def self.with_context(options = {}, &block)
-    Context.new(options, &block).instance_eval(&block)
+    Context.with(options, &block)
   end
   class << self
     alias_method :with, :with_context
