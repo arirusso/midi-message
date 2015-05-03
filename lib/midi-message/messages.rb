@@ -7,7 +7,7 @@ module MIDIMessage
 
     include ChannelMessage
 
-    DATA = [:channel, :value]
+    DATA = [:channel, :value].freeze
     DISPLAY_NAME = "Channel Aftertouch"
 
   end
@@ -20,9 +20,9 @@ module MIDIMessage
 
     include ChannelMessage
 
-    DATA = [:channel, :index, :value]
+    DATA = [:channel, :index, :value].freeze
     DISPLAY_NAME = "Control Change"
-    CONSTANT = { "Control Change" => :index }
+    CONSTANT = { "Control Change" => :index }.freeze
 
   end
   Controller = ControlChange #shortcut
@@ -34,7 +34,7 @@ module MIDIMessage
 
     include ChannelMessage
 
-    DATA = [:channel, :low, :high]
+    DATA = [:channel, :low, :high].freeze
     DISPLAY_NAME = "Pitch Bend"
 
   end
@@ -46,9 +46,9 @@ module MIDIMessage
 
     include ChannelMessage
 
-    DATA = [:channel, :note, :value]
+    DATA = [:channel, :note, :value].freeze
     DISPLAY_NAME = "Polyphonic Aftertouch"
-    CONSTANT = { "Note" => :note }
+    CONSTANT = { "Note" => :note }.freeze
 
   end
   PolyAftertouch = PolyphonicAftertouch
@@ -62,7 +62,7 @@ module MIDIMessage
 
     include ChannelMessage
 
-    DATA = [:channel, :program]
+    DATA = [:channel, :program].freeze
     DISPLAY_NAME = "Program Change"
 
   end
@@ -74,9 +74,9 @@ module MIDIMessage
 
     include NoteMessage
 
-    DATA = [:channel, :note, :velocity]
+    DATA = [:channel, :note, :velocity].freeze
     DISPLAY_NAME = "Note Off"
-    CONSTANT = { "Note" => :note }
+    CONSTANT = { "Note" => :note }.freeze
 
   end
 
@@ -87,9 +87,9 @@ module MIDIMessage
 
     include NoteMessage
 
-    DATA = [:channel, :note, :velocity]
+    DATA = [:channel, :note, :velocity].freeze
     DISPLAY_NAME = "Note On"
-    CONSTANT = { "Note" => :note }
+    CONSTANT = { "Note" => :note }.freeze
 
     # returns the NoteOff equivalent of this object
     def to_note_off
