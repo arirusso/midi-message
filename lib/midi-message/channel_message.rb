@@ -26,9 +26,10 @@ module MIDIMessage
 
     # Decorates the object with the particular properties for its type
     # @return [Boolean]
-    def initialize_properties
-      properties = self.class.properties
-      add_properties(properties) unless properties.nil?
+    def add_accessors
+      unless (properties = self.class.properties).nil?
+        Accessors.decorate(self)
+      end
     end
 
     private
@@ -43,57 +44,77 @@ module MIDIMessage
       data.insert(index, constant.value)
     end
 
-    # @param [Array<Symbol>] properties
-    # @return [Boolean]
-    def add_properties(properties)
-      has_properties = false
-      schema = [
-        { :name => :status, :index => 1 }, # second status nibble
-        { :name => :data, :index => 0 }, # first data byte
-        { :name => :data, :index => 1 } # second data byte
-      ]
-      properties.each_with_index do |property, i|
-        property_schema = schema[i]
-        define_getter(property, property_schema)
-        define_setter(property, property_schema)
-        has_properties = true
-      end
-      has_properties
-    end
-
-    # @param [Symbol, String] property
-    # @param [Hash] container
-    # @param [Fixnum] index
-    # @return [Boolean]
-    def define_getter(property, property_schema)
-      container = send(property_schema[:name])
-      index = property_schema[:index]
-      self.class.send(:attr_reader, property)
-      instance_variable_set("@#{property.to_s}", container[index])
-      true
-    end
-
-    # @param [Symbol, String] property
-    # @param [Hash] container
-    # @param [Fixnum] index
-    # @return [Boolean]
-    def define_setter(property, property_schema)
-      index = property_schema[:index]
-      self.class.send(:define_method, "#{property.to_s}=") do |value|
-        send(:instance_variable_set, "@#{property.to_s}", value)
-        send(property_schema[:name])[index] = value
-        update
-        return self
-      end
-      true
-    end
-
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       @status = [status_nibble_1, status_nibble_2]
       @data = [data_byte_1]
       @data[1] = data_byte_2 if self.class.second_data_byte?
-      initialize_properties
+      add_accessors
       initialize_message(status_nibble_1, status_nibble_2)
+    end
+
+    class Accessors
+
+      SCHEMA = [
+        { :name => :status, :index => 1 }, # second status nibble
+        { :name => :data, :index => 0 }, # first data byte
+        { :name => :data, :index => 1 } # second data byte
+      ].freeze
+
+      # @param [MIDIMessage] message
+      # @return [MIDIMessage]
+      def self.decorate(message)
+        decorator = new(message)
+        decorator.decorate
+      end
+
+      # @param [MIDIMessage] message
+      def initialize(message)
+        @message = message
+        @properties = message.class.properties
+      end
+
+      # @return [MIDIMessage]
+      def decorate
+        @properties.each_with_index do |property, i|
+          data_mapping = SCHEMA[i]
+          define_getter(property, data_mapping)
+          define_setter(property, data_mapping)
+        end
+        @message
+      end
+
+      private
+
+      # @param [Symbol, String] property
+      # @param [Hash] mapping
+      # @return [Boolean]
+      def define_getter(property, mapping)
+        container = @message.send(mapping[:name])
+        index = mapping[:index]
+        @message.class.send(:attr_reader, property)
+        initialize_property(property, container[index])
+        true
+      end
+
+      def initialize_property(property, value)
+        @message.send(:instance_variable_set, "@#{property.to_s}", value)
+      end
+
+      # @param [Symbol, String] property
+      # @param [Hash] mapping
+      # @return [Boolean]
+      def define_setter(property, mapping)
+        index = mapping[:index]
+        message = @message
+        @message.class.send(:define_method, "#{property.to_s}=") do |value|
+          message.send(:instance_variable_set, "@#{property.to_s}", value)
+          message.send(mapping[:name])[index] = value
+          message.send(:update)
+          return message
+        end
+        true
+      end
+
     end
 
     # For defining Channel Message class types
