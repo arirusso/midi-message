@@ -66,6 +66,9 @@ module MIDIMessage
         decorator.decorate
       end
 
+      # Initialize a message object with it's properties
+      # @param [MIDIMessage] message
+      # @return [Boolean]
       def self.initialize(message)
         message.class.properties.each_with_index do |property, i|
           data_mapping = SCHEMA[i]
@@ -73,6 +76,7 @@ module MIDIMessage
           index = data_mapping[:index]
           message.send(:instance_variable_set, "@#{property.to_s}", container[index])
         end
+        true
       end
 
       # @param [Class] klass
@@ -93,7 +97,6 @@ module MIDIMessage
       private
 
       # @param [Symbol, String] property
-      # @param [Hash] mapping
       # @return [Boolean]
       def define_getter(property)
         @klass.send(:attr_reader, property)
