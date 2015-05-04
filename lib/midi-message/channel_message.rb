@@ -20,7 +20,7 @@ module MIDIMessage
     def initialize(*data)
       data = data.dup
       options = data.last.kind_of?(Hash) ? data.pop : {}
-      add_constant_value(options[:const], data) unless options[:const].nil?
+      assign_constant_value(options[:const], data) unless options[:const].nil?
       initialize_channel_message(self.class.type_for_status, *data)
     end
 
@@ -39,7 +39,7 @@ module MIDIMessage
       base.send(:extend, ClassMethods)
     end
 
-    def add_constant_value(constant, data)
+    def assign_constant_value(constant, data)
       index = Constant::Loader.get_index(self)
       data.insert(index, constant.value)
     end
