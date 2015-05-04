@@ -10,6 +10,8 @@ module MIDIMessage
     DATA = [:channel, :value].freeze
     DISPLAY_NAME = "Channel Aftertouch"
 
+    ChannelMessage::Accessors.decorate(self)
+
   end
   ChannelPressure = ChannelAftertouch
 
@@ -24,6 +26,8 @@ module MIDIMessage
     DISPLAY_NAME = "Control Change"
     CONSTANT = { "Control Change" => :index }.freeze
 
+    ChannelMessage::Accessors.decorate(self)
+
   end
   Controller = ControlChange #shortcut
 
@@ -37,6 +41,8 @@ module MIDIMessage
     DATA = [:channel, :low, :high].freeze
     DISPLAY_NAME = "Pitch Bend"
 
+    ChannelMessage::Accessors.decorate(self)
+
   end
 
   #
@@ -49,6 +55,8 @@ module MIDIMessage
     DATA = [:channel, :note, :value].freeze
     DISPLAY_NAME = "Polyphonic Aftertouch"
     CONSTANT = { "Note" => :note }.freeze
+
+    ChannelMessage::Accessors.decorate(self)
 
   end
   PolyAftertouch = PolyphonicAftertouch
@@ -65,6 +73,8 @@ module MIDIMessage
     DATA = [:channel, :program].freeze
     DISPLAY_NAME = "Program Change"
 
+    ChannelMessage::Accessors.decorate(self)
+
   end
 
   #
@@ -78,6 +88,8 @@ module MIDIMessage
     DISPLAY_NAME = "Note Off"
     CONSTANT = { "Note" => :note }.freeze
 
+    ChannelMessage::Accessors.decorate(self)
+
   end
 
   #
@@ -90,6 +102,8 @@ module MIDIMessage
     DATA = [:channel, :note, :velocity].freeze
     DISPLAY_NAME = "Note On"
     CONSTANT = { "Note" => :note }.freeze
+
+    ChannelMessage::Accessors.decorate(self)
 
     # returns the NoteOff equivalent of this object
     def to_note_off

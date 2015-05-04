@@ -31,14 +31,6 @@ module MIDIMessage
       base.send(:extend, ClassMethods)
     end
 
-    # Decorates the object with the particular properties for its type
-    # @return [Boolean]
-    def add_accessors
-      unless (properties = self.class.properties).nil?
-        Accessors.decorate(self)
-      end
-    end
-
     # Add the given constant to message data
     def add_constant_value(constant, data)
       index = Constant::Loader.get_index(self)
@@ -55,7 +47,7 @@ module MIDIMessage
     # Initialize the message: assign data, decorate with accessors
     def initialize_channel_message(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2 = 0)
       assign_data(status_nibble_1, status_nibble_2, data_byte_1, data_byte_2)
-      add_accessors
+      Accessors.initialize(self) unless self.class.properties.nil?
       initialize_message(status_nibble_1, status_nibble_2)
     end
 
@@ -67,27 +59,35 @@ module MIDIMessage
         { :name => :data, :index => 1 } # second data byte
       ].freeze
 
-      # @param [MIDIMessage] message
-      # @return [MIDIMessage]
-      def self.decorate(message)
-        decorator = new(message)
+      # @param [Class] klass
+      # @return [Class]
+      def self.decorate(klass)
+        decorator = new(klass)
         decorator.decorate
       end
 
-      # @param [MIDIMessage] message
-      def initialize(message)
-        @message = message
-        @properties = message.class.properties
+      def self.initialize(message)
+        message.class.properties.each_with_index do |property, i|
+          data_mapping = SCHEMA[i]
+          container = message.send(data_mapping[:name])
+          index = data_mapping[:index]
+          message.send(:instance_variable_set, "@#{property.to_s}", container[index])
+        end
       end
 
-      # @return [MIDIMessage]
+      # @param [Class] klass
+      def initialize(klass)
+        @klass = klass
+      end
+
+      # @return [Class]
       def decorate
-        @properties.each_with_index do |property, i|
+        @klass.properties.each_with_index do |property, i|
           data_mapping = SCHEMA[i]
-          define_getter(property, data_mapping)
+          define_getter(property)
           define_setter(property, data_mapping)
         end
-        @message
+        @klass
       end
 
       private
@@ -95,16 +95,9 @@ module MIDIMessage
       # @param [Symbol, String] property
       # @param [Hash] mapping
       # @return [Boolean]
-      def define_getter(property, mapping)
-        container = @message.send(mapping[:name])
-        index = mapping[:index]
-        @message.class.send(:attr_reader, property)
-        initialize_property(property, container[index])
+      def define_getter(property)
+        @klass.send(:attr_reader, property)
         true
-      end
-
-      def initialize_property(property, value)
-        @message.send(:instance_variable_set, "@#{property.to_s}", value)
       end
 
       # @param [Symbol, String] property
@@ -112,12 +105,11 @@ module MIDIMessage
       # @return [Boolean]
       def define_setter(property, mapping)
         index = mapping[:index]
-        message = @message
-        @message.class.send(:define_method, "#{property.to_s}=") do |value|
-          message.send(:instance_variable_set, "@#{property.to_s}", value)
-          message.send(mapping[:name])[index] = value
-          message.send(:update)
-          return message
+        @klass.send(:define_method, "#{property.to_s}=") do |value|
+          send(:instance_variable_set, "@#{property.to_s}", value)
+          send(mapping[:name])[index] = value
+          send(:update)
+          return self
         end
         true
       end
