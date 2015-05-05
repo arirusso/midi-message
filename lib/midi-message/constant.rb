@@ -155,13 +155,16 @@ module MIDIMessage
     # Shortcuts for dealing with message status
     module Status
 
+      extend self
+
       # The value of the Status constant with the name status_name
       # @param [String] status_name The key to use to look up a constant value
       # @return [String] The constant value that was looked up
-      def self.[](status_name)
+      def find(status_name)
         const = Constant.find("Status", status_name)
         const.value unless const.nil?
       end
+      alias_method :[], :find
 
     end
 
@@ -242,10 +245,11 @@ module MIDIMessage
         # This returns a MessageBuilder for the class, preloaded with the selected const
         # @param [String, Symbol] const_name The constant key to use to build the message
         # @return [MIDIMessage::MessageBuilder] A MessageBuilder object for the passed in constant
-        def [](const_name)
+        def find(const_name)
           const = get_constant(const_name.to_s)
           MessageBuilder.new(self, const) unless const.nil?
         end
+        alias_method :[], :find
 
       end
 
