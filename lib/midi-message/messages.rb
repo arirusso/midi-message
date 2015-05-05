@@ -136,7 +136,7 @@ module MIDIMessage
       @const = options[:const]
       id = @const.nil? ? args.shift : @const.value
       id = strip_redundant_nibble(id)
-      initialize_message(0xF, id)
+      initialize_message(SystemMessage::STATUS, id)
       @data = args.slice(0..1)
     end
 
@@ -157,7 +157,7 @@ module MIDIMessage
       @const = options[:const]
       id = @const.nil? ? args.first : @const.value
       id = strip_redundant_nibble(id)
-      initialize_message(0xF, id)
+      initialize_message(SystemMessage::STATUS, id)
     end
 
     def id

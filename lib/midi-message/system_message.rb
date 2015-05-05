@@ -4,7 +4,7 @@ module MIDIMessage
   module SystemMessage
 
     STATUS = 0xF
-    
+
     def self.included(base)
       base.send(:include, Message)
     end
@@ -15,7 +15,7 @@ module MIDIMessage
     # @param [Fixnum] byte The byte to strip of a redundant 0xF
     # @return [Fixnum] The remaining nibble
     def strip_redundant_nibble(byte)
-      byte > 0xF ? (byte & 0x0F) : byte
+      byte > STATUS ? (byte & 0x0F) : byte
     end
 
   end
