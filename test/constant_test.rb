@@ -132,11 +132,25 @@ class MIDIMessage::ConstantTest < Minitest::Test
 
     end
 
+    context "Status" do
+
+      context ".find" do
+
+        should "find status" do
+          assert_equal 0x8, MIDIMessage::Constant::Status.find("Note Off")
+          assert_equal 0x9, MIDIMessage::Constant::Status.find("Note On")
+          assert_equal 0xB, MIDIMessage::Constant::Status["Control Change"]
+        end
+
+      end
+
+    end
+
     context "Loader" do
 
       context "DSL" do
 
-        context "#[]" do
+        context ".find" do
 
           context "note on" do
 
@@ -172,7 +186,7 @@ class MIDIMessage::ConstantTest < Minitest::Test
           context "cc" do
 
             setup do
-              @message = MIDIMessage::ControlChange["Modulation Wheel"].new(2, 0x20)
+              @message = MIDIMessage::ControlChange.find("Modulation Wheel").new(2, 0x20)
             end
 
             should "create message object" do
