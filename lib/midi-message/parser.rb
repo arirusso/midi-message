@@ -47,27 +47,33 @@ module MIDIMessage
     # Parse the data and return a message
     # @return [MIDIMessage]
     def parse
-      first_nibble = ((@data.first & 0xF0) >> 4)
-      second_nibble = (@data.first & 0x0F)
-      klass = MESSAGE_TYPE.find { |type| type::STATUS == first_nibble }
+      nibbles = get_nibbles
+      klass = MESSAGE_TYPE.find { |type| type::STATUS == nibbles[0] }
       if klass == SystemMessage
-        build_system_message(second_nibble)
+        build_system_message(nibbles[1])
       else
-        klass.new(second_nibble, *@data.drop(1))
+        klass.new(nibbles[1], *@data.drop(1))
       end
     end
 
     private
 
-    def build_system_message(second_nibble)
+    def get_nibbles
+      [
+        ((@data.first & 0xF0) >> 4),
+        (@data.first & 0x0F)
+      ]
+    end
+
+    def build_system_message(id)
       klass = SYSTEM_MESSAGE_TYPE.find do |type|
-        second_nibble == type::ID ||
-          (type::ID.kind_of?(Range) && type::ID.include?(second_nibble))
+        id == type::ID ||
+          (type::ID.kind_of?(Range) && type::ID.include?(id))
       end
       if klass == SystemExclusive
         SystemExclusive.new(*@data)
       else
-        klass.new(second_nibble, *@data.drop(1))
+        klass.new(id, *@data.drop(1))
       end
     end
 
