@@ -186,16 +186,10 @@ module MIDIMessage
 
       # Convert raw MIDI data to a SysEx message object
       def build(*bytes)
-
-        start_status = bytes.shift
-        end_status = bytes.pop
-
-        if start_status == 0xF0 && end_status == 0xF7
-
-          type_byte = bytes[3]
+        if is_sysex?(bytes)
 
           # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
-          message_class = [Request, Command].find { |klass| klass::TYPE == type_byte }
+          message_class = get_message_class(bytes)
 
           if message_class.nil?
             Message.new(bytes)
@@ -207,6 +201,15 @@ module MIDIMessage
       end
 
       private
+
+      def get_message_class(bytes)
+        [Request, Command].find { |klass| klass::TYPE == bytes[3] }
+      end
+
+      def is_sysex?(bytes)
+        bytes.shift == SystemExclusive::DELIMITER[:start] &&
+          bytes.pop == SystemExclusive::DELIMITER[:finish]
+      end
 
       # Build a SysEx message object of the given type using the given bytes
       def build_typed_message(message_class, bytes)
