@@ -187,7 +187,7 @@ module MIDIMessage
       # Convert raw MIDI data to a SysEx message object
       def build(*bytes)
         if is_sysex?(bytes)
-          
+
           # if the 4th byte isn't status, we will just make this a Message object
           #   -- this may need some tweaking
           message_class = get_message_class(bytes)
@@ -214,6 +214,7 @@ module MIDIMessage
 
       # Build a SysEx message object of the given type using the given bytes
       def build_typed_message(message_class, bytes)
+        bytes = bytes.dup
         fixed_length_message_part = bytes.slice!(0,7)
 
         manufacturer_id = fixed_length_message_part[0]
