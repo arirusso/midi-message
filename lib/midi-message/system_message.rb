@@ -3,6 +3,8 @@ module MIDIMessage
   # Common MIDI system message behavior
   module SystemMessage
 
+    STATUS = 0xF
+    
     def self.included(base)
       base.send(:include, Message)
     end

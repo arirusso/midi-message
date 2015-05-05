@@ -15,8 +15,8 @@ module MIDIMessage
       attr_accessor :node
       attr_reader :address, :checksum
 
-      StartByte = 0xF0
-      EndByte = 0xF7
+      START = 0xF0
+      FINISH = 0xF7
 
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
@@ -61,15 +61,15 @@ module MIDIMessage
       alias_method :verbose_name, :name
 
       def start_byte
-        self.class::StartByte
+        self.class::START
       end
 
       def end_byte
-        self.class::EndByte
+        self.class::FINISH
       end
 
       def type_byte
-        self.class::TypeByte
+        self.class::TYPE
       end
 
       # alternate method from

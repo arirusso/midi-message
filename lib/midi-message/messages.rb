@@ -7,6 +7,7 @@ module MIDIMessage
 
     include ChannelMessage
 
+    STATUS = 0xD
     DATA = [:channel, :value].freeze
     DISPLAY_NAME = "Channel Aftertouch"
 
@@ -22,6 +23,7 @@ module MIDIMessage
 
     include ChannelMessage
 
+    STATUS = 0xB
     DATA = [:channel, :index, :value].freeze
     DISPLAY_NAME = "Control Change"
     CONSTANT = { "Control Change" => :index }.freeze
@@ -38,6 +40,7 @@ module MIDIMessage
 
     include ChannelMessage
 
+    STATUS = 0xE
     DATA = [:channel, :low, :high].freeze
     DISPLAY_NAME = "Pitch Bend"
 
@@ -52,6 +55,7 @@ module MIDIMessage
 
     include ChannelMessage
 
+    STATUS = 0xA
     DATA = [:channel, :note, :value].freeze
     DISPLAY_NAME = "Polyphonic Aftertouch"
     CONSTANT = { "Note" => :note }.freeze
@@ -70,6 +74,7 @@ module MIDIMessage
 
     include ChannelMessage
 
+    STATUS = 0xC
     DATA = [:channel, :program].freeze
     DISPLAY_NAME = "Program Change"
 
@@ -84,6 +89,7 @@ module MIDIMessage
 
     include NoteMessage
 
+    STATUS = 0x8
     DATA = [:channel, :note, :velocity].freeze
     DISPLAY_NAME = "Note Off"
     CONSTANT = { "Note" => :note }.freeze
@@ -99,6 +105,7 @@ module MIDIMessage
 
     include NoteMessage
 
+    STATUS = 0x9
     DATA = [:channel, :note, :velocity].freeze
     DISPLAY_NAME = "Note On"
     CONSTANT = { "Note" => :note }.freeze
@@ -119,6 +126,7 @@ module MIDIMessage
 
     include SystemMessage
 
+    ID = 0x1..0x6
     DISPLAY_NAME = "System Common"
 
     attr_reader :data
@@ -141,6 +149,7 @@ module MIDIMessage
 
     include SystemMessage
 
+    ID = 0x8..0xF
     DISPLAY_NAME = "System Realtime"
 
     def initialize(*args)
@@ -159,6 +168,8 @@ module MIDIMessage
 
   module SystemExclusive
 
+    ID = 0x0
+
     # A SysEx command message
     # A command message is identified by having a status byte equal to 0x12
     class Command
@@ -168,7 +179,7 @@ module MIDIMessage
       attr_accessor :data
       alias_method :value, :data
 
-      TypeByte = 0x12
+      TYPE = 0x12
 
       def initialize(address, data, options = {})
         # store as a byte if it's a single byte
@@ -191,7 +202,7 @@ module MIDIMessage
       attr_reader :size
       alias_method :value, :size
 
-      TypeByte = 0x11
+      TYPE = 0x11
 
       def initialize(address, size, options = {})
         self.size = if size.kind_of?(Array) && size.count == 1
