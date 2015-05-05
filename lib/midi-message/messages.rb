@@ -169,6 +169,11 @@ module MIDIMessage
   module SystemExclusive
 
     ID = 0x0
+    DELIMITER = {
+      :start => 0xF0,
+      :finish => 0xF7
+    }
+    DISPLAY_NAME = "System Exclusive"
 
     # A SysEx command message
     # A command message is identified by having a status byte equal to 0x12

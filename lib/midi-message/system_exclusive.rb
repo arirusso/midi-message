@@ -15,9 +15,6 @@ module MIDIMessage
       attr_accessor :node
       attr_reader :address, :checksum
 
-      START = 0xF0
-      FINISH = 0xF7
-
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})
         omit = options[:omit] || []
@@ -56,16 +53,16 @@ module MIDIMessage
       alias_method :to_bytestr, :to_hex_s
 
       def name
-        "System Exclusive"
+        SystemExclusive::DISPLAY_NAME
       end
       alias_method :verbose_name, :name
 
       def start_byte
-        self.class::START
+        SystemExclusive::DELIMITER[:start]
       end
 
       def end_byte
-        self.class::FINISH
+        SystemExclusive::DELIMITER[:finish]
       end
 
       def type_byte
@@ -198,10 +195,7 @@ module MIDIMessage
           type_byte = bytes[3]
 
           # if the 4th byte isn't status, we will just make this a Message object -- this may need some tweaking
-          message_class = case type_byte
-          when 0x11 then Request
-          when 0x12 then Command
-          end
+          message_class = [Request, Command].find { |klass| klass::TYPE == type_byte }
 
           if message_class.nil?
             Message.new(bytes)
