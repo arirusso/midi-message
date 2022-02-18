@@ -61,7 +61,7 @@ class MIDIMessage::SystemExclusiveTest < Minitest::Test
 
           should "create node with nil model_id" do
             assert_equal(0x41, @node.manufacturer_id)
-            assert_equal(nil, @node.model_id)
+            assert_nil(@node.model_id)
             assert_equal(0x10, @node.device_id)
             assert_equal([0x41, 0x10], @node.to_a)
           end

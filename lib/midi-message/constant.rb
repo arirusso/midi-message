@@ -92,6 +92,8 @@ module MIDIMessage
         # Lazy initialize
         # @return [Boolean]
         def ensure_initialized
+          @dict = nil
+          @groups = nil
           populate_dictionary | populate_groups
         end
 

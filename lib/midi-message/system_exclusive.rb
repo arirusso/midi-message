@@ -13,7 +13,7 @@ module MIDIMessage
     module InstanceMethods
 
       attr_accessor :node
-      attr_reader :address, :checksum
+      attr_reader :address
 
       # an array of message parts.  multiple byte parts will be represented as an array of bytes
       def to_a(options = {})

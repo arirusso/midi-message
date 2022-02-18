@@ -14,8 +14,8 @@ module MIDIMessage
     # Byte array representation of the message eg [0x90, 0x40, 0x40] for NoteOn(0x40, 0x40)
     # @return [Array<Fixnum>] The array of bytes in the MIDI message
     def to_a
-      data = [@data[0], @data[1]] unless @data.nil?
-      data ||= []
+      @data ||= []
+      data = [@data[0], @data[1]] unless @data.empty?
       [status_as_byte, *data].compact
     end
     alias_method :to_byte_a, :to_a
@@ -57,5 +57,4 @@ module MIDIMessage
     end
 
   end
-
 end
