@@ -1,8 +1,8 @@
-module MIDIMessage
+# frozen_string_literal: true
 
+module MIDIMessage
   # MIDI System-Exclusive Messages (SysEx)
   module SystemExclusive
-
     include MIDIMessage # this enables ..kind_of?(MIDIMessage)
 
     def self.included(base)
@@ -11,7 +11,6 @@ module MIDIMessage
 
     # Common SysEx data that a message class will contain
     module InstanceMethods
-
       attr_accessor :node
       attr_reader :address
 
@@ -36,10 +35,10 @@ module MIDIMessage
       def to_numeric_byte_array(options = {})
         to_a(options).flatten
       end
-      alias_method :to_numeric_bytes, :to_numeric_byte_array
-      alias_method :to_byte_array, :to_numeric_byte_array
-      alias_method :to_bytes, :to_numeric_byte_array
-      alias_method :to_byte_a, :to_numeric_byte_array
+      alias to_numeric_bytes to_numeric_byte_array
+      alias to_byte_array to_numeric_byte_array
+      alias to_bytes to_numeric_byte_array
+      alias to_byte_a to_numeric_byte_array
 
       # string representation of the object's bytes
       def to_hex_s
@@ -50,12 +49,12 @@ module MIDIMessage
         end
         strings.join.upcase
       end
-      alias_method :to_bytestr, :to_hex_s
+      alias to_bytestr to_hex_s
 
       def name
         SystemExclusive::DISPLAY_NAME
       end
-      alias_method :verbose_name, :name
+      alias verbose_name name
 
       def start_byte
         SystemExclusive::DELIMITER[:start]
@@ -84,23 +83,21 @@ module MIDIMessage
         @checksum = options[:checksum]
         @address = address
       end
-
     end
 
     # A SysEx message with no implied type
     #
     class Message
-
       include InstanceMethods
 
       attr_accessor :data
 
       def initialize(data, options = {})
-        @data = if data.kind_of?(Array) && data.length == 1
-          data.first
-        else
-          data
-        end
+        @data = if data.is_a?(Enumerable) && data.length == 1
+                  data.first
+                else
+                  data
+                end
         initialize_sysex(nil, options)
       end
 
@@ -117,7 +114,6 @@ module MIDIMessage
           end_byte
         ].compact
       end
-
     end
 
     #
@@ -125,7 +121,6 @@ module MIDIMessage
     # synthesizer or sampler
     #
     class Node
-
       attr_accessor :device_id
       attr_reader :manufacturer_id, :model_id
 
@@ -137,10 +132,8 @@ module MIDIMessage
 
       def to_a(options = {})
         omit = options[:omit] || []
-        properties = [:manufacturer, :device, :model].map do |property|
-          unless omit.include?(property) || omit.include?("#{property.to_s}_id")
-            instance_variable_get("@#{property.to_s}_id")
-          end
+        properties = %i[manufacturer device model].map do |property|
+          instance_variable_get("@#{property}_id") unless omit.include?(property) || omit.include?("#{property}_id")
         end
         properties.compact
       end
@@ -173,15 +166,13 @@ module MIDIMessage
         if manufacturer.kind_of?(Numeric)
           manufacturer
         else
-          const = Constant.find("Manufacturer", manufacturer)
+          const = Constant.find('Manufacturer', manufacturer)
           const.value
         end
       end
-
     end
 
     module Builder
-
       extend self
 
       # Convert raw MIDI data to a SysEx message object
@@ -198,7 +189,6 @@ module MIDIMessage
             build_typed_message(message_class, bytes)
           end
         end
-
       end
 
       private
@@ -215,20 +205,19 @@ module MIDIMessage
       # Build a SysEx message object of the given type using the given bytes
       def build_typed_message(message_class, bytes)
         bytes = bytes.dup
-        fixed_length_message_part = bytes.slice!(0,7)
+        fixed_length_message_part = bytes.slice!(0, 7)
 
         manufacturer_id = fixed_length_message_part[0]
         device_id = fixed_length_message_part[1]
         model_id = fixed_length_message_part[2]
 
-        address = fixed_length_message_part.slice(4,3)
+        address = fixed_length_message_part.slice(4, 3)
         checksum = bytes.slice!((bytes.length - 1), 1)
         value = bytes
 
-        node = Node.new(manufacturer_id, :model_id => model_id, :device_id => device_id)
-        message_class.new(address, value, :checksum => checksum, :node => node)
+        node = Node.new(manufacturer_id, model_id: model_id, device_id: device_id)
+        message_class.new(address, value, checksum: checksum, node: node)
       end
-
     end
 
     # Convert raw MIDI data to a SysEx message object
@@ -236,7 +225,5 @@ module MIDIMessage
     def self.new(*bytes)
       Builder.build(*bytes)
     end
-
   end
-
 end

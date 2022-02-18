@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 #
 # Parse raw data
 #
 
-$:.unshift(File.join("..", "lib"))
+$LOAD_PATH.unshift(File.join('..', 'lib'))
 
-require "midi-message"
-require "pp"
+require 'midi-message'
+require 'pp'
 
 pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41, 0xF7)
 

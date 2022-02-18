@@ -1,7 +1,9 @@
-$:.unshift(File.join("..", "lib"))
+# frozen_string_literal: true
 
-require "minitest/autorun"
-require "mocha/test_unit"
-require "shoulda-context"
+$LOAD_PATH.unshift(File.join('..', 'lib'))
 
-require "midi-message"
+require 'minitest/autorun'
+require 'mocha/test_unit'
+require 'shoulda-context'
+
+require 'midi-message'

@@ -1,8 +1,8 @@
-module MIDIMessage
+# frozen_string_literal: true
 
+module MIDIMessage
   # Common behavior amongst Channel Message types
   module ChannelMessage
-
     include MIDIMessage # this enables ..kind_of?(MIDIMessage)
 
     attr_reader :data, :name
@@ -52,11 +52,10 @@ module MIDIMessage
     end
 
     class Accessors
-
       SCHEMA = [
-        { :name => :status, :index => 1 }, # second status nibble
-        { :name => :data, :index => 0 }, # first data byte
-        { :name => :data, :index => 1 } # second data byte
+        { name: :status, index: 1 }, # second status nibble
+        { name: :data, index: 0 }, # first data byte
+        { name: :data, index: 1 } # second data byte
       ].freeze
 
       # @param [Class] klass
@@ -74,7 +73,7 @@ module MIDIMessage
           data_mapping = SCHEMA[i]
           container = message.send(data_mapping[:name])
           index = data_mapping[:index]
-          message.send(:instance_variable_set, "@#{property.to_s}", container[index])
+          message.send(:instance_variable_set, "@#{property}", container[index])
         end
         true
       end
@@ -108,31 +107,28 @@ module MIDIMessage
       # @return [Boolean]
       def define_setter(property, mapping)
         index = mapping[:index]
-        @klass.send(:define_method, "#{property.to_s}=") do |value|
-          send(:instance_variable_set, "@#{property.to_s}", value)
+        @klass.send(:define_method, "#{property}=") do |value|
+          send(:instance_variable_set, "@#{property}", value)
           send(mapping[:name])[index] = value
           send(:update)
           return self
         end
         true
       end
-
     end
 
     # For defining Channel Message class types
     module ClassMethods
-
       def properties
-        const_get("DATA") if const_defined?("DATA")
+        const_get('DATA') if const_defined?('DATA')
       end
 
       # Does the schema of this Channel Message carry a second data byte?
       # eg. NoteMessage does, and ProgramChange doesn"t
       # @return [Boolean] Is there a second data byte on this message type?
       def second_data_byte?
-        properties.nil? || (properties.length-1) > 1
+        properties.nil? || (properties.length - 1) > 1
       end
-
     end
 
     # Use this if you want to instantiate a raw channel message
@@ -140,10 +136,9 @@ module MIDIMessage
     # For example ChannelMessage::Message.new(0x9, 0x0, 0x40, 0x57)
     # creates a raw note-on message
     class Message
-
       include ChannelMessage
 
-      DISPLAY_NAME = "Channel Message"
+      DISPLAY_NAME = 'Channel Message'
 
       # Build a Channel Mssage from raw nibbles and bytes
       # eg ChannelMessage.new(0x9, 0x0, 0x40, 0x40)
@@ -161,9 +156,6 @@ module MIDIMessage
         status = (@status[0] << 4) + (@status[1])
         MIDIMessage.parse(status, *@data)
       end
-
     end
-
   end
-
 end

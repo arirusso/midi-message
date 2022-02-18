@@ -1,8 +1,8 @@
-module MIDIMessage
+# frozen_string_literal: true
 
+module MIDIMessage
   # Common behavior amongst all Message types
   module Message
-
     # Initialize the message status
     # @param [Fixnum] status_nibble_1 The first nibble of the status
     # @param [Fixnum] status_nibble_2 The second nibble of the status
@@ -18,16 +18,16 @@ module MIDIMessage
       data = [@data[0], @data[1]] unless @data.empty?
       [status_as_byte, *data].compact
     end
-    alias_method :to_byte_a, :to_a
-    alias_method :to_byte_array, :to_a
-    alias_method :to_bytes, :to_a
+    alias to_byte_a to_a
+    alias to_byte_array to_a
+    alias to_bytes to_a
 
     # String representation of the message's bytes eg "904040" for NoteOn(0x40, 0x40)
     # @return [String] The bytes of the message as a string of hex bytes
     def to_hex_s
       TypeConversion.numeric_byte_array_to_hex_string(to_a)
     end
-    alias_method :to_bytestr, :to_hex_s
+    alias to_bytestr to_hex_s
 
     def update
       populate_using_const
@@ -55,6 +55,5 @@ module MIDIMessage
       base.send(:include, MIDIMessage) # this enables ..kind_of?(MIDIMessage)
       base.send(:attr_reader, :name, :status, :verbose_name)
     end
-
   end
 end

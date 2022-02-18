@@ -1,5 +1,4 @@
 module MIDIMessage
-
   # Common MIDI system message behavior
   module SystemMessage
 
@@ -17,7 +16,5 @@ module MIDIMessage
     def strip_redundant_nibble(byte)
       byte > STATUS ? (byte & 0x0F) : byte
     end
-
   end
-
 end

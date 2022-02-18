@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 #
 # Walk through of different ways to instantiate System Exclusive (SysEx) messages
 #
 
-$:.unshift(File.join("..", "lib"))
+$LOAD_PATH.unshift(File.join('..', 'lib'))
 
-require "midi-message"
-require "pp"
+require 'midi-message'
+require 'pp'
 
 # you can create a message by parsing bytes
 
@@ -16,7 +18,7 @@ pp MIDIMessage.parse(0xF0, 0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41,
 # a Node represents a device that you"re sending a message to
 # (eg. your Yamaha DX7 is a Node).
 
-node = MIDIMessage::SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_id => 0x10)
+node = MIDIMessage::SystemExclusive::Node.new(0x41, model_id: 0x42, device_id: 0x10)
 
 # The following will create a command object for address "407F00" with value "00"
 # associated with our node
@@ -26,7 +28,7 @@ node = MIDIMessage::SystemExclusive::Node.new(0x41, :model_id => 0x42, :device_i
 # A Request type message (SystemExclusive::Request) has a status byte
 # equal to 0x11
 
-pp MIDIMessage::SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, :node => node)
+pp MIDIMessage::SystemExclusive::Command.new([0x40, 0x7F, 0x00], 0x00, node: node)
 
 # it is actually optional to pass a node to your message-- one case where not
 # doing so is useful is when want to have a generic message prototype used with

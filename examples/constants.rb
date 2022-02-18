@@ -1,18 +1,20 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 #
 # How to use constants
 #
 
-$:.unshift(File.join("..", "lib"))
+$LOAD_PATH.unshift(File.join('..', 'lib'))
 
-require "midi-message"
-require "pp"
+require 'midi-message'
+require 'pp'
 
 # some messages for a sequencer
 
-pp MIDIMessage::SystemRealtime["Start"].new
-pp MIDIMessage::NoteOn["E4"].new(0, 100)
-pp MIDIMessage::SystemRealtime["Stop"].new
+pp MIDIMessage::SystemRealtime['Start'].new
+pp MIDIMessage::NoteOn['E4'].new(0, 100)
+pp MIDIMessage::SystemRealtime['Stop'].new
 
 # this should output something like:
 

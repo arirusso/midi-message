@@ -1,5 +1,4 @@
 module MIDIMessage
-
   # Simple message parsing
   # For more advanced parsing check out {nibbler}[http://github.com/arirusso/nibbler]
   class Parser
