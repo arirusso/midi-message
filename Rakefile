@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require 'rake'
-require 'rake/testtask'
+begin
+  require 'rspec/core/rake_task'
 
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'test'
-  t.test_files = FileList['test/**/*_test.rb']
-  t.verbose = true
+  RSpec::Core::RakeTask.new(:spec)
+
+  task default: :spec
+rescue LoadError
+  # no rspec available
 end
-
-task default: [:test]
